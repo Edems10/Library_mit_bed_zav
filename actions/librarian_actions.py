@@ -13,6 +13,9 @@ def accept_user_changes():
 def get_all_users():
     pass
 
+def find_book():
+    pass
+
 def find_user():
     pass
 
