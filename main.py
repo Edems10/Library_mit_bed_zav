@@ -91,7 +91,6 @@ class App(customtkinter.CTk):
 
         self.label_info_1 = customtkinter.CTkLabel(master=self.frame_info,
                                                    text="Please sign in",
-                                                   height=100,
                                                    corner_radius=6,  # <- custom corner radius
                                                    fg_color=("white", "gray38"),  # <- custom tuple-color
                                                    justify=tkinter.LEFT)

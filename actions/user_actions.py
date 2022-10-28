@@ -1,3 +1,7 @@
+from database.datamodels import Person
+import hashlib, uuid
+
+
 def create_account():
     pass
 
@@ -14,4 +18,7 @@ def return_book():
 
 # don't forget approval
 def change_account():
+    pass
+
+def verify_login():
     pass
