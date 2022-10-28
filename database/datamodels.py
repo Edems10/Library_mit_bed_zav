@@ -21,9 +21,11 @@ class Book:
     image: str
     # idk mby we want to save text as well
     # text : str
+    current_borrowers: dict #{Person_id:current_time}
     copies_available: int
     genre: Optional[str]
     description: Optional[str]
+    count_borrowed=int
     id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
 
 
@@ -36,7 +38,8 @@ class Person:
     login_name: str = field(metadata={"validate": validate.Length(min=1, max=32)})
     password: str = field(metadata={"validate":validate.Length(min=6,max=64)})
     id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
-    borrowed_books = array
+    borrowed_books = dict #{Book_id:time_borrowed_at}
+    count_borrowed_books = int
     banned = bool
     approved_by_librarian = bool
     role = Roles

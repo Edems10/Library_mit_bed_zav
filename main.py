@@ -87,6 +87,15 @@ class App(customtkinter.CTk):
 
         # ============ frame_info ============
 
+        # configure grid layout (1x1)
+
+        self.label_info_1 = customtkinter.CTkLabel(master=self.frame_info,
+                                                   text="Please sign in",
+                                                   height=100,
+                                                   corner_radius=6,  # <- custom corner radius
+                                                   fg_color=("white", "gray38"),  # <- custom tuple-color
+                                                   justify=tkinter.LEFT)
+        self.label_info_1.grid(column=0, row=0, sticky="nwe", padx=15, pady=15)
 
         # ============ frame_right ============
 
@@ -144,7 +153,7 @@ class App(customtkinter.CTk):
 
         self.button_login = customtkinter.CTkButton(master=self.frame_right,
                                                      text="Log In")
-        self.button_login.grid(row=7, column=0,columnspan=2, pady=10, padx=20, sticky="w")
+        self.button_login.grid(row=7, column=0,columnspan=2, pady=10, padx=20, sticky="we")
 
         self.button_5 = customtkinter.CTkButton(master=self.frame_right,
                                                 text="CTkButton",
