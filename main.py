@@ -1,5 +1,5 @@
 from shelve import Shelf
-from database.datamodels import *
+from datamodels import *
 from typing import List, Dict, Any
 import customtkinter
 import tkinter
