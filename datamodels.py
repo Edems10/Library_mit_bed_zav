@@ -17,7 +17,7 @@ class Roles(Enum):
 @dataclass
 class Book:
     # id is optional because it is added by mongodb at the time of creation
-    _id: Optional[str]
+    #_id: Optional[str]
     title: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     author: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     length: int
@@ -25,11 +25,11 @@ class Book:
     image: str
     # idk mby we want to save text as well
     # text : str
-    current_borrowers: Optional[dict] #{Person_id:current_time}
+  #  current_borrowers: Optional[dict] #{Person_id:current_time}
     copies_available: int
     genre: Optional[str]
     description: Optional[str]
-    count_borrowed=int
+    count_borrowed: int
     # mongo gives id to each object by default so this might not be needed
     # id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
 

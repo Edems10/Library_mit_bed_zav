@@ -27,8 +27,11 @@ if login_result[0] == True:
   user = login_result[1]
   if user.role == Roles.Librarian.name:
     current_user = Librarian(user)
-    print(current_user.add_book(mongo_client,"How to train a dragon", "Cressida Cowell", 231, 2003, "dragon",2, "fantasy",
-                          "description",2))
+    print(current_user.add_book(mongo_client,"How to train a dragon 3", "Cressida Cowell", 231, 2003, "dragon",2, "fantasy",
+                          "description",0))
+    print(current_user.find_book(mongo_client,"How to train a dragon 2"))
+    current_user.delete_book(mongo_client,"How to train a dragon 3")
+
   else:
     current_user = User(user)
 else:
