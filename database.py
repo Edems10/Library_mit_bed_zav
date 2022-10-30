@@ -23,11 +23,10 @@ mongo_client = get_mongo_client()
 print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 login_result = login(mongo_client,"login_lib","lib_12345")
 if login_result[0] == True:
-  #TODO FIX
-  user = Person(login_result[1)]
-  if user.role.name == Roles.Librarian.name:
-    current_user = Current_librarian(user)
+  user = login_result[1]
+  if user.role == Roles.Librarian.name:
+    current_user = Librarian(user)
   else:
-    current_user = Current_user(user)
+    current_user = User(user)
 else:
   print(login_result[1])

@@ -16,32 +16,70 @@ CURRENT_USER = None
 
 
 @dataclass
-class Current_user:
-  current_user: Person = None
+class User:
+  user: Person = None
 
   def __init__(self, person:Person):
-    self.current_user = person 
+    user = person 
     if person.banned== True :
       # TODO there has to be a function that informs the user he is banned
-      self.current_user = None
-    if person.role.name == Roles.Librarian.name:
-      self.is_librarian= True
-    else:
-      self.is_librarian= False
+      user = None
+
+    #check if librarian is doing this coz then no approval needed
+    # check limit=6 and time=6 days
+    def borrow_book():
+        print("hello")
+        pass
+
+    def return_book():
+        pass
+
+    def find_book():
+        pass
+
 
 @dataclass
-class Current_librarian:
-  current_user: Person = None
+class Librarian(User):
+  user: Person = None
 
   def __init__(self, person:Person):
-    self.current_user = person 
+    self.user = person 
     if person.banned== True :
       # TODO there has to be a function that informs the user he is banned
-      self.current_user = None
-    if person.role.name == Roles.Librarian.name:
-      self.is_librarian= True
-    else:
-      self.is_librarian= False
+      self.user = None
+
+    # don't forget approval
+    def change_account():
+        pass
+
+    def ban_user():
+        pass
+
+    def edit_user():
+        pass
+
+    def accept_user_changes():
+        pass
+
+    def get_all_users():
+        pass
+
+    def find_user():
+        pass
+    # can only be done if no books borrowed
+    def edit_book():
+        pass
+
+    def add_book():
+        pass
+
+    # can only be done if no books borrowed
+    def delete_book():
+        pass
+
+    # delete old librarian and promoto new user
+    def appoint_new_librarian():
+        pass
 
 
 def get_user_column(mongo_client:pymongo.MongoClient):
@@ -96,20 +134,6 @@ def create_account(mongo_client:pymongo.MongoClient,first_name:str,surname:str,p
         return False
     
 
-
-
-#check if librarian is doing this coz then no approval needed
-# check limit=6 and time=6 days
-def borrow_book():
-    pass
-
-def return_book():
-    pass
-
-# don't forget approval
-def change_account():
-    pass
-
 def hash_password(password,salt):
     return bcrypt.hashpw(password,salt)
 
@@ -149,39 +173,8 @@ def login(mongo_client:pymongo.MongoClient,login:str,password:str)->Person:
     else:
         return False,"Incorrect username or password"
 
-#TODO idk if this needs to be done
-def create_user_librarian():
-    pass
 
-def ban_user():
-    pass
 
-def edit_user():
-    pass
 
-def accept_user_changes():
-    pass
 
-def get_all_users():
-    pass
 
-def find_book():
-    pass
-
-def find_user():
-    pass
-
-# can only be done if no books borrowed
-def edit_book():
-    pass
-
-def add_book():
-    pass
-
-# can only be done if no books borrowed
-def delete_book():
-    pass
-
-# delete old librarian and promoto new user
-def appoint_new_librarian():
-    pass
