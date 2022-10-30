@@ -43,11 +43,15 @@ class User:
 class Librarian(User):
   user: Person = None
 
+
+
   def __init__(self, person:Person):
-    self.user = person 
+    self.user = person
+
     if person.banned== True :
       # TODO there has to be a function that informs the user he is banned
       self.user = None
+
 
     # don't forget approval
     def change_account():
@@ -71,8 +75,17 @@ class Librarian(User):
     def edit_book():
         pass
 
-    def add_book():
-        pass
+  def add_book(self, mongo_client: pymongo.MongoClient, title: str, author: str, length: int, year: int, image: str,
+             copies_available: int, genre: str, description: str,
+             count_borrowed: int) -> bool:
+    if not book_exists(mongo_client, title):
+        new_book = Person(title=title, author=author, length=length, year=year, image=image,
+                          copies_available=copies_available, genre=genre,
+                          description=description, count_borrowed=count_borrowed)
+        get_book_column(mongo_client).insert_one(new_book.to_dict())
+        return True
+    else:
+        return False
 
     # can only be done if no books borrowed
     def delete_book():
@@ -83,10 +96,38 @@ class Librarian(User):
         pass
 
 
-def get_user_column(mongo_client:pymongo.MongoClient):
-    return  mongo_client[DATABASE_NAME][USER]
 
-def user_exists(mongo_client:pymongo.MongoClient,user_name):
+
+
+def get_book_column(mongo_client: pymongo.MongoClient):
+    return mongo_client[DATABASE_NAME][BOOK]
+
+
+def book_exists(mongo_client: pymongo.MongoClient, book_name):
+    users = get_user_column(mongo_client)
+
+    query = {"title": book_name}
+    cursor = users.find(query)
+    found = 0
+    for _ in cursor:
+        found += 1
+    if found >= 1:
+        return True
+    else:
+        return False
+
+
+def book_exists_return(mongo_client: pymongo.MongoClient, book_name):
+    users = get_user_column(mongo_client)
+    query = {"title": book_name}
+    return users.find_one(query)
+
+
+def get_user_column(mongo_client:pymongo.MongoClient):
+    return mongo_client[DATABASE_NAME][USER]
+
+
+def user_exists(mongo_client: pymongo.MongoClient, user_name):
     users = get_user_column(mongo_client)
 
     query = {"login_name": user_name}
@@ -94,15 +135,17 @@ def user_exists(mongo_client:pymongo.MongoClient,user_name):
     found = 0
     for _ in cursor:
         found += 1
-    if found >= 1 :
+    if found >= 1:
         return True
     else:
         return False
 
-def user_exists_return(mongo_client:pymongo.MongoClient,user_name):
+
+def user_exists_return(mongo_client: pymongo.MongoClient, user_name):
     users = get_user_column(mongo_client)
     query = {"login_name": user_name}
     return users.find_one(query)
+
 
 def create_account(mongo_client:pymongo.MongoClient,first_name:str,surname:str,pid:int,address:str,login:str,password:str)->bool:
 
@@ -179,6 +222,7 @@ def login(mongo_client:pymongo.MongoClient,login:str,password:str)->Person:
              return False, "Password must have at least 6 characters"
     else:
         return False,"Incorrect username or password"
+
 
 
 

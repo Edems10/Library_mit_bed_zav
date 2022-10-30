@@ -25,7 +25,7 @@ class Book:
     image: str
     # idk mby we want to save text as well
     # text : str
-    current_borrowers: dict #{Person_id:current_time}
+    current_borrowers: Optional[dict] #{Person_id:current_time}
     copies_available: int
     genre: Optional[str]
     description: Optional[str]
