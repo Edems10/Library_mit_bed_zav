@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pickle import NONE
-from datamodels import Person,Roles
+from datamodels import Book, Person,Roles
 import pymongo
 import bcrypt
 import re
@@ -39,19 +39,28 @@ class User:
         pass
 
 
+
 @dataclass
 class Librarian(User):
-  user: Person = None
+  
+    def __init__(self, person:Person):
+        self.user = person
+        if person.banned== True :
+            self.user = None
 
-
-
-  def __init__(self, person:Person):
-    self.user = person
-
-    if person.banned== True :
-      # TODO there has to be a function that informs the user he is banned
-      self.user = None
-
+    user: Person = None
+    
+    def add_book(self, mongo_client: pymongo.MongoClient, title: str, author: str, length: int, year: int, image: str,
+                    copies_available: int, genre: str, description: str,
+                    count_borrowed: int) -> bool:
+        if not book_exists(mongo_client, title):
+            new_book = Book(title=title, author=author, length=length, year=year, image=image,
+                            copies_available=copies_available, genre=genre,
+                            description=description, count_borrowed=count_borrowed)
+            get_book_column(mongo_client).insert_one(new_book.to_dict())
+            return True
+        else:
+            return False
 
     # don't forget approval
     def change_account():
@@ -75,17 +84,7 @@ class Librarian(User):
     def edit_book():
         pass
 
-  def add_book(self, mongo_client: pymongo.MongoClient, title: str, author: str, length: int, year: int, image: str,
-             copies_available: int, genre: str, description: str,
-             count_borrowed: int) -> bool:
-    if not book_exists(mongo_client, title):
-        new_book = Person(title=title, author=author, length=length, year=year, image=image,
-                          copies_available=copies_available, genre=genre,
-                          description=description, count_borrowed=count_borrowed)
-        get_book_column(mongo_client).insert_one(new_book.to_dict())
-        return True
-    else:
-        return False
+        
 
     # can only be done if no books borrowed
     def delete_book():
