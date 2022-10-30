@@ -3,6 +3,7 @@ from pickle import NONE
 from datamodels import Person,Roles
 import pymongo
 import bcrypt
+import re
 
 
 #DATABASE NAME
@@ -125,11 +126,14 @@ def create_account(mongo_client:pymongo.MongoClient,first_name:str,surname:str,p
     if(not user_exists(mongo_client,login)):
         #password needs to be saved in bytes
         #byte_password = bytes(password,'UTF-8')
-        new_user = Person(first_name=first_name,surname=surname,pid=pid,address=address
-                        ,login_name=login,password=password,role=Roles.User.name)
-        new_user.hash_password()
-        get_user_column(mongo_client).insert_one(new_user.to_dict())
-        return True
+        if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
+            new_user = Person(first_name=first_name,surname=surname,pid=pid,address=address
+                            ,login_name=login,password=password,role=Roles.User.name)
+            new_user.hash_password()
+            get_user_column(mongo_client).insert_one(new_user.to_dict())
+            return True
+        else:
+            return False, "Password must have at least 6 characters"
     else:
         return False
     
@@ -147,29 +151,32 @@ def login(mongo_client:pymongo.MongoClient,login:str,password:str)->Person:
     if user is not None:
         byte_password = bytes(password,'UTF-8')
         salt = user['salt']
-        if hash_password(password,salt) == user['password']:
-            #TODO can be done with =0 borrowed_books but w/e
-            try: 
-                CURRENT_USER = Person(
-                    login_name=user['login_name'],password=user['password'],
-                    id=user['_id'],first_name=user['first_name'],
-                    surname=user['surname'],pid=user['pid'],address=user['address'],
-                    salt=user['salt'],borrowed_books=user['borrowed_books'],
-                    count_borrowed_books=user['count_borrowed_books'],
-                    banned=user['banned'],approved_by_librarian=user['approved_by_librarian'],
-                    role=user['role'],created_at=user['created_at']) 
-            except KeyError as e:
-                CURRENT_USER = Person(
-                    login_name=user['login_name'],password=user['password'],
-                    id=user['_id'],first_name=user['first_name'],
-                    surname=user['surname'],pid=user['pid'],address=user['address'],
-                    salt=user['salt'],count_borrowed_books=user['count_borrowed_books'],
-                    banned=user['banned'],approved_by_librarian=user['approved_by_librarian'],
-                    role=user['role'],created_at=user['created_at']) 
-            
-            return True,CURRENT_USER
+        if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
+            if hash_password(password,salt) == user['password']:
+                #TODO can be done with =0 borrowed_books but w/e
+                try:
+                    CURRENT_USER = Person(
+                        login_name=user['login_name'],password=user['password'],
+                        id=user['_id'],first_name=user['first_name'],
+                        surname=user['surname'],pid=user['pid'],address=user['address'],
+                        salt=user['salt'],borrowed_books=user['borrowed_books'],
+                        count_borrowed_books=user['count_borrowed_books'],
+                        banned=user['banned'],approved_by_librarian=user['approved_by_librarian'],
+                        role=user['role'],created_at=user['created_at'])
+                except KeyError as e:
+                    CURRENT_USER = Person(
+                        login_name=user['login_name'],password=user['password'],
+                        id=user['_id'],first_name=user['first_name'],
+                        surname=user['surname'],pid=user['pid'],address=user['address'],
+                        salt=user['salt'],count_borrowed_books=user['count_borrowed_books'],
+                        banned=user['banned'],approved_by_librarian=user['approved_by_librarian'],
+                        role=user['role'],created_at=user['created_at'])
+
+                return True,CURRENT_USER
+            else:
+                return False,"Incorrect username or password"
         else:
-            return False,"Incorrect username or password"
+             return False, "Password must have at least 6 characters"
     else:
         return False,"Incorrect username or password"
 
