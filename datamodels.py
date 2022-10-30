@@ -6,7 +6,6 @@ from typing import Optional, List
 from dataclasses_json import dataclass_json, Undefined
 from marshmallow import validate
 from enum import Enum
-import hashlib
 import bcrypt
 
 
@@ -17,6 +16,8 @@ class Roles(Enum):
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Book:
+    # id is optional because it is added by mongodb at the time of creation
+    _id: Optional[str]
     title: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     author: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     length: int
@@ -36,6 +37,8 @@ class Book:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Person:
+    # id is optional because it is added by mongodb at the time of creation 
+    _id = Optional[str]
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     pid: int
@@ -45,8 +48,8 @@ class Person:
     salt: str = bcrypt.gensalt()
     # mongo gives id to each object by default so this might not be needed
     #id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
-    borrowed_books = Optional[dict]  #{Book_id:time_borrowed_at} 
-    count_borrowed_books = Optional[int] 
+    borrowed_books = Optional[dict]   #{Book_id:time_borrowed_at} 
+    count_borrowed_books:  int = 0
     banned : bool = False
     approved_by_librarian : bool = False
     role : Roles = Roles.User
