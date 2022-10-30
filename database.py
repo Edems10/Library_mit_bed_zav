@@ -18,14 +18,17 @@ def get_mongo_client():
 
 
 #TODO run sanity check that all columns exist
-
 mongo_client = get_mongo_client()
 print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 login_result = login(mongo_client,"login_lib","lib_12345")
+
+
 if login_result[0] == True:
   user = login_result[1]
   if user.role == Roles.Librarian.name:
     current_user = Librarian(user)
+    print(current_user.add_book(mongo_client,"How to train a dragon", "Cressida Cowell", 231, 2003, "dragon",2, "fantasy",
+                          "description",2))
   else:
     current_user = User(user)
 else:
