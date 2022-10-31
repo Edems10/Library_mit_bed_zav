@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 from pickle import NONE
+from typing import Tuple
+
+
 from datamodels import Book, Person, Roles
 import pymongo
 import bcrypt
@@ -34,9 +37,10 @@ class User:
     def return_book(self):
         pass
 
-    def find_book(self):
-        pass
-
+    def user_find_book(self, mongo_client: pymongo.MongoClient, title):
+        books = get_book_column(mongo_client)
+        query = {"title": title}
+        return books.find_one(query, {"_id": 0, "count_borrowed": 0})
 
 @dataclass
 class Librarian(User):
@@ -47,6 +51,41 @@ class Librarian(User):
             self.user = None
 
     user: Person = None
+
+    # don't forget approval
+    def change_account(self):
+        pass
+
+    def ban_user(self):
+        pass
+
+    #TODO Needs to set a functionality to edit user after admin has accepted this request
+    #Maybe add a new field to User to inform about accepting changes
+    def edit_user(self, mongo_client: pymongo.MongoClient, user_name, first_name: str, surname: str, address: str,
+                  login_name: str) -> Tuple[bool, str]:
+        if user_exists(mongo_client, user_name):
+            query = {"login_name": user_name}
+            if user_exists(mongo_client, login_name):
+                new_values = {"$set": {"first_name": first_name, "surname": surname, "address": address, "login_name": login_name}}
+                get_user_column(mongo_client).update_one(query, new_values)
+                return True, "User: " + user_name + "  has been updated!"
+            else:
+                return False, "Username: " + login_name + "  is already used!"
+        else:
+            return False, "There is no user with Username: " + user_name
+
+    def accept_user_changes(self):
+        pass
+
+    def get_all_users(self, mongo_client: pymongo.MongoClient):
+        users = get_user_column(mongo_client)
+        return list(users.find({}, {"_id": 0, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1,
+                                    "count_borrowed_books": 1, "created_at": 1}))
+
+    def find_user(self, mongo_client: pymongo.MongoClient, login_name):
+        users = get_user_column(mongo_client)
+        query = {"login_name": login_name}
+        return users.find_one(query, {"_id": 0, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1})
 
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author: str, length: int, year: int, image: str,
                  copies_available: int, genre: str, description: str, count_borrowed: int) -> bool:
@@ -59,53 +98,47 @@ class Librarian(User):
         else:
             return False
 
-    # don't forget approval
-    def change_account(self):
-        pass
-
-    def ban_user(self):
-        pass
-
-    def edit_user(self):
-        pass
-
-    def accept_user_changes(self):
-        pass
-
-    def get_all_users(self):
-        pass
-
-    def find_user(self):
-        pass
+    # can only be done if no books borrowed
+    def edit_book(self, mongo_client: pymongo.MongoClient, book_name, title: str, author: str, length: int, year: int,
+                  image: str,
+                  copies_available: int, genre: str, description: str, count_borrowed: int):
+        books = get_book_column(mongo_client)
+        if book_exists(mongo_client, book_name):
+            query = {"$and": [{"title": title}, {"count_borrowed": 0}]}
+            result = books.find_one(query)
+            if result is not None:
+                new_values = {"$set": {"title": title, "author": author, "length": length, "year": year, "image": image,
+                                      "copies_available": copies_available, "genre": genre, "description": description,
+                                      "count_borrowed": count_borrowed}}
+                return get_book_column(mongo_client).update_one(query, new_values), \
+                    "Book: " + book_name + "  has been modified!"
+            else:
+                return None, "Book: " + book_name + "  is currently borrowed!"
+        else:
+            return None, "There is no book with the name: " + book_name
 
     # can only be done if no books borrowed
-    def edit_book(self):
-        pass
+    def delete_book(self, mongo_client: pymongo.MongoClient, title):
+        books = get_book_column(mongo_client)
+        if book_exists(mongo_client, title):
+            query = {"$and": [{"title": title}, {"count_borrowed": 0}]}
+            result = books.find_one(query)
+            if result is not None:
+                return books.delete_one(query), "Book: " + title + " has been deleted successfully!"
+            else:
+                print("This book is currently borrowed")
+                return None, "Book: " + title + "  is currently borrowed!"
+        else:
+            return None, "There is no book with the name: " + title
 
     def find_book(self, mongo_client: pymongo.MongoClient, title):
         books = get_book_column(mongo_client)
         query = {"title": title}
         return books.find_one(query)
 
-
-    # can only be done if no books borrowed
-    def delete_book(self, mongo_client: pymongo.MongoClient, title):
+    def find_all_books(self, mongo_client: pymongo.MongoClient):
         books = get_book_column(mongo_client)
-        query = {"title": title}
-        result = books.find_one(query)
-        if result is not None:
-            query2 = {"$and": [{"title": title}, {"count_borrowed": 0}]}
-            result2 = books.find_one(query2)
-            if result2 is not None:
-                print("Book has been deleted!")
-                return books.delete_one(query2), "Book has been deleted!"
-            else:
-                print("This book is currently borrowed")
-                return None, "This book is currently borrowed!"
-        else:
-            print("There is no book with this name")
-            return None, "There is no book with this name!"
-
+        return list(books.find({}, {"_id": 0, "title": 1, "author": 1}))
 
     # delete old librarian and promoto new user
     def appoint_new_librarian(self):
@@ -161,7 +194,7 @@ def user_exists_return(mongo_client: pymongo.MongoClient, user_name):
 
 
 def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int, address: str, login: str,
-                   password: str) -> bool:
+                   password: str) -> Tuple[bool, str]:
     """This function Creates account and saves it to mongo db
         the password is already hashed inside this function
     
@@ -189,7 +222,7 @@ def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: 
             get_user_column(mongo_client).insert_one(new_user.to_dict())
             return True
         else:
-            return False, "Password must have at least 6 characters"
+            return False, "Password must have at least 6 characters!"
     else:
         return False
 
@@ -198,7 +231,7 @@ def hash_password(password, salt):
     return bcrypt.hashpw(password, salt)
 
 
-def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Person:
+def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Tuple[bool, Person]:
     user_column = get_user_column(mongo_client)
     if (user_exists(mongo_client, login)):
         user_exists_return(mongo_client, login)
