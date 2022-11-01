@@ -1,6 +1,6 @@
 import pymongo
 import os
-
+from bson.objectid import ObjectId
 from torch import true_divide
 from actions import *
 from dataclasses import dataclass
@@ -19,8 +19,13 @@ def get_mongo_client():
 
 #TODO run sanity check that all columns exist
 mongo_client = get_mongo_client()
-print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
-login_result = login(mongo_client,"login_lib","lib_12345")
+#print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
+#LOGIN LIBRARIAN
+#login_result = login(mongo_client,"login_lib","lib_12345")
+#LOGIN FOR USER
+#create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
+create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
+login_result = login(mongo_client,"sdalogin","password")
 
 
 if login_result[0] == True:
@@ -35,11 +40,16 @@ if login_result[0] == True:
                           "description 2",2)[1])
     print(current_user.find_all_books(mongo_client))
     print(current_user.get_all_users(mongo_client))
-    print(current_user.find_user(mongo_client, "login111"))
-    print(current_user.edit_user(mongo_client,"login111","Dominik", "Random", "IKD", "login111")[1])
+    user_saved = current_user.find_user(mongo_client, "login111")
+    id = user_saved['_id']
+    #Still works for librarian
+    print(current_user.edit_user(mongo_client,"login111","Dominik","IKD", id)[1])
     print(User(user).user_find_book(mongo_client, "Gladiator"))
-
+    print(current_user.ban_user(mongo_client,ObjectId('63619fb5b63ff822f52c95b2')))
   else:
     current_user = User(user)
+    print(current_user.user._id)
+    #FIXME tady je issue ze proste nemame ten _id ulozeny
+    print(current_user.edit_user(mongo_client,"login111","Dominik","IKD","USER")[1])
 else:
   print(login_result[1])

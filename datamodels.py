@@ -1,3 +1,4 @@
+from lib2to3.pgen2.token import OP
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -7,6 +8,7 @@ from dataclasses_json import dataclass_json, Undefined
 from marshmallow import validate
 from enum import Enum
 import bcrypt
+from bson.objectid import ObjectId
 
 
 class Roles(Enum):
@@ -38,7 +40,7 @@ class Book:
 @dataclass
 class Person:
     # id is optional because it is added by mongodb at the time of creation 
-    _id = Optional[str]
+    _id = str
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     pid: int
@@ -50,6 +52,7 @@ class Person:
     #id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
     borrowed_books = Optional[dict]   #{Book_id:time_borrowed_at} 
     count_borrowed_books:  int = 0
+    stashed_changes = Optional[dict]
     banned : bool = False
     approved_by_librarian : bool = False
     role : Roles = Roles.User
