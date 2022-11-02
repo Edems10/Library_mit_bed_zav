@@ -40,7 +40,7 @@ class Book:
 @dataclass
 class Person:
     # id is optional because it is added by mongodb at the time of creation 
-    _id = str
+    _id: str= field(metadata={"validate": validate.Length(min=1, max=256)})
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     pid: int
@@ -50,7 +50,7 @@ class Person:
     salt: str = bcrypt.gensalt()
     # mongo gives id to each object by default so this might not be needed
     #id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
-    borrowed_books = Optional[dict]   #{Book_id:time_borrowed_at} 
+    borrowed_books = Optional[dict]   #{Book_id:time_borrowed_at}
     count_borrowed_books:  int = 0
     stashed_changes = Optional[dict]
     banned : bool = False
@@ -64,6 +64,10 @@ class Person:
 
     def hash_password(self):
         self.password = bcrypt.hashpw(self.password,self.salt)
+
+    @property
+    def id(self):
+        return self._id
         
 
 
