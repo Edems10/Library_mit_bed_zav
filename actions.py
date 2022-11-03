@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, Union
 from datetime import datetime
 from bson.objectid import ObjectId
 from datamodels import Book, Person, Roles
@@ -31,20 +31,20 @@ class User:
 
     # check if librarian is doing this coz then no approval needed
     # check limit=6 and time=6 days
-    def borrow_book(self, mongo_client: pymongo.MongoClient, login_name, title) -> Tuple[bool, str]:
-        if user_exists(mongo_client, login_name):
+    def borrow_book(self, mongo_client: pymongo.MongoClient, _id, title) -> Tuple[bool, str]:
+        if user_exists_id(mongo_client, _id):
             if book_exists(mongo_client, title):
                 books = get_book_column(mongo_client)
                 query = {"$and": [{"title": title}, {"copies_available": {"$ne": 0}}]}
                 result = books.find_one(query)
-                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, login_name)
+                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, _id)
                 users = get_user_column(mongo_client)
-                query_user = {"login_name": login_name}
+                query_user = {"_id": ObjectId(_id)}
                 users_result = users.find_one(query_user)
                 if result is not None:
                     if title not in actual_borrowed_books:
                         if users_result["count_borrowed_books"] < 6:
-                            get_user_column(mongo_client).update_one({"login_name": login_name},
+                            get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                                      {"$push":  {"borrowed_books": {"title": title,
                                                                       "author": result["author"],
                                                                       "length": result["length"],
@@ -52,40 +52,40 @@ class User:
                                                                       "genre": result["genre"],
                                                                       "description": result["description"],
                                                                       "borrowed_at": time.time()}}})
-                            get_user_column(mongo_client).update_one({"login_name": login_name},
+                            get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                                      {'$inc': {"count_borrowed_books": 1}})
                             get_book_column(mongo_client).update_one({"title": title},
                                                                      {'$inc': {"count_borrowed": 1}})
-                            return True, "User: " + str(login_name) + " has borrowed book named: " + str(title)
+                            return True, "User: " + str(_id) + " has borrowed book named: " + str(title)
                         else:
-                            return False, "User: " + str(login_name) + "has borrowed the maximum number of books"
+                            return False, "User: " + str(_id) + "has borrowed the maximum number of books"
                     else:
-                        return False, "User: " + str(login_name) + " has already borrowed book named: " + str(title)
+                        return False, "User: " + str(_id) + " has already borrowed book named: " + str(title)
                 else:
                     return False, "Book: " + str(title) + " is currently borrowed"
             else:
                 return False, "There is no book with title: " + str(title)
         else:
-            return False, "There is no user with this name: " + str(login_name)
+            return False, "There is no user with this name: " + str(_id)
 
-    def return_book(self, mongo_client: pymongo.MongoClient, login_name, title) -> Tuple[bool, str]:
-        if user_exists(mongo_client, login_name):
+    def return_book(self, mongo_client: pymongo.MongoClient, _id, title) -> Tuple[bool, str]:
+        if user_exists_id(mongo_client, _id):
             if book_exists(mongo_client, title):
-                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, login_name)
+                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, _id)
                 if title in actual_borrowed_books:
-                    get_user_column(mongo_client).update_one({"login_name": login_name},
+                    get_user_column(mongo_client).update_one({"_id":  ObjectId(_id)},
                                                              {"$pull": {"borrowed_books": {"title": title}}})
-                    get_user_column(mongo_client).update_one({"login_name": login_name},
+                    get_user_column(mongo_client).update_one({"_id":  ObjectId(_id)},
                                                              {'$inc': {"count_borrowed_books": -1}})
                     get_book_column(mongo_client).update_one({"title": title},
                                                              {'$inc': {"count_borrowed": -1}})
-                    return True, "User: " + str(login_name) + " has returned a book named: " + str(title)
+                    return True, "User: " + str(_id) + " has returned a book named: " + str(title)
                 else:
-                    return False, "User: " + str(login_name) + " has not borrowed a book named: " + str(title)
+                    return False, "User: " + str(_id) + " has not borrowed a book named: " + str(title)
             else:
                 return False, "There is no book with title: " + str(title)
         else:
-            return False, "There is no user with this name: " + str(login_name)
+            return False, "There is no user with this name: " + str(_id)
 
     def user_find_book(self, mongo_client: pymongo.MongoClient, title):
         books = get_book_column(mongo_client)
@@ -94,8 +94,8 @@ class User:
 
     # TODO needs to 
     # Maybe add a new field to User to inform about accepting changes
-    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, address: str, _id) -> \
-    Tuple[bool, str]:
+    def edit_user(self, mongo_client: pymongo.MongoClient, _id, first_name: str, surname: str, address: str) -> \
+            Tuple[bool, str]:
         if user_exists_id(mongo_client, _id):
             query = {"_id": ObjectId(_id)}
             new_values = {"$set": {"first_name": first_name, "surname": surname, "address": address}}
@@ -124,7 +124,7 @@ class Librarian(User):
 
     def ban_user(self, mongo_client: pymongo.MongoClient, _id):
         if user_exists_id(mongo_client, _id):
-            query = {"_id": _id}
+            query = {"_id":  ObjectId(_id)}
             new_values = {"$set": {"banned": True}}
             get_user_column(mongo_client).update_one(query, new_values)
             return True, "User: " + str(_id) + "  has been banned!"
@@ -199,13 +199,16 @@ class Librarian(User):
         return list(books.find({}, {"_id": 0, "title": 1, "author": 1}))
 
 
-def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, login_name):
+def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
     users = get_user_column(mongo_client)
     borrowed_books = []
-    all_books = users.find_one({"login_name": login_name},{"borrowed_books": 1})
-    for x in range(len(all_books['borrowed_books'])):
-        borrowed_books.append((all_books['borrowed_books'][x]["title"]))
-    return borrowed_books
+    all_books = users.find_one({"_id": ObjectId(_id)}, {"borrowed_books": 1})
+    try:
+        for x in range(len(all_books['borrowed_books'])):
+            borrowed_books.append((all_books['borrowed_books'][x]["title"]))
+        return borrowed_books
+    except KeyError:
+        return []
 
 
 def get_book_column(mongo_client: pymongo.MongoClient):
@@ -285,18 +288,19 @@ def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: 
                               login_name=login, password=password, role=Roles.User.name)
             new_user.hash_password()
             get_user_column(mongo_client).insert_one(new_user.to_dict())
-            return True
+            return True, "Account has been created successfully"
         else:
             return False, "Password must have at least 6 characters!"
     else:
-        return False
+        return False, "This account already exists"
 
 
 def hash_password(password, salt):
     return bcrypt.hashpw(password, salt)
 
 
-def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Tuple[bool, Person]:
+def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union[
+         Tuple[bool, Person], Tuple[bool, str], bool]:
     user_column = get_user_column(mongo_client)
     if (user_exists(mongo_client, login)):
         user_exists_return(mongo_client, login)
