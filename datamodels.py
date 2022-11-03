@@ -50,7 +50,8 @@ class Person:
     salt: str = bcrypt.gensalt()
     # mongo gives id to each object by default so this might not be needed
     #id: str = field(default_factory=lambda: str(uuid.uuid4())[:8])
-    borrowed_books = Optional[dict]   #{Book_id:time_borrowed_at}
+    borrowed_books = Optional[dict]   #{Book}
+    history_of_books = Optional[dict] #{Book_id: object(sdafasdfasf),time_returned_at : 139025925.23}
     count_borrowed_books:  int = 0
     stashed_changes = Optional[dict]
     banned : bool = False

@@ -48,7 +48,6 @@ if login_result[0] == True:
     print(current_user.ban_user(mongo_client,ObjectId('63619fb5b63ff822f52c95b2')))
   else:
     current_user = User(user)
-    print(current_user.user._id)
     user_current_id = str(current_user.user._id)
     print(user_current_id)
     print(current_user.user_find_book(mongo_client, "Gladiator"))

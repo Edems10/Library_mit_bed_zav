@@ -92,17 +92,12 @@ class User:
         query = {"title": title}
         return books.find_one(query, {"_id": 0, "count_borrowed": 0})
 
-    # TODO Needs to set a functionality to edit user after admin has accepted this request
+    # TODO needs to 
     # Maybe add a new field to User to inform about accepting changes
-    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, address: str, _id: str) -> \
+    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, address: str, _id) -> \
     Tuple[bool, str]:
-        # if _id=="USER":
-        #     print(self.user._id)
-        #     _id=ObjectId(self.user._id)
-        users = get_user_column(mongo_client)
-        print(users.find({"_id": _id}))
         if user_exists_id(mongo_client, _id):
-            query = {"_id": _id}
+            query = {"_id": ObjectId(_id)}
             new_values = {"$set": {"first_name": first_name, "surname": surname, "address": address}}
             if self.user.role == Roles.Librarian.name:
                 get_user_column(mongo_client).update_one(query, new_values)
@@ -114,7 +109,7 @@ class User:
                 get_user_column(mongo_client).update_one(query, new_values)
                 new_values = {"$set": {'approved_by_librarian': False}}
                 get_user_column(mongo_client).update_one(query, new_values)
-
+                return True,f"User: {_id} has been updated waiting for aproval from librarian"
         else:
             return False, "There is no user with _id: " + str(_id)
 
@@ -136,6 +131,7 @@ class Librarian(User):
         else:
             return False, "There is no user with _id: " + _id
 
+    #TODO
     def accept_user_changes(self):
         pass
 
@@ -242,29 +238,18 @@ def get_user_column(mongo_client: pymongo.MongoClient):
 
 def user_exists_id(mongo_client: pymongo.MongoClient, id):
     users = get_user_column(mongo_client)
-    query = {"_id": id}
-    cursor = users.find(query)
-    found = 0
+    cursor = users.find({"_id" : ObjectId(id)})
     for _ in cursor:
-        found += 1
-    if found >= 1:
         return True
-    else:
-        return False
+    return False
 
 
 def user_exists(mongo_client: pymongo.MongoClient, user_name):
     users = get_user_column(mongo_client)
-
-    query = {"login_name": user_name}
-    cursor = users.find(query)
-    found = 0
+    cursor = users.find({"login_name": user_name})
     for _ in cursor:
-        found += 1
-    if found >= 1:
         return True
-    else:
-        return False
+    return False
 
 
 def user_exists_return(mongo_client: pymongo.MongoClient, user_name):
@@ -339,7 +324,7 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Tuple
                 except KeyError as e:
                     CURRENT_USER = Person(
                         login_name=user['login_name'], password=user['password'],
-                        _id=str(user['_id']), first_name=user['first_name'],
+                        _id=ObjectId(user['_id']), first_name=user['first_name'],
                         surname=user['surname'], pid=user['pid'], address=user['address'],
                         salt=user['salt'], count_borrowed_books=user['count_borrowed_books'],
                         banned=user['banned'], approved_by_librarian=user['approved_by_librarian'],
