@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from typing import Tuple
+from datetime import datetime
 from bson.objectid import ObjectId
 from datamodels import Book, Person, Roles
 import pymongo
 import bcrypt
 import re
+import time
 
 # DATABASE NAME
 DATABASE_NAME = 'library'
@@ -41,14 +43,15 @@ class User:
                 users_result = users.find_one(query_user)
                 if result is not None:
                     if title not in actual_borrowed_books:
-                        if users_result["count_borrowed_books"] <= 6:
+                        if users_result["count_borrowed_books"] < 6:
                             get_user_column(mongo_client).update_one({"login_name": login_name},
                                                                      {"$push":  {"borrowed_books": {"title": title,
                                                                       "author": result["author"],
                                                                       "length": result["length"],
                                                                       "year": result["year"], "image": result["image"],
                                                                       "genre": result["genre"],
-                                                                            "description": result["description"]}}})
+                                                                      "description": result["description"],
+                                                                      "borrowed_at": time.time()}}})
                             get_user_column(mongo_client).update_one({"login_name": login_name},
                                                                      {'$inc': {"count_borrowed_books": 1}})
                             get_book_column(mongo_client).update_one({"title": title},
@@ -123,11 +126,6 @@ class Librarian(User):
         self.user = person
 
     user: Person = None
-
-    # No need for approval 
-    # WE DON'T NEED THIS we can just call edit_user with own id
-    def change_account(self, _id: str):
-        pass
 
     def ban_user(self, mongo_client: pymongo.MongoClient, _id):
         if user_exists_id(mongo_client, _id):
@@ -204,10 +202,6 @@ class Librarian(User):
         books = get_book_column(mongo_client)
         return list(books.find({}, {"_id": 0, "title": 1, "author": 1}))
 
-    # YE well have just one librarian and he ain't switching
-    # delete old librarian and promoto new user
-    def appoint_new_librarian(self):
-        pass
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, login_name):
     users = get_user_column(mongo_client)
@@ -217,9 +211,6 @@ def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, login_na
         borrowed_books.append((all_books['borrowed_books'][x]["title"]))
     return borrowed_books
 
-    # list(users.find({}, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1,
-    #                  "count_borrowed_books": 1, "created_at": 1}))
-    # db.wordhidden.find({"fromid": wordid}, {"toid": 1})
 
 def get_book_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][BOOK]

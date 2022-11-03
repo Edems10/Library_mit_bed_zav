@@ -52,8 +52,6 @@ if login_result[0] == True:
     user_current_id = str(current_user.user._id)
     print(user_current_id)
     print(current_user.user_find_book(mongo_client, "Gladiator"))
-    #print(current_user.edit_user(mongo_client, "login111", "Dominik", "IKD", current_user.user._id)[1])
-    #FIXME tady je issue ze proste nemame ten _id ulozeny
     print(current_user.edit_user(mongo_client, "login111", "Dominik", "IKD",user_current_id)[1])
     print(current_user.borrow_book(mongo_client,"login111","How to train a dragon")[1])
     print(get_all_borrowed_books_from_user(mongo_client,"login111"))
