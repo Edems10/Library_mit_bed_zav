@@ -29,22 +29,25 @@ class User:
 
     # check if librarian is doing this coz then no approval needed
     # check limit=6 and time=6 days
-    def borrow_book(self, mongo_client: pymongo.MongoClient, login_name, title) ->Tuple[bool, str]:
+    def borrow_book(self, mongo_client: pymongo.MongoClient, login_name, title) -> Tuple[bool, str]:
         if user_exists(mongo_client, login_name):
             if book_exists(mongo_client, title):
                 books = get_book_column(mongo_client)
                 query = {"$and": [{"title": title}, {"copies_available": {"$ne": 0}}]}
                 result = books.find_one(query)
-                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client,login_name)
+                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, login_name)
                 users = get_user_column(mongo_client)
                 query_user = {"login_name": login_name}
                 users_result = users.find_one(query_user)
-                print(users_result["count_borrowed_books"])
                 if result is not None:
                     if title not in actual_borrowed_books:
                         if users_result["count_borrowed_books"] <= 6:
-                            get_user_column(mongo_client).update_one({"login_name": login_name}, {"$push":  {"borrowed_books": {"title": title, "author": result["author"],
-                                                                            "length": result["length"], "year": result["year"], "image": result["image"], "genre": result["genre"],
+                            get_user_column(mongo_client).update_one({"login_name": login_name},
+                                                                     {"$push":  {"borrowed_books": {"title": title,
+                                                                      "author": result["author"],
+                                                                      "length": result["length"],
+                                                                      "year": result["year"], "image": result["image"],
+                                                                      "genre": result["genre"],
                                                                             "description": result["description"]}}})
                             get_user_column(mongo_client).update_one({"login_name": login_name},
                                                                      {'$inc': {"count_borrowed_books": 1}})
@@ -62,12 +65,26 @@ class User:
         else:
             return False, "There is no user with this name: " + str(login_name)
 
-
-    def return_book(self):
-        pass
+    def return_book(self, mongo_client: pymongo.MongoClient, login_name, title) -> Tuple[bool, str]:
+        if user_exists(mongo_client, login_name):
+            if book_exists(mongo_client, title):
+                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, login_name)
+                if title in actual_borrowed_books:
+                    get_user_column(mongo_client).update_one({"login_name": login_name},
+                                                             {"$pull": {"borrowed_books": {"title": title}}})
+                    get_user_column(mongo_client).update_one({"login_name": login_name},
+                                                             {'$inc': {"count_borrowed_books": -1}})
+                    get_book_column(mongo_client).update_one({"title": title},
+                                                             {'$inc': {"count_borrowed": -1}})
+                    return True, "User: " + str(login_name) + " has returned a book named: " + str(title)
+                else:
+                    return False, "User: " + str(login_name) + " has not borrowed a book named: " + str(title)
+            else:
+                return False, "There is no book with title: " + str(title)
+        else:
+            return False, "There is no user with this name: " + str(login_name)
 
     def user_find_book(self, mongo_client: pymongo.MongoClient, title):
-        print(self.user._id)
         books = get_book_column(mongo_client)
         query = {"title": title}
         return books.find_one(query, {"_id": 0, "count_borrowed": 0})

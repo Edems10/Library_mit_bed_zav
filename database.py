@@ -57,6 +57,7 @@ if login_result[0] == True:
     print(current_user.edit_user(mongo_client, "login111", "Dominik", "IKD",user_current_id)[1])
     print(current_user.borrow_book(mongo_client,"login111","How to train a dragon")[1])
     print(get_all_borrowed_books_from_user(mongo_client,"login111"))
+    #print(current_user.return_book(mongo_client,"login111","How to train a dragon")[1])
 
 else:
   print(login_result[1])
