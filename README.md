@@ -4,12 +4,13 @@ a7pd project
 
 ## Overview
 
+Calls to database and endpoints are located in: [actions](actions.py)  
+Datamodels: [Datamodels](datamodels.py)  
+The connection to mongo db and testing of endpoints: [database file](database.py)  
+
 [UI/FE is from this project](https://github.com/TomSchimansky/CustomTkinter)
 but if you find better one or easier one that you can do something in please do so :see_no_evil:
 prety much just trying stuff with it in [main.py](main.py)
-
-Datamodels [Datamodels](datamodels.py)  
-The connection to mongo db is in here [database.py](database.py)
 
 ## Connecting to database
 
