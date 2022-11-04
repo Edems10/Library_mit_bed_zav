@@ -107,7 +107,7 @@ class User:
                 get_user_column(mongo_client).update_one(query, new_values)
                 new_values = {"$set": {'approved_by_librarian': False}}
                 get_user_column(mongo_client).update_one(query, new_values)
-                return True,f"User: {_id} has been updated waiting for approve from librarian"
+                return True, f"User: {_id} has been updated waiting for approve from librarian"
         else:
             return False, "There is no user with _id: " + str(_id)
 
@@ -146,7 +146,7 @@ class Librarian(User):
                                                              {"$unset": {"stashed_changes": {}}})
                     return True, "Admin has accepted changes to the profile data of user: " + str(_id)
             except KeyError:
-                return False, "This user has no changes to approve"
+                return False, "User: " + str(_id) + " has no changes to approve"
         else:
             return False, "There is no user with _id: " + str(_id)
 
