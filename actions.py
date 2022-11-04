@@ -155,9 +155,9 @@ class Librarian(User):
         return list(users.find({}, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1,
                                     "count_borrowed_books": 1, "created_at": 1}))
 
-    def find_user(self, mongo_client: pymongo.MongoClient, login_name):
+    def find_user(self, mongo_client: pymongo.MongoClient, _id):
         users = get_user_column(mongo_client)
-        query = {"login_name": login_name}
+        query = {"_id":  ObjectId(_id)}
         return users.find_one(query, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1})
 
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author: str, length: int, year: int, image: str,
