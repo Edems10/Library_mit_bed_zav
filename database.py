@@ -50,6 +50,7 @@ if login_result[0]:
 
         print(current_user.ban_user(mongo_client, "63619fb5b63ff822f52c95b2")[1])
         print(current_user.accept_user_changes(mongo_client, "6361ac3ed731370b853b875a")[1])
+        print(current_user.get_all_users_with_shashed_changes(mongo_client))
     else:
         current_user = User(user)
         user_current_id = str(current_user.user._id)
