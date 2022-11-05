@@ -160,6 +160,10 @@ class Librarian(User):
         query = {"_id":  ObjectId(_id)}
         return users.find_one(query, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1})
 
+    def get_all_users_with_shashed_changes(self, mongo_client: pymongo.MongoClient):
+        users = get_user_column(mongo_client)
+        return list(users.find({"approved_by_librarian": False}, {"_id": 1}))
+
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author: str, length: int, year: int, image: str,
                  copies_available: int, genre: str, description: str, count_borrowed: int) -> Tuple[bool, str]:
         if not book_exists(mongo_client, title):
