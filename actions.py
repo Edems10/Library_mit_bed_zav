@@ -134,7 +134,7 @@ class Librarian(User):
             user = get_user_column(mongo_client)
             user_changes = []
             try:
-                user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id":0,"stashed_changes": 1}))
+                user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
                 if user_changes is not None:
                     get_user_column(mongo_client).update_one({"_id": ObjectId(_id)}, {
                         "$set": {"first_name": user_changes[0]["stashed_changes"]["first_name"],
@@ -160,7 +160,7 @@ class Librarian(User):
         query = {"_id":  ObjectId(_id)}
         return users.find_one(query, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1})
 
-    def get_all_users_with_shashed_changes(self, mongo_client: pymongo.MongoClient):
+    def get_all_users_with_stashed_changes(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
         return list(users.find({"approved_by_librarian": False}, {"_id": 1}))
 
@@ -171,42 +171,45 @@ class Librarian(User):
                             copies_available=copies_available, genre=genre,
                             description=description, count_borrowed=count_borrowed)
             get_book_column(mongo_client).insert_one(new_book.to_dict())
-            return True, "Book: " + title + "has been added to library"
+            return True, "Book: " + title + " has been added to library"
         else:
-            return False, "Book: " + title + "already exists in library"
+            return False, "Book: " + title + " already exists in library"
 
     # can only be done if no books borrowed
-    def edit_book(self, mongo_client: pymongo.MongoClient, book_name, title: str, author: str, length: int, year: int,
+    def edit_book(self, mongo_client: pymongo.MongoClient, _id, title: str, author: str, length: int, year: int,
                   image: str,
                   copies_available: int, genre: str, description: str, count_borrowed: int) -> Tuple[bool, str]:
         books = get_book_column(mongo_client)
-        if book_exists(mongo_client, book_name):
-            query = {"$and": [{"title": title}, {"count_borrowed": 0}]}
-            result = books.find_one(query)
-            if result is not None:
-                new_values = {"$set": {"title": title, "author": author, "length": length, "year": year, "image": image,
-                                       "copies_available": copies_available, "genre": genre, "description": description,
-                                       "count_borrowed": count_borrowed}}
-                get_book_column(mongo_client).update_one(query, new_values)
-                return True, "Book: " + book_name + " has been modified!"
+        if book_exists_id(mongo_client, _id):
+            if not book_exists(mongo_client, title):
+                query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed": 0}]}
+                result = books.find_one(query)
+                if result is not None:
+                    new_values = {"$set": {"title": title, "author": author, "length": length, "year": year, "image": image,
+                                           "copies_available": copies_available, "genre": genre, "description": description,
+                                           "count_borrowed": count_borrowed}}
+                    get_book_column(mongo_client).update_one(query, new_values)
+                    return True, "Book with ID: " + str(_id) + " has been modified!"
+                else:
+                    return False, "Book with ID: " + str(_id) + " is currently borrowed!"
             else:
-                return False, "Book: " + book_name + " is currently borrowed!"
+                return False, "There is already a book with the title: " + str(title)
         else:
-            return False, "There is no book with the name: " + book_name
+            return False, "There is no book with the ID: " + str(_id)
 
     # can only be done if no books borrowed
-    def delete_book(self, mongo_client: pymongo.MongoClient, title) -> Tuple[bool, str]:
+    def delete_book(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
         books = get_book_column(mongo_client)
-        if book_exists(mongo_client, title):
-            query = {"$and": [{"title": title}, {"count_borrowed": 0}]}
+        if book_exists_id(mongo_client, _id):
+            query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed": 0}]}
             result = books.find_one(query)
             if result is not None:
                 books.delete_one(query)
-                return True, "Book: " + title + " has been deleted successfully!"
+                return True, "Book with ID: " + str(_id) + " has been deleted successfully!"
             else:
-                return False, "Book: " + title + "  is currently borrowed!"
+                return False, "Book with ID: " + str(_id) + "  is currently borrowed!"
         else:
-            return False, "There is no book with the name: " + title
+            return False, "There is no book with the ID: " + str(_id)
 
     def find_book(self, mongo_client: pymongo.MongoClient, title):
         books = get_book_column(mongo_client)
@@ -248,6 +251,13 @@ def book_exists(mongo_client: pymongo.MongoClient, book_name):
         return False
 
 
+def book_exists_id(mongo_client: pymongo.MongoClient, id):
+    books = get_book_column(mongo_client)
+    cursor = books.find({"_id": ObjectId(id)})
+    for _ in cursor:
+        return True
+    return False
+
 def book_exists_return(mongo_client: pymongo.MongoClient, book_name):
     books = get_book_column(mongo_client)
     query = {"title": book_name}
@@ -260,7 +270,7 @@ def get_user_column(mongo_client: pymongo.MongoClient):
 
 def user_exists_id(mongo_client: pymongo.MongoClient, id):
     users = get_user_column(mongo_client)
-    cursor = users.find({"_id" : ObjectId(id)})
+    cursor = users.find({"_id": ObjectId(id)})
     for _ in cursor:
         return True
     return False
