@@ -21,14 +21,14 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-login_result = login(mongo_client,"login_lib","lib_12345")
+#login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
 create_account(mongo_client, "ssdafirst_name", "surname", 123456789, "address", "sasddalogin", "password")
 create_account(mongo_client, "aaa", "surname", 12345672313, "address", "Dom", "password")
 
-#login_result = login(mongo_client, "sasddalogin", "password")
+login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
 
 if login_result[0]:
@@ -53,12 +53,12 @@ if login_result[0]:
     else:
         current_user = User(user)
         user_current_id = str(current_user.user._id)
-        print(user_current_id)
         print(current_user.user_find_book(mongo_client, "Gladiator"))
         print(current_user.edit_user(mongo_client, user_current_id, "test_of_changes 2", "data 2", "CZ")[1])
         print(current_user.borrow_book(mongo_client, user_current_id, "How to train a dragon")[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
         print(current_user.return_book(mongo_client, user_current_id, "How to train a dragon")[1])
+        autocomplete_book(mongo_client,"tor","title",Text.Suffix)
 
 else:
     print(login_result[1])

@@ -15,6 +15,9 @@ class Roles(Enum):
     Librarian = 1
     User = 2
 
+class Text(Enum):
+    Suffix = 1
+    Prefix = 2
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass

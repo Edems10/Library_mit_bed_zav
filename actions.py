@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Tuple, Union
 from datetime import datetime
 from bson.objectid import ObjectId
-from datamodels import Book, Person, Roles
+from datamodels import Book, Person, Roles, Text
 import pymongo
 import bcrypt
 import re
@@ -354,3 +354,30 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union
             return False, "Password must have at least 6 characters"
     else:
         return False, "Incorrect username or password"
+
+# works for books as of now
+# TODO do infix like dude proc chce vsechno....
+# TODO it returns everything right now
+def autocomplete_book(mongo_client: pymongo.MongoClient,query:str,path:str,text_part:Text):
+    # fuzzy is just mistakes mby undo in final version might work without it
+    if text_part == Text.Prefix:
+        index =  "autocomplete_book_leftEdge"
+    else:
+        index =  "autosearch_book_rightEdge"    
+    result = get_book_column(mongo_client).aggregate([ { 
+    "$search": {
+        "index": index, 
+        "autocomplete": { 
+            "query": query,
+            "path": path,
+            "fuzzy": { 
+                "maxEdits": 2, 
+                "prefixLength": 3 
+            } 
+         } 
+    } 
+    }])
+    # print results
+    for i in result:
+        print(i)
+    return result
