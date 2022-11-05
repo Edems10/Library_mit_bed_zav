@@ -15,9 +15,17 @@ class Roles(Enum):
     Librarian = 1
     User = 2
 
-class Text(Enum):
-    Suffix = 1
-    Prefix = 2
+class Autocomplete_options_book(Enum):
+    title = "title"
+    author = "author"
+    year = "year"
+
+class Autocomplete_options_user(Enum):
+    first_name = "first_name"
+    surname = "surname"
+    address = "address"
+    pid = "pid"
+
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass

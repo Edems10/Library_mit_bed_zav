@@ -6,7 +6,7 @@ from actions import *
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from datamodels import Person, Roles
+from datamodels import Autocomplete_options_book, Autocomplete_options_user, Person, Roles
 
 API_KEY = os.path.join(os.path.dirname(__file__), 'api_key.env')
 
@@ -21,14 +21,14 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-login_result = login(mongo_client,"login_lib","lib_12345")
+#login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
 create_account(mongo_client, "ssdafirst_name", "surname", 123456789, "address", "sasddalogin", "password")
 create_account(mongo_client, "aaa", "surname", 12345672313, "address", "Dom", "password")
 
-#login_result = login(mongo_client, "sasddalogin", "password")
+login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
 
 if login_result[0]:
@@ -61,7 +61,8 @@ if login_result[0]:
         print(current_user.borrow_book(mongo_client, user_current_id, "How to train a dragon 32")[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
         #print(current_user.return_book(mongo_client, user_current_id, "How to train a dragon")[1])
-        autocomplete_book(mongo_client,"tor","title",Text.Suffix)
+        print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
+        print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name,3))
 
 else:
     print(login_result[1])

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Tuple, Union
 from datetime import datetime
 from bson.objectid import ObjectId
-from datamodels import Book, Person, Roles, Text
+from datamodels import Autocomplete_options_book, Autocomplete_options_user, Book, Person, Roles 
 import pymongo
 import bcrypt
 import re
@@ -385,29 +385,87 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union
     else:
         return False, "Incorrect username or password"
 
-# works for books as of now
-# TODO do infix like dude proc chce vsechno....
-# TODO it returns everything right now
-def autocomplete_book(mongo_client: pymongo.MongoClient,query:str,path:str,text_part:Text):
-    # fuzzy is just mistakes mby undo in final version might work without it
-    if text_part == Text.Prefix:
-        index =  "autocomplete_book_leftEdge"
-    else:
-        index =  "autosearch_book_rightEdge"    
-    result = get_book_column(mongo_client).aggregate([ { 
+def autocomplete_book(mongo_client: pymongo.MongoClient,query:str,
+                      path:Autocomplete_options_book,limit=10)->Tuple[bool,list[Book]]:
+    """ retuns list of autocompleted query based on what we have in DB
+    Args:
+        mongo_client (pymongo.MongoClient): mongo client
+        query (str): what are you looking for in text
+        path (Autocomplete_options_book): |title|author|year|
+        limit (int, optional): how many results are you looking for. Defaults to 10.
+
+    Returns:
+        dict[specific_result]: list of results can be None
+    """
+    if len(query)<3 or len(query)>15:
+        return False,"No result - Query too short"
+    results = get_book_column(mongo_client).aggregate([ { 
     "$search": {
-        "index": index, 
+        "index": "autocomplete_book_leftEdge", 
         "autocomplete": { 
             "query": query,
-            "path": path,
-            "fuzzy": { 
+            "path": path.name
+            ,"fuzzy": { 
                 "maxEdits": 2, 
                 "prefixLength": 3 
             } 
          } 
     } 
+    },{
+    "$limit": limit
     }])
-    # print results
-    for i in result:
-        print(i)
-    return result
+    
+    book_list = []
+    for book in results:
+        cur_book = Book(title=book['title'], author=book['author'], length=book['length'],
+                    year=book['year'], image=book['image'],
+                    copies_available=book['copies_available'], genre=book['genre'],
+                    description=book['description'], count_borrowed=book['count_borrowed'])
+        book_list.append(cur_book)
+    if not book_list:
+        return False, "No result - try different query"
+    else:
+        return True,book_list
+
+def autocomplete_user(mongo_client: pymongo.MongoClient,query:str,
+                      path:Autocomplete_options_user,limit=10)->Tuple[bool,list[User]]:
+    """ retuns list of autocompleted query based on what we have in DB
+    Args:
+        mongo_client (pymongo.MongoClient): mongo client
+        query (str): what are you looking for in user
+        path (Autocomplete_options_user): |first_name|surname|address|pid|
+        limit (int, optional): how many results are you looking for. Defaults to 10.
+
+    Returns:
+        dict[specific_result]: list of results can be None
+    """
+    
+    if len(query)<3 or len(query)>15:
+        return False,"No result - Query too short"
+    results = get_user_column(mongo_client).aggregate([ { 
+    "$search": {
+        "index": "user_prefix", 
+        "autocomplete": { 
+            "query": query,
+            "path": path.name
+            ,"fuzzy": { 
+                "maxEdits": 2, 
+                "prefixLength": 3 
+            } 
+         } 
+    } 
+    },{
+    "$limit": limit
+    }])
+    user_list = []
+    for user in results:
+        cur_user = Person(_id=user['_id'],first_name=user['first_name'], surname=user['surname'],
+                          pid=user['pid'], address=user['address'],
+                              login_name=user['login_name'], password=user['password'],
+                              role=user['role'])
+        user_list.append(cur_user)
+    if not user_list:
+        return False, "No result - try different query"
+    else:
+        return True,user_list
+
