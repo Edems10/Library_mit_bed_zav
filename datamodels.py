@@ -59,6 +59,7 @@ class Person:
     count_borrowed_books: int = 0
     stashed_changes = Optional[dict]
     banned: bool = False
+    verified: bool = False
     approved_by_librarian: bool = False
     role: Roles = Roles.User
     created_at: datetime = field(metadata={

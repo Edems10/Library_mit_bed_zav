@@ -52,14 +52,15 @@ if login_result[0]:
         print(current_user.ban_user(mongo_client, "63619fb5b63ff822f52c95b2")[1])
         print(current_user.accept_user_changes(mongo_client, "6361ac3ed731370b853b875a")[1])
         print(current_user.get_all_users_with_stashed_changes(mongo_client))
+        print(current_user.verified_user(mongo_client, "6361ac3ed731370b853b875a")[1])
     else:
         current_user = User(user)
         user_current_id = str(current_user.user._id)
         print(current_user.user_find_book(mongo_client, "Gladiator"))
         print(current_user.edit_user(mongo_client, user_current_id, "test_of_changes 2", "data 2", "CZ")[1])
-        print(current_user.borrow_book(mongo_client, user_current_id, "How to train a dragon")[1])
+        print(current_user.borrow_book(mongo_client, user_current_id, "How to train a dragon 32")[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        print(current_user.return_book(mongo_client, user_current_id, "How to train a dragon")[1])
+        #print(current_user.return_book(mongo_client, user_current_id, "How to train a dragon")[1])
         autocomplete_book(mongo_client,"tor","title",Text.Suffix)
 
 else:

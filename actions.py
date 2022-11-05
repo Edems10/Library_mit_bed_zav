@@ -28,6 +28,10 @@ class User:
         # TODO there has to be a function that informs the user he is banned
         # self.user = None
         # FIXME for now i commented the part where we set the user as  none if he is banned
+        #TODO podobně jako u banned, (toto se musi jeste vyresit)
+        #if person.verified == False:
+        #    self.user = None
+
 
     # check if librarian is doing this coz then no approval needed
     # check limit=6 and time=6 days
@@ -45,7 +49,9 @@ class User:
                     if title not in actual_borrowed_books:
                         if users_result["count_borrowed_books"] < 6:
                             get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                     {"$push":  {"borrowed_books": {"title": title,
+                                                                     {"$push":  {"borrowed_books": {
+                                                                      "_id": ObjectId(_id),
+                                                                      "title": title,
                                                                       "author": result["author"],
                                                                       "length": result["length"],
                                                                       "year": result["year"], "image": result["image"],
@@ -128,6 +134,16 @@ class Librarian(User):
             return True, "User: " + str(_id) + " has been banned!"
         else:
             return False, "There is no user with _id: " + str(_id)
+
+    def verified_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
+        if user_exists_id(mongo_client, _id):
+            query = {"_id": ObjectId(_id)}
+            new_values = {"$set": {"verified": True}}
+            get_user_column(mongo_client).update_one(query, new_values)
+            return True, "User: " + str(_id) + " has been verified!"
+        else:
+            return False, "There is no user with _id: " + str(_id)
+
 
     def accept_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
         if user_exists_id(mongo_client, _id):
