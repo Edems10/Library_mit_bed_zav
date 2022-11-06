@@ -25,11 +25,12 @@ mongo_client = get_mongo_client()
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
-create_account(mongo_client, "ssdafirst_name", "surname", 123456789, "address", "sasddalogin", "password")
-create_account(mongo_client, "aaa", "surname", 12345672313, "address", "Dom", "password")
+#create_account(mongo_client, "ssdafirst_name", "surname", 123456789, "address", "sasddalogin", "password")
+create_account(mongo_client, "aaaa", "surnamea", 123456723132, "addresss", "Domi", "password")
+#create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom", "password")
 
-login_result = login(mongo_client, "sasddalogin", "password")
-#login_result = login(mongo_client,"Dom","password")
+#login_result = login(mongo_client, "sasddalogin", "password")
+login_result = login(mongo_client,"Domi","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -55,12 +56,12 @@ if login_result[0]:
         print(current_user.verified_user(mongo_client, "6361ac3ed731370b853b875a")[1])
     else:
         current_user = User(user)
-        user_current_id = str(current_user.user._id)
+        user_current_id = str(current_user.user.id)
         print(current_user.user_find_book(mongo_client, "Gladiator"))
         print(current_user.edit_user(mongo_client, user_current_id, "test_of_changes 2", "data 2", "CZ")[1])
         print(current_user.borrow_book(mongo_client, user_current_id, "How to train a dragon 32")[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        #print(current_user.return_book(mongo_client, user_current_id, "How to train a dragon")[1])
+        print(current_user.return_book(mongo_client, user_current_id, "How to train a dragon 3")[1])
         print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
         print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name,3))
 

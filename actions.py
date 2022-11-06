@@ -59,6 +59,17 @@ class User:
                                                                       "description": result["description"],
                                                                       "borrowed_at": time.time()}}})
                             get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                     {"$push": {"history_of_books": {
+                                                                         "_id": ObjectId(_id),
+                                                                         "title": title,
+                                                                         "author": result["author"],
+                                                                         "length": result["length"],
+                                                                         "year": result["year"],
+                                                                         "image": result["image"],
+                                                                         "genre": result["genre"],
+                                                                         "description": result["description"],
+                                                                         "borrowed_at": time.time()}}})
+                            get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                                      {'$inc': {"count_borrowed_books": 1}})
                             get_book_column(mongo_client).update_one({"title": title},
                                                                      {'$inc': {"count_borrowed": 1}})
@@ -78,9 +89,15 @@ class User:
         if user_exists_id(mongo_client, _id):
             if book_exists(mongo_client, title):
                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, _id)
+                users = get_user_column(mongo_client)
+                query_user = {"_id": ObjectId(_id)}
+                users_result = users.find_one(query_user)
                 if title in actual_borrowed_books:
                     get_user_column(mongo_client).update_one({"_id":  ObjectId(_id)},
                                                              {"$pull": {"borrowed_books": {"title": title}}})
+                    print(users_result["borrowed_books"][0]["title"])
+                    #get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                    #                                         {"$push": {"history_of_books.$[]": {"returned_at": time.time()}}})
                     get_user_column(mongo_client).update_one({"_id":  ObjectId(_id)},
                                                              {'$inc': {"count_borrowed_books": -1}})
                     get_book_column(mongo_client).update_one({"title": title},
