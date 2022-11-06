@@ -89,13 +89,9 @@ class User:
         if user_exists_id(mongo_client, _id):
             if book_exists(mongo_client, title):
                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, _id)
-                users = get_user_column(mongo_client)
-                query_user = {"_id": ObjectId(_id)}
-                users_result = users.find_one(query_user)
                 if title in actual_borrowed_books:
                     get_user_column(mongo_client).update_one({"_id":  ObjectId(_id)},
                                                              {"$pull": {"borrowed_books": {"title": title}}})
-                    print(users_result["borrowed_books"][0]["title"])
                     #get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
                     #                                         {"$push": {"history_of_books.$[]": {"returned_at": time.time()}}})
                     get_user_column(mongo_client).update_one({"_id":  ObjectId(_id)},
@@ -145,10 +141,29 @@ class Librarian(User):
 
     def ban_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
         if user_exists_id(mongo_client, _id):
-            query = {"_id":  ObjectId(_id)}
-            new_values = {"$set": {"banned": True}}
-            get_user_column(mongo_client).update_one(query, new_values)
-            return True, "User: " + str(_id) + " has been banned!"
+            user = get_user_column(mongo_client)
+            not_banned_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"banned": False}]})
+            if not_banned_user is not None:
+                query = {"_id":  ObjectId(_id)}
+                new_values = {"$set": {"banned": True}}
+                get_user_column(mongo_client).update_one(query, new_values)
+                return True, "User: " + str(_id) + " has been banned!"
+            else:
+                return False, "User: " + str(_id) + " is already banned!"
+        else:
+            return False, "There is no user with _id: " + str(_id)
+
+    def unban_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
+        if user_exists_id(mongo_client, _id):
+            user = get_user_column(mongo_client)
+            banned_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"banned": True}]})
+            if banned_user is not None:
+                query = {"_id": ObjectId(_id)}
+                new_values = {"$set": {"banned": False}}
+                get_user_column(mongo_client).update_one(query, new_values)
+                return True, "User: " + str(_id) + " is no longer banned!"
+            else:
+                return False, "User: " + str(_id) + " is already unbanned!"
         else:
             return False, "There is no user with _id: " + str(_id)
 
@@ -160,7 +175,6 @@ class Librarian(User):
             return True, "User: " + str(_id) + " has been verified!"
         else:
             return False, "There is no user with _id: " + str(_id)
-
 
     def accept_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
         if user_exists_id(mongo_client, _id):
@@ -177,7 +191,24 @@ class Librarian(User):
                                                              {"$set": {'approved_by_librarian': True}})
                     get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                              {"$unset": {"stashed_changes": {}}})
-                    return True, "Admin has accepted changes to the profile data of user: " + str(_id)
+                    return True, "Admin has accepted the changes to the profile data of user: " + str(_id)
+            except KeyError:
+                return False, "User: " + str(_id) + " has no changes to approve"
+        else:
+            return False, "There is no user with _id: " + str(_id)
+
+    def decline_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
+        if user_exists_id(mongo_client, _id):
+            user = get_user_column(mongo_client)
+            user_changes = []
+            try:
+                user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
+                if user_changes is not None:
+                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                             {"$set": {'approved_by_librarian': True}})
+                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                             {"$unset": {"stashed_changes": {}}})
+                    return True, "Admin has declines the changes to the profile data of user: " + str(_id)
             except KeyError:
                 return False, "User: " + str(_id) + " has no changes to approve"
         else:
