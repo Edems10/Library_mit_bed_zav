@@ -58,6 +58,7 @@ if login_result[0]:
         #print(current_user.unverified_user(mongo_client, "6367e8644a2ed21f9afc5e8e")[1])
         print(user_is_not_banned(mongo_client, "6367e8644a2ed21f9afc5e8e"))
         print(user_is_verified(mongo_client, "6367e8644a2ed21f9afc5e8e"))
+        print(user_is_approved_by_librarian(mongo_client, "6367e8644a2ed21f9afc5e8e"))
 
     else:
         current_user = User(user)
