@@ -1,3 +1,4 @@
+import codecs
 from dataclasses import dataclass
 from typing import Tuple, Union
 from datetime import datetime
@@ -7,6 +8,7 @@ import pymongo
 import bcrypt
 import re
 import time
+import os
 
 # DATABASE NAME
 DATABASE_NAME = 'library'
@@ -455,15 +457,17 @@ def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: 
         # password needs to be saved in bytes
         # byte_password = bytes(password,'UTF-8')
         if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
-            new_user = Person(first_name=first_name, surname=surname, pid=pid, address=address,
+            generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
+            new_user = Person(_id=generated_id, first_name=first_name,
+                              surname=surname, pid=pid, address=address,
                               login_name=login, password=password, role=Roles.User.name)
             new_user.hash_password()
             get_user_column(mongo_client).insert_one(new_user.to_dict())
-            return True, "Account has been created successfully"
+            return True, "Account with ID: " + str(generated_id) + " has been created successfully"
         else:
             return False, "Password must have at least 6 characters!"
     else:
-        return False, "This account already exists"
+        return False, "Acount: " + str(login) + " already exists"
 
 
 def hash_password(password, salt):
