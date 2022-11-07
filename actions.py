@@ -2,6 +2,8 @@ import codecs
 from dataclasses import dataclass
 from typing import Tuple, Union
 from datetime import datetime
+
+import pandas as pd
 from bson.objectid import ObjectId
 from datamodels import Autocomplete_options_book, Autocomplete_options_user, Book, Person, Roles 
 import pymongo
@@ -431,6 +433,28 @@ def user_exists_return(mongo_client: pymongo.MongoClient, user_name):
     users = get_user_column(mongo_client)
     query = {"login_name": user_name}
     return users.find_one(query)
+
+def export_to_csv(mongo_client: pymongo.MongoClient):
+    db = mongo_client.library
+    collection = db.book
+    books = pd.DataFrame(list(collection.find()))
+    books.to_csv('books.csv', sep=";")
+
+def import_from_csv(mongo_client: pymongo.MongoClient):
+    db = mongo_client.library
+    collection = db.book
+    data = pd.DataFrame(pd.read_csv("books.csv", sep=";",  header=0))
+    data = data.to_dict(orient="records")
+    for x in range(len(data)):
+        new_book = Book(_id=ObjectId(data[x]["_id"]), title=data[x]["title"], author=data[x]["author"],
+                        length=data[x]["length"], year=data[x]["year"], image=data[x]["image"],
+                        copies_available=data[x]["copies_available"], genre=data[x]["genre"],
+                        description=data[x]["description"], count_borrowed=data[x]["count_borrowed"])
+        if not book_exists(mongo_client, data[x]["title"]):
+            collection.insert_one(new_book.to_dict())
+            print("Book: " + data[x]["title"] + " has been uploaded from csv file")
+        else:
+            print("Book: " + data[x]["title"] + " is already uploaded in the library")
 
 
 def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int, address: str, login: str,
