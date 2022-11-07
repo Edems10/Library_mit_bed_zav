@@ -21,7 +21,7 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-#login_result = login(mongo_client,"login_lib","lib_12345")
+login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -30,7 +30,7 @@ create_account(mongo_client, "aaaa", "surnamea", 123456723132, "addresss", "Domi
 create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom", "password")
 
 #login_result = login(mongo_client, "sasddalogin", "password")
-login_result = login(mongo_client,"Dom","password")
+#login_result = login(mongo_client,"Dom","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -41,8 +41,8 @@ if login_result[0]:
         print(current_user.find_book(mongo_client, "Gladiator"))
         print(current_user.find_all_books(mongo_client))
         print(current_user.delete_book(mongo_client,"63663a15f36f16fe5f225ddd")[1])
-        print(current_user.edit_book(mongo_client, "6360246a68a02fa27446981d", "Gladiator", "me", 231, 2003, "dragon", 2, "fantasy",
-                                     "description 2", 0)[1])
+        print(current_user.edit_book(mongo_client, "6362f102af7f10a4c3ab85f4", "How to train a dragon 3", "me", 231, 2003, "dragon", 2, "fantasy",
+                                     "description 2")[1])
         print(current_user.find_all_books(mongo_client))
         print(current_user.get_all_users(mongo_client))
         print(current_user.find_user(mongo_client, "6361ac3ed731370b853b875a"))
@@ -65,9 +65,9 @@ if login_result[0]:
         user_current_id = current_user.user.id
         print(current_user.user_find_book(mongo_client, "Gladiator"))
         #print(current_user.edit_user(mongo_client, "test_of_changes", "data", "CZ")[1])
-        print(current_user.borrow_book(mongo_client, "Gladiator")[1])
+        print(current_user.borrow_book(mongo_client, "How to train a dragon 4")[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        print(current_user.return_book(mongo_client, "Gladiator")[1])
+        print(current_user.return_book(mongo_client, "How to train a dragon")[1])
         print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
         print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
 

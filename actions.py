@@ -298,7 +298,7 @@ class Librarian(User):
     # can only be done if no books borrowed
     def edit_book(self, mongo_client: pymongo.MongoClient, _id, title: str, author: str, length: int, year: int,
                   image: str,
-                  copies_available: int, genre: str, description: str, count_borrowed: int) -> Tuple[bool, str]:
+                  copies_available: int, genre: str, description: str) -> Tuple[bool, str]:
         books = get_book_column(mongo_client)
         if book_exists_id(mongo_client, _id):
             if not book_exists(mongo_client, title):
@@ -306,8 +306,7 @@ class Librarian(User):
                 result = books.find_one(query)
                 if result is not None:
                     new_values = {"$set": {"title": title, "author": author, "length": length, "year": year, "image": image,
-                                           "copies_available": copies_available, "genre": genre, "description": description,
-                                           "count_borrowed": count_borrowed}}
+                                           "copies_available": copies_available, "genre": genre, "description": description}}
                     get_book_column(mongo_client).update_one(query, new_values)
                     return True, "Book with ID: " + str(_id) + " has been modified!"
                 else:
