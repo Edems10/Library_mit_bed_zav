@@ -332,6 +332,20 @@ class Librarian(User):
         else:
             return False, "There is no book with the ID: " + str(_id)
 
+    # same as in books, if user has no books borrowed
+    def delete_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
+        users = get_user_column(mongo_client)
+        if user_exists_id(mongo_client, _id):
+            query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed_books": 0}]}
+            result = users.find_one(query)
+            if result is not None:
+                users.delete_one(query)
+                return True, "User with ID: " + str(_id) + " has been deleted successfully!"
+            else:
+                return False, "User with ID: " + str(_id) + " has currently borrowed some books!"
+        else:
+            return False, "There is no user with the ID: " + str(_id)
+
     def find_book(self, mongo_client: pymongo.MongoClient, title):
         books = get_book_column(mongo_client)
         query = {"title": title}
