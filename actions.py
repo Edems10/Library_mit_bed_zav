@@ -448,28 +448,36 @@ def user_exists_return(mongo_client: pymongo.MongoClient, user_name):
     query = {"login_name": user_name}
     return users.find_one(query)
 
-def export_to_csv(mongo_client: pymongo.MongoClient):
+def export_to_csv(mongo_client: pymongo.MongoClient, namefile):
     db = mongo_client.library
     collection = db.book
     books = pd.DataFrame(list(collection.find()))
-    books.to_csv('books.csv', sep=";")
+    books.to_csv(namefile + ".csv", sep=";")
 
-def import_from_csv(mongo_client: pymongo.MongoClient):
+def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
     db = mongo_client.library
     collection = db.book
-    data = pd.DataFrame(pd.read_csv("books.csv", sep=";",  header=0))
-    data = data.to_dict(orient="records")
-    for x in range(len(data)):
-        new_book = Book(_id=ObjectId(data[x]["_id"]), title=data[x]["title"], author=data[x]["author"],
-                        length=data[x]["length"], year=data[x]["year"], image=data[x]["image"],
-                        copies_available=data[x]["copies_available"], genre=data[x]["genre"],
-                        description=data[x]["description"], count_borrowed=data[x]["count_borrowed"])
-        if not book_exists(mongo_client, data[x]["title"]):
-            collection.insert_one(new_book.to_dict())
-            print("Book: " + data[x]["title"] + " has been uploaded from csv file")
-        else:
-            print("Book: " + data[x]["title"] + " is already uploaded in the library")
-
+    try:
+        data = pd.DataFrame(pd.read_csv(namefile + ".csv", sep=";",  header=0))
+        data = data.to_dict(orient="records")
+        for x in range(len(data)):
+            new_book = Book(_id=ObjectId(data[x]["_id"]), title=data[x]["title"], author=data[x]["author"],
+                            length=data[x]["length"], year=data[x]["year"], image=data[x]["image"],
+                            copies_available=data[x]["copies_available"], genre=data[x]["genre"],
+                            description=data[x]["description"], count_borrowed=data[x]["count_borrowed"])
+            if not book_exists(mongo_client, data[x]["title"]):
+                collection.insert_one(new_book.to_dict())
+                print("Book: " + data[x]["title"] + " has been uploaded from csv file")
+            else:
+                query = {"title": data[x]["title"]}
+                new_values = {"$set": {"title": data[x]["title"], "author": data[x]["author"], "length": data[x]["length"],
+                                       "year": data[x]["year"], "image": data[x]["image"],
+                                       "copies_available": data[x]["copies_available"],
+                                       "genre": data[x]["genre"], "description": data[x]["description"]}}
+                get_book_column(mongo_client).update_one(query, new_values)
+                print("Book: " + data[x]["title"] + " has been updated from csv file")
+    except FileNotFoundError:
+        print("File: " + namefile + ".csv was not found")
 
 def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int, address: str, login: str,
                    password: str) -> Tuple[bool, str]:
