@@ -31,7 +31,7 @@ class Autocomplete_options_user(Enum):
 @dataclass
 class Book:
     # id is optional because it is added by mongodb at the time of creation
-    # _id: Optional[str]
+    _id: Optional[str]
     title: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     author: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     length: int
