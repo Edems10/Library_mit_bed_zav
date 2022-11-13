@@ -36,7 +36,6 @@ class User:
         #if person.verified == False:
         #    self.user = None
 
-
     # check if librarian is doing this coz then no approval needed
     # check limit=6 and time=6 days
     def borrow_book(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -466,24 +465,29 @@ def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
         data = pd.DataFrame(pd.read_csv(namefile + ".csv", sep=";",  header=0))
         data = data.to_dict(orient="records")
         for x in range(len(data)):
-            generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
-            new_book = Book(_id=generated_id,title=data[x]["title"], author=data[x]["author"],
-                            length=data[x]["length"], year=data[x]["year"], image=data[x]["image"],
-                            copies_available=data[x]["copies_available"], genre=data[x]["genre"],
-                            description=data[x]["description"], count_borrowed=data[x]["count_borrowed"])
-            if not book_exists(mongo_client, data[x]["title"]):
-                collection.insert_one(new_book.to_dict())
-                print("Book: " + data[x]["title"] + " has been uploaded from csv file")
+            if ObjectId.is_valid(data[x]["_id"]):
+                new_book = Book(_id=ObjectId(data[x]["_id"]), title=data[x]["title"], author=data[x]["author"],
+                                length=data[x]["length"], year=data[x]["year"], image=data[x]["image"],
+                                copies_available=data[x]["copies_available"], genre=data[x]["genre"],
+                                description=data[x]["description"], count_borrowed=data[x]["count_borrowed"])
+                if not book_exists_id(mongo_client, data[x]["_id"]):
+                    collection.insert_one(new_book.to_dict())
+                    print("Book: " + data[x]["title"] + ", ID: " + data[x]["_id"] + " has been uploaded from csv file")
+                else:
+                    query = {"_id": ObjectId(data[x]["_id"])}
+                    new_values = {"$set": {"_id": ObjectId(data[x]["_id"]), "title": data[x]["title"],
+                                           "author": data[x]["author"], "length": data[x]["length"],
+                                           "year": data[x]["year"], "image": data[x]["image"],
+                                           "copies_available": data[x]["copies_available"],
+                                           "genre": data[x]["genre"], "description": data[x]["description"]}}
+                    get_book_column(mongo_client).update_one(query, new_values)
+                    print("Book: " + data[x]["title"] + ", ID: " + data[x]["_id"] + " has been updated from csv file")
             else:
-                query = {"title": data[x]["title"]}
-                new_values = {"$set": {"title": data[x]["title"], "author": data[x]["author"], "length": data[x]["length"],
-                                       "year": data[x]["year"], "image": data[x]["image"],
-                                       "copies_available": data[x]["copies_available"],
-                                       "genre": data[x]["genre"], "description": data[x]["description"]}}
-                get_book_column(mongo_client).update_one(query, new_values)
-                print("Book: " + data[x]["title"] + " has been updated from csv file")
+                print("ID: " + data[x]["_id"] + " is not valid."
+                      " ID Must be a single string of 12 bytes or a string of 24 hex characters")
     except FileNotFoundError:
         print("File: " + namefile + ".csv was not found")
+
 
 def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int, address: str, login: str,
                    password: str) -> Tuple[bool, str]:
@@ -503,8 +507,7 @@ def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: 
         
         False - The username already exist
     """
-
-    if (not user_exists(mongo_client, login)):
+    if not user_exists(mongo_client, login):
         # password needs to be saved in bytes
         # byte_password = bytes(password,'UTF-8')
         if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
@@ -528,7 +531,7 @@ def hash_password(password, salt):
 def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union[
          Tuple[bool, Person], Tuple[bool, str], bool]:
     user_column = get_user_column(mongo_client)
-    if (user_exists(mongo_client, login)):
+    if user_exists(mongo_client, login):
         user_exists_return(mongo_client, login)
 
     query = {"login_name": login}
@@ -537,7 +540,6 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union
     if user is not None:
         byte_password = bytes(password, 'UTF-8')
         salt = user['salt']
-        id = user['_id']
         if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
             if hash_password(password, salt) == user['password']:
                 if user_is_not_banned(mongo_client, user["_id"]):

@@ -21,7 +21,7 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-#login_result = login(mongo_client,"login_lib","lib_12345")
+login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -30,7 +30,7 @@ create_account(mongo_client, "aaaa", "surnamea", 123456723132, "addresss", "Domi
 create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom", "password")
 
 #login_result = login(mongo_client, "sasddalogin", "password")
-login_result = login(mongo_client,"Dom","password")
+#login_result = login(mongo_client,"Dom","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -59,7 +59,7 @@ if login_result[0]:
         print(user_is_not_banned(mongo_client, "862b3856cd1c7bd15797b58a"))
         print(user_is_verified(mongo_client, "06a6e72a01f0ffef240466ca"))
         print(user_is_approved_by_librarian(mongo_client, "862b3856cd1c7bd15797b58a"))
-        export_to_csv(mongo_client, "books")
+        #export_to_csv(mongo_client, "books")
         import_from_csv(mongo_client, "books")
 
     else:
