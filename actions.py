@@ -456,6 +456,8 @@ def export_to_csv(mongo_client: pymongo.MongoClient, namefile):
     db = mongo_client.library
     collection = db.book
     books = pd.DataFrame(list(collection.find()))
+    books = books.drop(['count_borrowed'], axis=1)
+    print(books)
     books.to_csv(namefile + ".csv", sep=";")
 
 def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
@@ -469,7 +471,7 @@ def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
                 new_book = Book(_id=ObjectId(data[x]["_id"]), title=data[x]["title"], author=data[x]["author"],
                                 length=data[x]["length"], year=data[x]["year"], image=data[x]["image"],
                                 copies_available=data[x]["copies_available"], genre=data[x]["genre"],
-                                description=data[x]["description"], count_borrowed=data[x]["count_borrowed"])
+                                description=data[x]["description"], count_borrowed=0)
                 if not book_exists_id(mongo_client, data[x]["_id"]):
                     collection.insert_one(new_book.to_dict())
                     print("Book: " + data[x]["title"] + ", ID: " + data[x]["_id"] + " has been uploaded from csv file")
@@ -481,7 +483,8 @@ def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
                                            "copies_available": data[x]["copies_available"],
                                            "genre": data[x]["genre"], "description": data[x]["description"]}}
                     get_book_column(mongo_client).update_one(query, new_values)
-                    print("Book: " + data[x]["title"] + ", ID: " + data[x]["_id"] + " has been updated from csv file")
+                    print("Book: " + data[x]["title"] + ", ID: " + data[x]["_id"]
+                          + " has been added to library from csv file")
             else:
                 print("ID: " + data[x]["_id"] + " is not valid."
                       " ID Must be a single string of 12 bytes or a string of 24 hex characters")
