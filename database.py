@@ -59,7 +59,7 @@ if login_result[0]:
         print(user_is_not_banned(mongo_client, "862b3856cd1c7bd15797b58a"))
         print(user_is_verified(mongo_client, "06a6e72a01f0ffef240466ca"))
         print(user_is_approved_by_librarian(mongo_client, "862b3856cd1c7bd15797b58a"))
-        #export_to_csv(mongo_client, "books")
+        export_to_csv(mongo_client, "books")
         import_from_csv(mongo_client, "books")
 
     else:
