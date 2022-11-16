@@ -24,21 +24,7 @@ class Autocomplete_options_user(Enum):
     pid = "pid"
 
 
-@dataclass_json(undefined=Undefined.EXCLUDE)
-@dataclass
-class Book:
-    _id: ObjectId
-    title: str = field(metadata={"validate": validate.Length(min=1, max=256)})
-    author: str = field(metadata={"validate": validate.Length(min=1, max=256)})
-    length: int
-    year: int
-    #FIXME toto muze byt i sama classa o sobe 
-    #zalezi potom jak budeme ukladat images
-    image: str
-    copies_available: int
-    genre: Optional[str]
-    description: Optional[str]
-    count_borrowed: int
+
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -73,8 +59,8 @@ class Person:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass    
 class Book_status:
-    book_id: str
-    user_id: str
+    book_id: ObjectId
+    user_id: ObjectId
     date_borrowed: datetime
     date_returned: datetime
     returned :bool
@@ -86,13 +72,34 @@ class Person_changes:
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     address: str = field(metadata={"validate": validate.Length(min=1, max=256)})
-    #FIXME 
-    # teoreticky bych rekl ze to tam nemusi vubec byt kdyz ten doc
-    # potom budeme delovat
-    approved: bool
     created_at: datetime = field(metadata={
         'dataclasses_json': {
             'encoder': lambda x: datetime.timestamp(x),
         }
     }, default_factory=datetime.utcnow)
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass    
+class Author:
+    id_: ObjectId
+    first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
+    surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
+    #variables if we fancy but we ain't fancy
+    # about: str
+    # image: str
     
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class Book:
+    _id: ObjectId
+    title: str = field(metadata={"validate": validate.Length(min=1, max=256)})
+    author: Author
+    length: int
+    year: int
+    #FIXME toto muze byt i sama classa o sobe 
+    #zalezi potom jak budeme ukladat images
+    image: str
+    copies_available: int
+    genre: Optional[str]
+    description: Optional[str]
+    count_borrowed: int
