@@ -5,7 +5,7 @@ from datetime import datetime
 
 import pandas as pd
 from bson.objectid import ObjectId
-from datamodels import Autocomplete_options_book, Autocomplete_options_user, Book, Person, Roles 
+from datamodels import Autocomplete_options_book, Autocomplete_options_user, Book, Person, Author, Person_changes, Book_status, Roles
 import pymongo
 import bcrypt
 import re
@@ -18,7 +18,9 @@ DATABASE_NAME = 'library'
 # TABLES IN DATABASE
 USER = 'user'
 BOOK = 'book'
-
+BOOK_STATUS = 'book_status'
+USER_CHANGES = 'user_changes'
+AUTHOR = 'author'
 CURRENT_USER = None
 
 
@@ -39,99 +41,107 @@ class User:
     # check if librarian is doing this coz then no approval needed
     # check limit=6 and time=6 days
     def borrow_book(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, self.user.id):
-            if user_is_verified(mongo_client, self.user.id):
-                if user_is_approved_by_librarian(mongo_client, self.user.id):
-                    if book_exists_id(mongo_client, _id):
-                        books = get_book_column(mongo_client)
-                        query = {"$and": [{"_id": ObjectId(_id)}, {"copies_available": {"$ne": 0}}]}
-                        result = books.find_one(query)
-                        actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
-                        users = get_user_column(mongo_client)
-                        query_user = {"_id": ObjectId(self.user.id)}
-                        users_result = users.find_one(query_user)
-                        if result is not None:
-                            if _id not in actual_borrowed_books:
-                                if users_result["count_borrowed_books"] < 6:
-                                    get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
-                                                                             {"$push":  {"borrowed_books": {
-                                                                              "_id": result["_id"],
-                                                                              "title": result["title"],
-                                                                              "author": result["author"],
-                                                                              "length": result["length"],
-                                                                              "year": result["year"],
-                                                                              "image": result["image"],
-                                                                              "genre": result["genre"],
-                                                                              "description": result["description"],
-                                                                              "borrowed_at": time.time()}}})
-                                    get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
-                                                                             {"$push": {"history_of_books": {
-                                                                                 "_id": result["_id"],
-                                                                                 "title": result["title"],
-                                                                                 "author": result["author"],
-                                                                                 "length": result["length"],
-                                                                                 "year": result["year"],
-                                                                                 "image": result["image"],
-                                                                                 "genre": result["genre"],
-                                                                                 "description": result["description"],
-                                                                                 "borrowed_at": time.time()}}})
-                                    get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
-                                                                             {'$inc': {"count_borrowed_books": 1}})
-                                    get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                             {'$inc': {"count_borrowed": 1}})
-                                    get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                             {'$inc': {"copies_available": -1}})
-                                    return True, "User: " + str(self.user.id)\
-                                        + " has borrowed book named: " + str(result["title"])\
-                                        + ", Book ID: " + str(result["_id"])
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, self.user.id):
+                if user_is_verified(mongo_client, self.user.id):
+                    if user_is_approved_by_librarian(mongo_client, self.user.id):
+                        if book_exists_id(mongo_client, _id):
+                            books = get_book_column(mongo_client)
+                            query = {"$and": [{"_id": ObjectId(_id)}, {"copies_available": {"$ne": 0}}]}
+                            result = books.find_one(query)
+                            actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
+                            users = get_user_column(mongo_client)
+                            query_user = {"_id": ObjectId(self.user.id)}
+                            users_result = users.find_one(query_user)
+                            if result is not None:
+                                if _id not in actual_borrowed_books:
+                                    if users_result["count_borrowed_books"] < 6:
+                                        get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
+                                                                                 {"$push":  {"borrowed_books": {
+                                                                                  "_id": result["_id"],
+                                                                                  "title": result["title"],
+                                                                                  "author": result["author"],
+                                                                                  "length": result["length"],
+                                                                                  "year": result["year"],
+                                                                                  "image": result["image"],
+                                                                                  "genre": result["genre"],
+                                                                                  "description": result["description"],
+                                                                                  "borrowed_at": time.time()}}})
+                                        get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
+                                                                                 {"$push": {"history_of_books": {
+                                                                                     "_id": result["_id"],
+                                                                                     "title": result["title"],
+                                                                                     "author": result["author"],
+                                                                                     "length": result["length"],
+                                                                                     "year": result["year"],
+                                                                                     "image": result["image"],
+                                                                                     "genre": result["genre"],
+                                                                                     "description": result["description"],
+                                                                                     "borrowed_at": time.time()}}})
+                                        get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
+                                                                                 {'$inc': {"count_borrowed_books": 1}})
+                                        get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                                 {'$inc': {"count_borrowed": 1}})
+                                        get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                                 {'$inc': {"copies_available": -1}})
+                                        return True, "User: " + str(self.user.id)\
+                                            + " has borrowed book named: " + str(result["title"])\
+                                            + ", Book ID: " + str(result["_id"])
+                                    else:
+                                        return False, "User: " + str(self.user.id)\
+                                               + " has borrowed the maximum number of books"
                                 else:
-                                    return False, "User: " + str(self.user.id)\
-                                           + " has borrowed the maximum number of books"
+                                    return False, "User: " + str(self.user.id) + " has already borrowed book named: "\
+                                           + str(result["title"]) + ", Book ID: " + str(_id)
                             else:
-                                return False, "User: " + str(self.user.id) + " has already borrowed book named: "\
-                                       + str(result["title"]) + ", Book ID: " + str(_id)
+                                return False, "Book named: " + str(result["title"])\
+                                       + ", Book ID: " + str(result["_id"]) + " is currently borrowed"
                         else:
-                            return False, "Book named: " + str(result["title"])\
-                                   + ", Book ID: " + str(result["_id"]) + " is currently borrowed"
+                            return False, "There is no book with ID: " + str(_id)
                     else:
-                        return False, "There is no book with ID: " + str(_id)
+                        return False, "User: " + str(self.user.id)\
+                               + " is waiting for the approval of personal data changes by the admin!"
                 else:
-                    return False, "User: " + str(self.user.id)\
-                           + " is waiting for the approval of personal data changes by the admin!"
+                    return False, "User: " + str(self.user.id) + " is not verified to borrow a book!"
             else:
-                return False, "User: " + str(self.user.id) + " is not verified to borrow a book!"
+                return False, "There is no user with this name: " + str(self.user.id)
         else:
-            return False, "There is no user with this name: " + str(self.user.id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def return_book(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, self.user.id):
-            if user_is_verified(mongo_client, self.user.id):
-                if user_is_approved_by_librarian(mongo_client, self.user.id):
-                    if book_exists_id(mongo_client, _id):
-                        actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
-                        if _id in actual_borrowed_books:
-                            get_user_column(mongo_client).update_one({"_id":  ObjectId(self.user.id)},
-                                                                     {"$pull": {"borrowed_books": {"_id": ObjectId(_id)}}})
-                            #get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                            #                                         {"$push": {"history_of_books.$[]": {"returned_at": time.time()}}})
-                            get_user_column(mongo_client).update_one({"_id":  ObjectId(self.user.id)},
-                                                                     {'$inc': {"count_borrowed_books": -1}})
-                            get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                     {'$inc': {"count_borrowed": -1}})
-                            get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                     {'$inc': {"copies_available": 1}})
-                            return True, "User: " + str(self.user.id) + " has returned a book with ID: " + str(_id)
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, self.user.id):
+                if user_is_verified(mongo_client, self.user.id):
+                    if user_is_approved_by_librarian(mongo_client, self.user.id):
+                        if book_exists_id(mongo_client, _id):
+                            actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
+                            if _id in actual_borrowed_books:
+                                get_user_column(mongo_client).update_one({"_id":  ObjectId(self.user.id)},
+                                                                         {"$pull": {"borrowed_books": {"_id": ObjectId(_id)}}})
+                                #get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                #                                         {"$push": {"history_of_books.$[]": {"returned_at": time.time()}}})
+                                get_user_column(mongo_client).update_one({"_id":  ObjectId(self.user.id)},
+                                                                         {'$inc': {"count_borrowed_books": -1}})
+                                get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                         {'$inc': {"count_borrowed": -1}})
+                                get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                         {'$inc': {"copies_available": 1}})
+                                return True, "User: " + str(self.user.id) + " has returned a book with ID: " + str(_id)
+                            else:
+                                return False, "User: " + str(self.user.id) + " has not borrowed a book with ID: " + str(_id)
                         else:
-                            return False, "User: " + str(self.user.id) + " has not borrowed a book with ID: " + str(_id)
+                            return False, "There is no book with ID: " + str(_id)
                     else:
-                        return False, "There is no book with ID: " + str(_id)
+                        return False, "User: " + str(self.user.id)\
+                               + " is waiting for the approval of personal data changes by the admin!"
                 else:
-                    return False, "User: " + str(self.user.id)\
-                           + " is waiting for the approval of personal data changes by the admin!"
+                    return False, "User: " + str(self.user.id) + " is not verified to return a book!"
             else:
-                return False, "User: " + str(self.user.id) + " is not verified to return a book!"
+                return False, "There is no user with this name: " + str(self.user.id)
         else:
-            return False, "There is no user with this name: " + str(self.user.id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def user_find_book(self, mongo_client: pymongo.MongoClient, title):
         if user_is_verified(mongo_client, self.user.id):
@@ -139,6 +149,22 @@ class User:
                 books = get_book_column(mongo_client)
                 query = {"title": title}
                 return books.find_one(query, {"_id": 0, "count_borrowed": 0})
+            else:
+                return False, "User: " + str(self.user.id)\
+                       + " is waiting for the approval of personal data changes by the admin!"
+        else:
+            return None, "User: " + str(self.user.id) + " is not verified to find a book!"
+
+    def user_find_author(self, mongo_client: pymongo.MongoClient, name):
+        if user_is_verified(mongo_client, self.user.id):
+            if user_is_approved_by_librarian(mongo_client, self.user.id):
+                authors = get_author_column(mongo_client)
+                query = {"first_name": name}
+                result = authors.find_one(query, {"_id": 0})
+                if result is not None:
+                    return result
+                else:
+                    return False, "There is no author with name: " + name
             else:
                 return False, "User: " + str(self.user.id)\
                        + " is waiting for the approval of personal data changes by the admin!"
@@ -182,100 +208,122 @@ class Librarian(User):
     user: Person = None
 
     def ban_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, _id):
-            user = get_user_column(mongo_client)
-            not_banned_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"banned": False}]})
-            if not_banned_user is not None:
-                query = {"_id":  ObjectId(_id)}
-                new_values = {"$set": {"banned": True}}
-                get_user_column(mongo_client).update_one(query, new_values)
-                return True, "User: " + str(_id) + " has been banned!"
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, _id):
+                user = get_user_column(mongo_client)
+                not_banned_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"banned": False}]})
+                if not_banned_user is not None:
+                    query = {"_id":  ObjectId(_id)}
+                    new_values = {"$set": {"banned": True}}
+                    get_user_column(mongo_client).update_one(query, new_values)
+                    return True, "User: " + str(_id) + " has been banned!"
+                else:
+                    return False, "User: " + str(_id) + " is already banned!"
             else:
-                return False, "User: " + str(_id) + " is already banned!"
+                return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "There is no user with _id: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def unban_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, _id):
-            user = get_user_column(mongo_client)
-            banned_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"banned": True}]})
-            if banned_user is not None:
-                query = {"_id": ObjectId(_id)}
-                new_values = {"$set": {"banned": False}}
-                get_user_column(mongo_client).update_one(query, new_values)
-                return True, "User: " + str(_id) + " is no longer banned!"
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, _id):
+                user = get_user_column(mongo_client)
+                banned_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"banned": True}]})
+                if banned_user is not None:
+                    query = {"_id": ObjectId(_id)}
+                    new_values = {"$set": {"banned": False}}
+                    get_user_column(mongo_client).update_one(query, new_values)
+                    return True, "User: " + str(_id) + " is no longer banned!"
+                else:
+                    return False, "User: " + str(_id) + " is already unbanned!"
             else:
-                return False, "User: " + str(_id) + " is already unbanned!"
+                return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "There is no user with _id: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def verified_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, _id):
-            user = get_user_column(mongo_client)
-            not_verified_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"verified": False}]})
-            if not_verified_user is not None:
-                query = {"_id": ObjectId(_id)}
-                new_values = {"$set": {"verified": True}}
-                get_user_column(mongo_client).update_one(query, new_values)
-                return True, "User: " + str(_id) + " has been verified!"
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, _id):
+                user = get_user_column(mongo_client)
+                not_verified_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"verified": False}]})
+                if not_verified_user is not None:
+                    query = {"_id": ObjectId(_id)}
+                    new_values = {"$set": {"verified": True}}
+                    get_user_column(mongo_client).update_one(query, new_values)
+                    return True, "User: " + str(_id) + " has been verified!"
+                else:
+                    return False, "User: " + str(_id) + " is already verified!"
             else:
-                return False, "User: " + str(_id) + " is already verified!"
+                return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "There is no user with _id: " + str(_id)
-
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def unverified_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, _id):
-            user = get_user_column(mongo_client)
-            verified_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"verified": True}]})
-            if verified_user is not None:
-                query = {"_id": ObjectId(_id)}
-                new_values = {"$set": {"verified": False}}
-                get_user_column(mongo_client).update_one(query, new_values)
-                return True, "User: " + str(_id) + " is no longer verified!"
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, _id):
+                user = get_user_column(mongo_client)
+                verified_user = user.find_one({"$and": [{"_id": ObjectId(_id)}, {"verified": True}]})
+                if verified_user is not None:
+                    query = {"_id": ObjectId(_id)}
+                    new_values = {"$set": {"verified": False}}
+                    get_user_column(mongo_client).update_one(query, new_values)
+                    return True, "User: " + str(_id) + " is no longer verified!"
+                else:
+                    return False, "User: " + str(_id) + " is already unverified!"
             else:
-                return False, "User: " + str(_id) + " is already unverified!"
+                return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "There is no user with _id: " + str(_id)
-
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def accept_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, _id):
-            user = get_user_column(mongo_client)
-            user_changes = []
-            try:
-                user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
-                if user_changes is not None:
-                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)}, {
-                        "$set": {"first_name": user_changes[0]["stashed_changes"]["first_name"],
-                                 "surname": user_changes[0]["stashed_changes"]["surname"],
-                                 "address": user_changes[0]["stashed_changes"]["address"]}})
-                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                             {"$set": {'approved_by_librarian': True}})
-                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                             {"$unset": {"stashed_changes": {}}})
-                    return True, "Admin has accepted the changes to the profile data of user: " + str(_id)
-            except KeyError:
-                return False, "User: " + str(_id) + " has no changes to approve"
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, _id):
+                user = get_user_column(mongo_client)
+                user_changes = []
+                try:
+                    user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
+                    if user_changes is not None:
+                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)}, {
+                            "$set": {"first_name": user_changes[0]["stashed_changes"]["first_name"],
+                                     "surname": user_changes[0]["stashed_changes"]["surname"],
+                                     "address": user_changes[0]["stashed_changes"]["address"]}})
+                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                 {"$set": {'approved_by_librarian': True}})
+                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                 {"$unset": {"stashed_changes": {}}})
+                        return True, "Admin has accepted the changes to the profile data of user: " + str(_id)
+                except KeyError:
+                    return False, "User: " + str(_id) + " has no changes to approve"
+            else:
+                return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "There is no user with _id: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def decline_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        if user_exists_id(mongo_client, _id):
-            user = get_user_column(mongo_client)
-            user_changes = []
-            try:
-                user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
-                if user_changes is not None:
-                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                             {"$set": {'approved_by_librarian': True}})
-                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                             {"$unset": {"stashed_changes": {}}})
-                    return True, "Admin has declines the changes to the profile data of user: " + str(_id)
-            except KeyError:
-                return False, "User: " + str(_id) + " has no changes to approve"
+        if ObjectId.is_valid(_id):
+            if user_exists_id(mongo_client, _id):
+                user = get_user_column(mongo_client)
+                user_changes = []
+                try:
+                    user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
+                    if user_changes is not None:
+                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                 {"$set": {'approved_by_librarian': True}})
+                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                 {"$unset": {"stashed_changes": {}}})
+                        return True, "Admin has declines the changes to the profile data of user: " + str(_id)
+                except KeyError:
+                    return False, "User: " + str(_id) + " has no changes to approve"
+            else:
+                return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "There is no user with _id: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def get_all_users(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
@@ -283,9 +331,13 @@ class Librarian(User):
                                     "count_borrowed_books": 1, "created_at": 1}))
 
     def find_user(self, mongo_client: pymongo.MongoClient, _id):
-        users = get_user_column(mongo_client)
-        query = {"_id":  ObjectId(_id)}
-        return users.find_one(query, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1})
+        if ObjectId.is_valid(_id):
+            users = get_user_column(mongo_client)
+            query = {"_id":  ObjectId(_id)}
+            return users.find_one(query, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1})
+        else:
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def get_all_users_with_stashed_changes(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
@@ -307,48 +359,109 @@ class Librarian(User):
     def edit_book(self, mongo_client: pymongo.MongoClient, _id, title: str, author: str, length: int, year: int,
                   image: str,
                   copies_available: int, genre: str, description: str) -> Tuple[bool, str]:
-        books = get_book_column(mongo_client)
-        if book_exists_id(mongo_client, _id):
-            query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed": 0}]}
-            result = books.find_one(query)
-            if result is not None:
-                new_values = {"$set": {"title": title, "author": author, "length": length, "year": year, "image": image,
-                                       "copies_available": copies_available, "genre": genre, "description": description}}
-                get_book_column(mongo_client).update_one(query, new_values)
-                return True, "Book with ID: " + str(_id) + " has been modified!"
-            else:
-                return False, "Book with ID: " + str(_id) + " is currently borrowed!"
+        if ObjectId.is_valid(_id):
+            books = get_book_column(mongo_client)
+            if book_exists_id(mongo_client, _id):
+                query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed": 0}]}
+                result = books.find_one(query)
+                if result is not None:
+                    new_values = {"$set": {"title": title, "author": author, "length": length, "year": year, "image": image,
+                                           "copies_available": copies_available, "genre": genre, "description": description}}
+                    get_book_column(mongo_client).update_one(query, new_values)
+                    return True, "Book with ID: " + str(_id) + " has been modified!"
+                else:
+                    return False, "Book with ID: " + str(_id) + " is currently borrowed!"
 
+            else:
+                return False, "There is no book with the ID: " + str(_id)
         else:
-            return False, "There is no book with the ID: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     # can only be done if no books borrowed
     def delete_book(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        books = get_book_column(mongo_client)
-        if book_exists_id(mongo_client, _id):
-            query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed": 0}]}
-            result = books.find_one(query)
-            if result is not None:
-                books.delete_one(query)
-                return True, "Book with ID: " + str(_id) + " has been deleted successfully!"
+        if ObjectId.is_valid(_id):
+            books = get_book_column(mongo_client)
+            if book_exists_id(mongo_client, _id):
+                query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed": 0}]}
+                result = books.find_one(query)
+                if result is not None:
+                    books.delete_one(query)
+                    return True, "Book with ID: " + str(_id) + " has been deleted successfully!"
+                else:
+                    return False, "Book with ID: " + str(_id) + "  is currently borrowed!"
             else:
-                return False, "Book with ID: " + str(_id) + "  is currently borrowed!"
+                return False, "There is no book with the ID: " + str(_id)
         else:
-            return False, "There is no book with the ID: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     # same as in books, if user has no books borrowed
     def delete_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
-        users = get_user_column(mongo_client)
-        if user_exists_id(mongo_client, _id):
-            query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed_books": 0}]}
-            result = users.find_one(query)
-            if result is not None:
-                users.delete_one(query)
-                return True, "User with ID: " + str(_id) + " has been deleted successfully!"
+        if ObjectId.is_valid(_id):
+            users = get_user_column(mongo_client)
+            if user_exists_id(mongo_client, _id):
+                query = {"$and": [{"_id": ObjectId(_id)}, {"count_borrowed_books": 0}]}
+                result = users.find_one(query)
+                if result is not None:
+                    users.delete_one(query)
+                    return True, "User with ID: " + str(_id) + " has been deleted successfully!"
+                else:
+                    return False, "User with ID: " + str(_id) + " has currently borrowed some books!"
             else:
-                return False, "User with ID: " + str(_id) + " has currently borrowed some books!"
+                return False, "There is no user with the ID: " + str(_id)
         else:
-            return False, "There is no user with the ID: " + str(_id)
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
+
+    def add_author(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str) -> Tuple[bool, str]:
+        generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
+        if not author_exists_id(mongo_client, generated_id):
+            new_author = Author(_id=generated_id, first_name=first_name, surname=surname)
+            get_author_column(mongo_client).insert_one(new_author.to_dict())
+            return True, "Author: " + first_name + " " + surname + " has been added to library"
+        else:
+            return False, "Author with ID: " + str(generated_id) + " already exists in library"
+
+
+    def edit_author(self, mongo_client: pymongo.MongoClient,_id, first_name: str, surname: str) -> Tuple[bool, str]:
+        if ObjectId.is_valid(_id):
+            if author_exists_id(mongo_client, _id):
+                query = {"_id": ObjectId(_id)}
+                new_values = {"$set": {"first_name": first_name, "surname": surname}}
+                get_author_column(mongo_client).update_one(query, new_values)
+                return True, "Author with ID: " + str(_id) + " has been modified!"
+            else:
+                return False, "There is no author the ID: " + str(_id)
+        else:
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
+
+    def find_author(self, mongo_client: pymongo.MongoClient, _id):
+        if ObjectId.is_valid(_id):
+            authors = get_author_column(mongo_client)
+            query = {"_id": ObjectId(_id)}
+            result = authors.find_one(query)
+            if result is not None:
+                return True, result
+            else:
+                return False, "There is no author with id: " + _id
+        else:
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
+
+    def delete_author(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
+        if ObjectId.is_valid(_id):
+            authors = get_author_column(mongo_client)
+            if author_exists_id(mongo_client, _id):
+                query = {"_id": ObjectId(_id)}
+                authors.delete_one(query)
+                return True, "Author with ID: " + str(_id) + " has been deleted successfully!"
+            else:
+                return False, "There is no author with the ID: " + str(_id)
+        else:
+            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     def find_book(self, mongo_client: pymongo.MongoClient, title):
         books = get_book_column(mongo_client)
@@ -451,6 +564,19 @@ def user_exists_return(mongo_client: pymongo.MongoClient, user_name):
     users = get_user_column(mongo_client)
     query = {"login_name": user_name}
     return users.find_one(query)
+
+
+def get_author_column(mongo_client: pymongo.MongoClient):
+    return mongo_client[DATABASE_NAME][AUTHOR]
+
+
+def author_exists_id(mongo_client: pymongo.MongoClient, id):
+    authors = get_author_column(mongo_client)
+    cursor = authors.find({"_id": ObjectId(id)})
+    for _ in cursor:
+        return True
+    return False
+
 
 def export_to_csv(mongo_client: pymongo.MongoClient, namefile):
     db = mongo_client.library

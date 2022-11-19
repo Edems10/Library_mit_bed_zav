@@ -38,6 +38,10 @@ if login_result[0]:
         current_user = Librarian(user)
         #print(current_user.add_book(mongo_client, "How to train a dragon 320", "Cressida Cowell", 231, 2003, "dragon", 2,
         #                            "fantasy", "description", 0))
+        #print(current_user.add_author(mongo_client, "Dominik", "Borec"))
+        print(current_user.edit_author(mongo_client, "4e63ea8abd3b1d2b0c84622d", "Domca", "The King"))
+        print(current_user.find_author(mongo_client, "4e63ea8abd3b1d2b0c84622"))
+        print(current_user.delete_author(mongo_client, "4e63ea8abd3b1d2b0c84622d"))
         print(current_user.find_book(mongo_client, "Gladiator"))
         print(current_user.find_all_books(mongo_client))
         print(current_user.delete_book(mongo_client,"63663a15f36f16fe5f225ddd")[1])

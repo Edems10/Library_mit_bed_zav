@@ -78,7 +78,7 @@ class Person_changes:
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass    
 class Author:
-    id_: ObjectId
+    _id: ObjectId
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     #variables if we fancy but we ain't fancy
