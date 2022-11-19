@@ -36,8 +36,8 @@ if login_result[0]:
     user = login_result[1]
     if user.role == Roles.Librarian.name:
         current_user = Librarian(user)
-        print(current_user.add_book(mongo_client, "How to train a dragon 32", "Cressida Cowell", 231, 2003, "dragon", 2,
-                                    "fantasy", "description", 0))
+        #print(current_user.add_book(mongo_client, "How to train a dragon 320", "Cressida Cowell", 231, 2003, "dragon", 2,
+        #                            "fantasy", "description", 0))
         print(current_user.find_book(mongo_client, "Gladiator"))
         print(current_user.find_all_books(mongo_client))
         print(current_user.delete_book(mongo_client,"63663a15f36f16fe5f225ddd")[1])
@@ -51,13 +51,13 @@ if login_result[0]:
 
         #print(current_user.ban_user(mongo_client, "abab3d0d7172399f94acbd11")[1])
         print(current_user.unban_user(mongo_client, "862b3856cd1c7bd15797b58a")[1])
-        print(current_user.accept_user_changes(mongo_client, "862b3856cd1c7bd15797b58a")[1])
+        print(current_user.accept_user_changes(mongo_client, "06a6e72a01f0ffef240466ca")[1])
         #print(current_user.decline_user_changes(mongo_client, "862b3856cd1c7bd15797b58a")[1])
         print(current_user.get_all_users_with_stashed_changes(mongo_client))
-        print(current_user.verified_user(mongo_client, "862b3856cd1c7bd15797b58a")[1])
+        print(current_user.verified_user(mongo_client, "06a6e72a01f0ffef240466ca")[1])
         #print(current_user.unverified_user(mongo_client, "862b3856cd1c7bd15797b58a")[1])
         print(user_is_not_banned(mongo_client, "862b3856cd1c7bd15797b58a"))
-        print(user_is_verified(mongo_client, "862b3856cd1c7bd15797b58a"))
+        print(user_is_verified(mongo_client, "06a6e72a01f0ffef240466ca"))
         print(user_is_approved_by_librarian(mongo_client, "862b3856cd1c7bd15797b58a"))
         export_to_csv(mongo_client, "books")
         import_from_csv(mongo_client, "books")
@@ -67,9 +67,9 @@ if login_result[0]:
         user_current_id = current_user.user.id
         print(current_user.user_find_book(mongo_client, "Gladiator"))
         #print(current_user.edit_user(mongo_client, "test_of_changes", "data", "CZ")[1])
-        print(current_user.borrow_book(mongo_client, "How to train a dragon 4")[1])
+        print(current_user.borrow_book(mongo_client, '78f56a281d4fd2908e5a7076')[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        print(current_user.return_book(mongo_client, "How to train a dragon")[1])
+        print(current_user.return_book(mongo_client, "78f56a281d4fd2908e5a7076")[1])
         print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
         print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
 

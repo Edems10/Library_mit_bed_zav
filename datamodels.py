@@ -24,9 +24,6 @@ class Autocomplete_options_user(Enum):
     pid = "pid"
 
 
-
-
-
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Person:
