@@ -51,12 +51,9 @@ class User:
                             query = {"$and": [{"_id": ObjectId(_id)}, {"copies_available": {"$ne": 0}}]}
                             result = books.find_one(query)
                             actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
-                            users = get_user_column(mongo_client)
-                            query_user = {"_id": ObjectId(self.user.id)}
-                            users_result = users.find_one(query_user)
                             if result is not None:
                                 if _id not in actual_borrowed_books:
-                                    if users_result["count_borrowed_books"] < 6:
+                                    if len(actual_borrowed_books) < 6:
                                         # get_book_status_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
                                         #                                          {"$push": {"borrowed_books": {
                                         #                                              "_id": result["_id"],
@@ -75,9 +72,6 @@ class User:
                                                                date_returned=None,
                                                                returned=False)
                                         get_book_status_column(mongo_client).insert_one(new_book.to_dict())
-                                        get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
-                                                                                 {"$push": {"borrowed_books": {
-                                                                                     "_id": result["_id"]}}})
                                         get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
                                                                                  {'$inc': {"count_borrowed_books": 1}})
                                         get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
@@ -117,11 +111,12 @@ class User:
                         if book_exists_id(mongo_client, _id):
                             actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
                             if _id in actual_borrowed_books:
-                                get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
-                                                                         {"$pull": {
-                                                                             "borrowed_books": {"_id": ObjectId(_id)}}})
-                                # get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                #                                         {"$push": {"history_of_books.$[]": {"returned_at": time.time()}}})
+                                get_book_status_column(mongo_client).update_one({"$and":
+                                                                                [{"user_id": ObjectId(self.user.id)},
+                                                                                 {"book_id": ObjectId(_id)}],
+                                                                                 "returned": False},
+                                                                                {"$set": {"returned": True,
+                                                                                 "date_returned": time.time()}})
                                 get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
                                                                          {'$inc': {"count_borrowed_books": -1}})
                                 get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
@@ -512,15 +507,19 @@ class Librarian(User):
 
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
-    users = get_user_column(mongo_client)
-    borrowed_books = []
-    all_books = users.find_one({"_id": ObjectId(_id)}, {"borrowed_books": 1})
-    try:
-        for x in range(len(all_books['borrowed_books'])):
-            borrowed_books.append(str((all_books['borrowed_books'][x]["_id"])))
-        return borrowed_books
-    except KeyError:
-        return []
+    if ObjectId.is_valid(_id):
+        borrowed_books = []
+        db = mongo_client.library
+        try:
+            cursor = db.book_status.find({"$and": [{"user_id": ObjectId(_id)}, {"returned": False}]})
+            for document in cursor:
+                borrowed_books.append(str(document['book_id']))
+            return borrowed_books
+        except KeyError:
+            return []
+    else:
+        return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+                                     " of 12 bytes or a string of 24 hex characters"
 
 
 def get_book_column(mongo_client: pymongo.MongoClient):

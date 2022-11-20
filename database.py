@@ -71,9 +71,9 @@ if login_result[0]:
         user_current_id = current_user.user.id
         #print(current_user.user_find_book(mongo_client, "Gladiator"))
         #print(current_user.edit_user(mongo_client, "test_of_changes", "data", "CZ")[1])
-        print(current_user.borrow_book(mongo_client, 'f0eac029e9022e938b0561dd')[1])
+        #print(current_user.borrow_book(mongo_client, '6362f102af7f10a4c3ab85f4')[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        #print(current_user.return_book(mongo_client, "78f56a281d4fd2908e5a7076")[1])
+        print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])
         print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
         print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
 

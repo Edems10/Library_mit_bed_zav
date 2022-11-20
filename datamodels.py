@@ -35,7 +35,6 @@ class Person:
     login_name: str = field(metadata={"validate": validate.Length(min=1, max=32)})
     password: str = field(metadata={"validate": validate.Length(min=6, max=64)})
     salt: str = bcrypt.gensalt()
-    borrowed_books = Optional[str]
     count_borrowed_books: int = 0
     banned: bool = False
     verified: bool = False
