@@ -21,7 +21,7 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-login_result = login(mongo_client,"login_lib","lib_12345")
+#login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -30,22 +30,22 @@ create_account(mongo_client, "aaaa", "surnamea", 123456723132, "addresss", "Domi
 create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom", "password")
 
 #login_result = login(mongo_client, "sasddalogin", "password")
-#login_result = login(mongo_client,"Dom","password")
+login_result = login(mongo_client,"Dom","password")
 
 if login_result[0]:
     user = login_result[1]
     if user.role == Roles.Librarian.name:
         current_user = Librarian(user)
-        #print(current_user.add_book(mongo_client, "How to train a dragon 320", "Cressida Cowell", 231, 2003, "dragon", 2,
+        #print(current_user.add_book(mongo_client, "New book", "3bef9919eca266bb9af0248f", 231, 2003, "dragon", 2,
         #                            "fantasy", "description", 0))
         #print(current_user.add_author(mongo_client, "Dominik", "Borec"))
+        print(current_user.find_book(mongo_client, "f0eac029e9022e938b0561dd"))
         print(current_user.edit_author(mongo_client, "4e63ea8abd3b1d2b0c84622d", "Domca", "The King"))
         print(current_user.find_author(mongo_client, "4e63ea8abd3b1d2b0c84622"))
         print(current_user.delete_author(mongo_client, "4e63ea8abd3b1d2b0c84622d"))
-        print(current_user.find_book(mongo_client, "Gladiator"))
         print(current_user.find_all_books(mongo_client))
         print(current_user.delete_book(mongo_client,"63663a15f36f16fe5f225ddd")[1])
-        print(current_user.edit_book(mongo_client, "6362f102af7f10a4c3ab85f4", "How to train a dragon 3", "me", 231, 2003, "dragon", 2, "fantasy",
+        print(current_user.edit_book(mongo_client, "f0eac029e9022e938b0561dd", "New book 2", "3bef9919eca266bb9af0248f", 231, 2003, "dragon", 2, "fantasy",
                                      "description 2")[1])
         print(current_user.find_all_books(mongo_client))
         print(current_user.get_all_users(mongo_client))
@@ -63,17 +63,17 @@ if login_result[0]:
         print(user_is_not_banned(mongo_client, "862b3856cd1c7bd15797b58a"))
         print(user_is_verified(mongo_client, "06a6e72a01f0ffef240466ca"))
         print(user_is_approved_by_librarian(mongo_client, "862b3856cd1c7bd15797b58a"))
-        export_to_csv(mongo_client, "books")
-        import_from_csv(mongo_client, "books")
+        #export_to_csv(mongo_client, "books")
+        #import_from_csv(mongo_client, "books")
 
     else:
         current_user = User(user)
         user_current_id = current_user.user.id
-        print(current_user.user_find_book(mongo_client, "Gladiator"))
+        #print(current_user.user_find_book(mongo_client, "Gladiator"))
         #print(current_user.edit_user(mongo_client, "test_of_changes", "data", "CZ")[1])
-        print(current_user.borrow_book(mongo_client, '78f56a281d4fd2908e5a7076')[1])
+        print(current_user.borrow_book(mongo_client, 'f0eac029e9022e938b0561dd')[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        print(current_user.return_book(mongo_client, "78f56a281d4fd2908e5a7076")[1])
+        #print(current_user.return_book(mongo_client, "78f56a281d4fd2908e5a7076")[1])
         print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
         print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
 
