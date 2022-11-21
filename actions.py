@@ -168,25 +168,32 @@ class User:
         else:
             return None, "User: " + str(self.user.id) + " is not verified to find a book!"
 
-    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, address: str) -> \
+    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, address: str, _id=None) -> \
             Tuple[bool, str]:
         if user_exists_id(mongo_client, self.user.id):
-            query = {"_id": ObjectId(self.user.id)}
-            new_values = {"$set": {"first_name": first_name, "surname": surname, "address": address}}
             if self.user.role == Roles.Librarian.name:
-                get_user_column(mongo_client).update_one(query, new_values)
-                return True, "User: " + str(self.user.id) + " has been updated!"
+                if user_exists_id(mongo_client, _id):
+                    query = {"_id": ObjectId(_id)}
+                    new_values = {"$set": {"first_name": first_name, "surname": surname, "address": address}}
+                    get_user_column(mongo_client).update_one(query, new_values)
+                    return True, "User: " + str(_id) + " has been updated!"
+                else:
+                    return False, "There is no user with _id: " + str(_id)
             else:
                 if user_is_verified(mongo_client, self.user.id):
                     if user_is_approved_by_librarian(mongo_client, self.user.id):
-                        # TODO iam pretty sure this can be done in one query but can't be asked rn
-                        new_values = {
-                            "$set": {'stashed_changes': {"first_name": first_name, "surname": surname,
-                                                         "address": address}}}
-                        get_user_column(mongo_client).update_one(query, new_values)
-                        new_values = {"$set": {'approved_by_librarian': False}}
-                        get_user_column(mongo_client).update_one(query, new_values)
-                        return True, f"User: {self.user.id} has been updated waiting for approve from librarian"
+                        new_personal_data_changes = Person_changes(person_id=ObjectId(self.user.id),
+                                                                   first_name=first_name,
+                                                                   surname=surname,
+                                                                   address=address,
+                                                                   approved_by_librarian=False,
+                                                                   created_at=time.time(),
+                                                                   approved_or_rejected_at=None)
+                        get_user_changes_column(mongo_client).insert_one(new_personal_data_changes.to_dict())
+                        new_approved = {"$set": {'approved_by_librarian': False}}
+                        get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)}, new_approved)
+                        return True, f"User: {self.user.id} has updated his personal data" \
+                                     f" and waiting for approve from librarian"
                     else:
                         return False, "User: " + str(self.user.id) \
                                + " is waiting for the approval of personal data changes by the admin!"
@@ -279,22 +286,26 @@ class Librarian(User):
     def accept_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
         if ObjectId.is_valid(_id):
             if user_exists_id(mongo_client, _id):
-                user = get_user_column(mongo_client)
-                user_changes = []
-                try:
-                    user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
-                    if user_changes is not None:
-                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)}, {
-                            "$set": {"first_name": user_changes[0]["stashed_changes"]["first_name"],
-                                     "surname": user_changes[0]["stashed_changes"]["surname"],
-                                     "address": user_changes[0]["stashed_changes"]["address"]}})
-                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                 {"$set": {'approved_by_librarian': True}})
-                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                 {"$unset": {"stashed_changes": {}}})
-                        return True, "Admin has accepted the changes to the profile data of user: " + str(_id)
-                except KeyError:
-                    return False, "User: " + str(_id) + " has no changes to approve"
+                user_changes = get_user_changes_column(mongo_client)
+                user_with_changed_data = user_changes.find_one({"$and": [{"person_id": ObjectId(_id)},
+                                                                    {"approved_by_librarian": False},
+                                                                    {"approved_or_rejected_at": None}]})
+                if user_with_changed_data is not None:
+                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)}, {
+                        "$set": {"first_name": user_with_changed_data["first_name"],
+                                 "surname": user_with_changed_data["surname"],
+                                 "address": user_with_changed_data["address"]}})
+                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                             {"$set": {'approved_by_librarian': True}})
+                    get_user_changes_column(mongo_client).update_one({"$and": [{"person_id": ObjectId(_id)},
+                                                                     {"approved_by_librarian": False},
+                                                                     {"approved_or_rejected_at": None}]},
+                                                                     {"$set": {'approved_by_librarian': True,
+                                                                               'approved_or_rejected_at': time.time()}})
+
+                    return True, "Admin has accepted the changes to the profile data of user: " + str(_id)
+                else:
+                    return False, "User: " + str(_id) + " has no changes to approve by librarian"
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
@@ -304,18 +315,21 @@ class Librarian(User):
     def decline_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
         if ObjectId.is_valid(_id):
             if user_exists_id(mongo_client, _id):
-                user = get_user_column(mongo_client)
-                user_changes = []
-                try:
-                    user_changes.append(user.find_one({"_id": ObjectId(_id)}, {"_id": 0, "stashed_changes": 1}))
-                    if user_changes is not None:
-                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                 {"$set": {'approved_by_librarian': True}})
-                        get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                 {"$unset": {"stashed_changes": {}}})
-                        return True, "Admin has declines the changes to the profile data of user: " + str(_id)
-                except KeyError:
-                    return False, "User: " + str(_id) + " has no changes to approve"
+                user_changes = get_user_changes_column(mongo_client)
+                user_with_changed_data = user_changes.find_one({"$and": [{"person_id": ObjectId(_id)},
+                                                                         {"approved_by_librarian": False},
+                                                                         {"approved_or_rejected_at": None}]})
+                if user_with_changed_data is not None:
+                    get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                             {"$set": {'approved_by_librarian': True}})
+                    get_user_changes_column(mongo_client).update_one({"$and": [{"person_id": ObjectId(_id)},
+                                                                               {"approved_by_librarian": False},
+                                                                               {"approved_or_rejected_at": None}]},
+                                                                     {"$set": {'approved_by_librarian': False,
+                                                                               'approved_or_rejected_at': time.time()}})
+                    return True, "Admin has declines the changes to the profile data of user: " + str(_id)
+                else:
+                    return False, "User: " + str(_id) + " has no changes to approve by librarian"
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:

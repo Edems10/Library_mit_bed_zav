@@ -69,11 +69,10 @@ class Person_changes:
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     address: str = field(metadata={"validate": validate.Length(min=1, max=256)})
-    created_at: datetime = field(metadata={
-        'dataclasses_json': {
-            'encoder': lambda x: datetime.timestamp(x),
-        }
-    }, default_factory=datetime.utcnow)
+    approved_by_librarian: bool
+    created_at: datetime
+    approved_or_rejected_at: datetime
+
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass    
