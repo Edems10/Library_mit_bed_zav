@@ -39,7 +39,6 @@ class User:
         # if person.verified == False:
         #    self.user = None
 
-    #TODO v tom ukolu nikde neni ze user potrebuje approve na pujceni knihy
     # check limit=6 and time=6 days
     def borrow_book(self, mongo_client: pymongo.MongoClient, _id, user_id=None) -> Tuple[bool, str]:
         if ObjectId.is_valid(_id):
@@ -100,7 +99,8 @@ class User:
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
                                             get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
-                                                                                     {'$inc': {"count_borrowed_books": 1}})
+                                                                                     {'$inc':
+                                                                                     {"count_borrowed_books": 1}})
                                             get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                                                      {'$inc': {"count_borrowed": 1}})
                                             get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
@@ -128,7 +128,7 @@ class User:
             else:
                 return False, "There is no user with this ID: " + str(self.user.id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def return_book(self, mongo_client: pymongo.MongoClient, _id, user_id=None) -> Tuple[bool, str]:
@@ -170,17 +170,19 @@ class User:
                                                                                           {"book_id": ObjectId(_id)}],
                                                                                      "returned": False},
                                                                                     {"$set": {"returned": True,
-                                                                                              "date_returned": time.time()}})
+                                                                                              "date_returned":
+                                                                                                  time.time()}})
                                     get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
                                                                              {'$inc': {"count_borrowed_books": -1}})
                                     get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                                              {'$inc': {"count_borrowed": -1}})
                                     get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                                              {'$inc': {"copies_available": 1}})
-                                    return True, "User: " + str(self.user.id) + " has returned a book with ID: " + str(_id)
+                                    return True, "User: " + str(self.user.id) + " has returned a book with ID: "\
+                                                 + str(_id)
                                 else:
-                                    return False, "User: " + str(self.user.id) + " has not borrowed a book with ID: " + str(
-                                        _id)
+                                    return False, "User: " + str(self.user.id) + " has not borrowed a book with ID: "\
+                                                 + str(_id)
                             else:
                                 return False, "There is no book with ID: " + str(_id)
                         else:
@@ -191,7 +193,7 @@ class User:
             else:
                 return False, "There is no user with this ID: " + str(self.user.id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def user_find_book(self, mongo_client: pymongo.MongoClient, _id):
@@ -210,7 +212,7 @@ class User:
             else:
                 return None, "User: " + str(self.user.id) + " is not verified to find a book!"
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def user_find_author(self, mongo_client: pymongo.MongoClient, name):
@@ -222,7 +224,7 @@ class User:
                 if result is not None:
                     return result
                 else:
-                    return False, "There is no author with name: " + name
+                    return False, "There is no author with name: " + str(name)
             else:
                 return False, "User: " + str(self.user.id) \
                        + " is waiting for the approval of personal data changes by the admin!"
@@ -253,8 +255,8 @@ class User:
                         get_user_changes_column(mongo_client).insert_one(new_personal_data_changes.to_dict())
                         new_approved = {"$set": {'approved_by_librarian': False}}
                         get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)}, new_approved)
-                        return True, f"User: {self.user.id} has updated his personal data" \
-                                     f" and waiting for approve from librarian"
+                        return True, "User: " + str(self.user.id) + " has updated his personal data" \
+                                     " and waiting for approve from librarian"
                     else:
                         return False, "User: " + str(self.user.id) \
                                + " is waiting for the approval of personal data changes by the admin!"
@@ -287,7 +289,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def unban_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -305,7 +307,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def verified_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -323,7 +325,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def unverified_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -341,7 +343,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def accept_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -370,7 +372,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def decline_user_changes(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -394,7 +396,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def get_all_users(self, mongo_client: pymongo.MongoClient):
@@ -493,7 +495,7 @@ class Librarian(User):
                                 copies_available=copies_available, genre=genre,
                                 description=description, count_borrowed=count_borrowed)
                 get_book_column(mongo_client).insert_one(new_book.to_dict())
-                return True, "Book: " + title + " has been added to library"
+                return True, "Book: " + str(title) + " has been added to library"
             else:
                 return False, "There is no author the ID: " + str(author_id)
         else:
@@ -525,10 +527,10 @@ class Librarian(User):
                 else:
                     return False, "There is no book with the ID: " + str(_id)
             else:
-                return False, "ID: " + author_id + " is not valid. ID Must be a single string" \
+                return False, "ID: " + str(author_id) + " is not valid. ID Must be a single string" \
                                                    " of 12 bytes or a string of 24 hex characters"
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     # can only be done if no books borrowed
@@ -546,8 +548,25 @@ class Librarian(User):
             else:
                 return False, "There is no book with the ID: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
+
+    def admin_create_account(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int,
+                             address: str, login: str, password: str) -> Tuple[bool, str]:
+        if not user_exists(mongo_client, login):
+            if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
+                generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
+                new_user = Person(_id=generated_id, first_name=first_name,
+                                  surname=surname, pid=pid, address=address,
+                                  login_name=login, password=password, role=Roles.User.name,
+                                  verified=True, approved_by_librarian=True)
+                new_user.hash_password()
+                get_user_column(mongo_client).insert_one(new_user.to_dict())
+                return True, "Admin has created account with ID: " + str(generated_id)
+            else:
+                return False, "Password must have at least 6 characters!"
+        else:
+            return False, "Account: " + str(login) + " already exists"
 
     # same as in books, if user has no books borrowed
     def delete_user(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -564,7 +583,7 @@ class Librarian(User):
             else:
                 return False, "There is no user with the ID: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def add_author(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str) -> Tuple[bool, str]:
@@ -586,7 +605,7 @@ class Librarian(User):
             else:
                 return False, "There is no author the ID: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def find_author(self, mongo_client: pymongo.MongoClient, _id):
@@ -597,9 +616,9 @@ class Librarian(User):
             if result is not None:
                 return True, result
             else:
-                return False, "There is no author with id: " + _id
+                return False, "There is no author with ID: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def delete_author(self, mongo_client: pymongo.MongoClient, _id) -> Tuple[bool, str]:
@@ -612,7 +631,7 @@ class Librarian(User):
             else:
                 return False, "There is no author with the ID: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def find_book(self, mongo_client: pymongo.MongoClient, _id) -> Union[Tuple[bool, list], Tuple[bool, str]]:
@@ -642,7 +661,7 @@ class Librarian(User):
             else:
                 return False, "There is no book with the ID: " + str(_id)
         else:
-            return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
     def find_all_books(self, mongo_client: pymongo.MongoClient):
@@ -662,7 +681,7 @@ def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
         except KeyError:
             return []
     else:
-        return False, "ID: " + _id + " is not valid. ID Must be a single string" \
+        return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                      " of 12 bytes or a string of 24 hex characters"
 
 
@@ -672,18 +691,16 @@ def get_book_column(mongo_client: pymongo.MongoClient):
 
 def book_exists(mongo_client: pymongo.MongoClient, book_name):
     books = get_book_column(mongo_client)
-
     query = {"title": book_name}
     cursor = books.find(query)
-    found = 0
     for _ in cursor:
         return True
     return False
 
 
-def book_exists_id(mongo_client: pymongo.MongoClient, id):
+def book_exists_id(mongo_client: pymongo.MongoClient, _id):
     books = get_book_column(mongo_client)
-    cursor = books.find({"_id": ObjectId(id)})
+    cursor = books.find({"_id": ObjectId(_id)})
     for _ in cursor:
         return True
     return False
@@ -699,33 +716,33 @@ def get_user_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][USER]
 
 
-def user_exists_id(mongo_client: pymongo.MongoClient, id):
+def user_exists_id(mongo_client: pymongo.MongoClient, _id):
     users = get_user_column(mongo_client)
-    cursor = users.find({"_id": ObjectId(id)})
+    cursor = users.find({"_id": ObjectId(_id)})
     for _ in cursor:
         return True
     return False
 
 
-def user_is_not_banned(mongo_client: pymongo.MongoClient, id):
+def user_is_not_banned(mongo_client: pymongo.MongoClient, _id):
     users = get_user_column(mongo_client)
-    cursor = users.find({"$and": [{"_id": ObjectId(id)}, {"banned": False}]})
+    cursor = users.find({"$and": [{"_id": ObjectId(_id)}, {"banned": False}]})
     for _ in cursor:
         return True
     return False
 
 
-def user_is_verified(mongo_client: pymongo.MongoClient, id):
+def user_is_verified(mongo_client: pymongo.MongoClient, _id):
     users = get_user_column(mongo_client)
-    cursor = users.find({"$and": [{"_id": ObjectId(id)}, {"verified": True}]})
+    cursor = users.find({"$and": [{"_id": ObjectId(_id)}, {"verified": True}]})
     for _ in cursor:
         return True
     return False
 
 
-def user_is_approved_by_librarian(mongo_client: pymongo.MongoClient, id):
+def user_is_approved_by_librarian(mongo_client: pymongo.MongoClient, _id):
     users = get_user_column(mongo_client)
-    cursor = users.find({"$and": [{"_id": ObjectId(id)}, {"approved_by_librarian": True}]})
+    cursor = users.find({"$and": [{"_id": ObjectId(_id)}, {"approved_by_librarian": True}]})
     for _ in cursor:
         return True
     return False
@@ -749,9 +766,9 @@ def get_author_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][AUTHOR]
 
 
-def author_exists_id(mongo_client: pymongo.MongoClient, id):
+def author_exists_id(mongo_client: pymongo.MongoClient, _id):
     authors = get_author_column(mongo_client)
-    cursor = authors.find({"_id": ObjectId(id)})
+    cursor = authors.find({"_id": ObjectId(_id)})
     for _ in cursor:
         return True
     return False
@@ -765,19 +782,19 @@ def get_user_changes_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][USER_CHANGES]
 
 
-def export_to_csv(mongo_client: pymongo.MongoClient, namefile):
+def export_to_csv(mongo_client: pymongo.MongoClient, file_name):
     db = mongo_client.library
     collection = db.book
     books = pd.DataFrame(list(collection.find()))
     books = books.drop(['count_borrowed'], axis=1)
-    books.to_csv(namefile + ".csv", sep=";")
+    books.to_csv(file_name + ".csv", sep=";")
 
 
-def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
+def import_from_csv(mongo_client: pymongo.MongoClient, file_name):
     db = mongo_client.library
     collection = db.book
     try:
-        data = pd.DataFrame(pd.read_csv(namefile + ".csv", sep=";", header=0))
+        data = pd.DataFrame(pd.read_csv(file_name + ".csv", sep=";", header=0))
         data = data.to_dict(orient="records")
         for x in range(len(data)):
             if ObjectId.is_valid(data[x]["_id"]):
@@ -801,9 +818,9 @@ def import_from_csv(mongo_client: pymongo.MongoClient, namefile):
                           + " has been updated from csv file")
             else:
                 print("ID: " + data[x]["_id"] + " is not valid."
-                                                " ID Must be a single string of 12 bytes or a string of 24 hex characters")
+                      " ID Must be a single string of 12 bytes or a string of 24 hex characters")
     except FileNotFoundError:
-        print("File: " + namefile + ".csv was not found")
+        print("File: " + file_name + ".csv was not found")
 
 
 def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int, address: str, login: str,
@@ -838,7 +855,7 @@ def create_account(mongo_client: pymongo.MongoClient, first_name: str, surname: 
         else:
             return False, "Password must have at least 6 characters!"
     else:
-        return False, "Acount: " + str(login) + " already exists"
+        return False, "Account: " + str(login) + " already exists"
 
 
 def hash_password(password, salt):
@@ -846,7 +863,7 @@ def hash_password(password, salt):
 
 
 def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union[
-    Tuple[bool, Person], Tuple[bool, str], bool]:
+          Tuple[bool, Person], Tuple[bool, str], bool]:
     user_column = get_user_column(mongo_client)
     if user_exists(mongo_client, login):
         user_exists_return(mongo_client, login)
@@ -855,7 +872,7 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union
     user = user_column.find_one(query)
 
     if user is not None:
-        byte_password = bytes(password, 'UTF-8')
+        #byte_password = bytes(password, 'UTF-8')
         salt = user['salt']
         if re.fullmatch(r'[A-Za-z0-9@#$%^&+=_]{6,}', password):
             if hash_password(password, salt) == user['password']:

@@ -41,6 +41,7 @@ if login_result[0]:
         #print(current_user.add_book(mongo_client, "New book", "3bef9919eca266bb9af0248f", 231, 2003, "dragon", 2,
         #                            "fantasy", "description", 0))
         #print(current_user.add_author(mongo_client, "Dominik", "Borec"))
+        print(current_user.admin_create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom3", "password"))
         print(current_user.find_user(mongo_client, "f2106a1013a07981ba48bfea"))
         print(current_user.find_whole_user(mongo_client, "f2106a1013a07981ba48bfea"))
         print(current_user.find_book(mongo_client, "f0eac029e9022e938b0561dd"))
