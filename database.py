@@ -21,7 +21,7 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-#login_result = login(mongo_client,"login_lib","lib_12345")
+login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -32,7 +32,7 @@ mongo_client = get_mongo_client()
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-login_result = login(mongo_client,"Dom2","password")
+#login_result = login(mongo_client,"Dom2","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -72,14 +72,14 @@ if login_result[0]:
         #print(current_user.borrow_book(mongo_client, '6362f102af7f10a4c3ab85f4', "f2106a1013a07981ba48bfea")[1])
         print(get_all_borrowed_books_from_user(mongo_client, "f2106a1013a07981ba48bfea"))
         #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4", "f2106a1013a07981ba48bfea")[1])
-        #export_to_csv(mongo_client, "books")
+        #export_to_csv(mongo_client)
         #import_from_csv(mongo_client, "books")
 
     else:
         current_user = User(user)
         user_current_id = current_user.user.id
         print(current_user.user_find_book(mongo_client, "f0eac029e9022e938b0561dd"))
-        #print(current_user.edit_user(mongo_client, "test_of_changes1", "data", 24432, "CZ", "Dom2", "password")[1])
+        print(current_user.edit_user(mongo_client, "test_of_changes1", "data", 24432, "CZ", "Dom2", "password")[1])
         print(current_user.borrow_book(mongo_client, '6362f102af7f10a4c3ab85f4')[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
         #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])

@@ -787,19 +787,26 @@ def get_user_changes_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][USER_CHANGES]
 
 
-def export_to_csv(mongo_client: pymongo.MongoClient, file_name):
+def export_to_csv(mongo_client: pymongo.MongoClient):
     db = mongo_client.library
-    collection = db.book
-    books = pd.DataFrame(list(collection.find()))
+    books = pd.DataFrame(list(db.book.find()))
     books = books.drop(['count_borrowed'], axis=1)
-    books.to_csv(file_name + ".csv", sep=";")
+    books.to_csv("books.csv", sep=";")
+    users = pd.DataFrame(list(db.user.find()))
+    users.to_csv("users.csv", sep=";")
+    authors = pd.DataFrame(list(db.author.find()))
+    authors.to_csv("authors.csv", sep=";")
+    borrowed_books = pd.DataFrame(list(db.book_status.find()))
+    borrowed_books.to_csv("borrowed_books.csv", sep=";")
+    user_changes = pd.DataFrame(list(db.user_changes.find()))
+    user_changes.to_csv("user_changes.csv", sep=";")
 
 
 def import_from_csv(mongo_client: pymongo.MongoClient, file_name):
     db = mongo_client.library
     collection = db.book
     try:
-        data = pd.DataFrame(pd.read_csv(file_name + ".csv", sep=";", header=0))
+        data = pd.DataFrame(pd.read_csv(file_name + '.csv', sep=";", header=0))
         data = data.to_dict(orient="records")
         for x in range(len(data)):
             if ObjectId.is_valid(data[x]["_id"]):
