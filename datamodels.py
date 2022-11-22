@@ -12,10 +12,12 @@ class Roles(Enum):
     Librarian = 1
     User = 2
 
+
 class Autocomplete_options_book(Enum):
     title = "title"
     author = "author"
     year = "year"
+
 
 class Autocomplete_options_user(Enum):
     first_name = "first_name"
@@ -53,6 +55,7 @@ class Person:
     def id(self):
         return self._id
 
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass    
 class Book_status:
@@ -62,13 +65,17 @@ class Book_status:
     date_returned: datetime
     returned: bool
 
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass    
 class Person_changes:
     person_id: ObjectId
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
+    pid: int
     address: str = field(metadata={"validate": validate.Length(min=1, max=256)})
+    login_name: str = field(metadata={"validate": validate.Length(min=1, max=32)})
+    password: str = field(metadata={"validate": validate.Length(min=6, max=64)})
     approved_by_librarian: bool
     created_at: datetime
     approved_or_rejected_at: datetime
@@ -83,7 +90,8 @@ class Author:
     #variables if we fancy but we ain't fancy
     # about: str
     # image: str
-    
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Book:

@@ -231,13 +231,14 @@ class User:
         else:
             return None, "User: " + str(self.user.id) + " is not verified to find a book!"
 
-    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, address: str, _id=None) -> \
-            Tuple[bool, str]:
+    def edit_user(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str, pid: int, address: str,
+                  login_name=None, password=None, _id=None) -> Tuple[bool, str]:
         if user_exists_id(mongo_client, self.user.id):
             if self.user.role == Roles.Librarian.name:
                 if user_exists_id(mongo_client, _id):
                     query = {"_id": ObjectId(_id)}
-                    new_values = {"$set": {"first_name": first_name, "surname": surname, "address": address}}
+                    new_values = {"$set": {"first_name": first_name, "surname": surname, "pid": pid,
+                                           "address": address}}
                     get_user_column(mongo_client).update_one(query, new_values)
                     return True, "User: " + str(_id) + " has been updated!"
                 else:
@@ -247,8 +248,9 @@ class User:
                     if user_is_approved_by_librarian(mongo_client, self.user.id):
                         new_personal_data_changes = Person_changes(person_id=ObjectId(self.user.id),
                                                                    first_name=first_name,
-                                                                   surname=surname,
-                                                                   address=address,
+                                                                   surname=surname, pid=pid,
+                                                                   address=address, login_name=login_name,
+                                                                   password=hash_password(password, self.user.salt),
                                                                    approved_by_librarian=False,
                                                                    created_at=time.time(),
                                                                    approved_or_rejected_at=None)
@@ -357,7 +359,10 @@ class Librarian(User):
                     get_user_column(mongo_client).update_one({"_id": ObjectId(_id)}, {
                         "$set": {"first_name": user_with_changed_data["first_name"],
                                  "surname": user_with_changed_data["surname"],
-                                 "address": user_with_changed_data["address"]}})
+                                 "pid": user_with_changed_data["pid"],
+                                 "address": user_with_changed_data["address"],
+                                 "login_name": user_with_changed_data["login_name"],
+                                 "password": user_with_changed_data["password"]}})
                     get_user_column(mongo_client).update_one({"_id": ObjectId(_id)},
                                                              {"$set": {'approved_by_librarian': True}})
                     get_user_changes_column(mongo_client).update_one({"$and": [{"person_id": ObjectId(_id)},
@@ -366,9 +371,9 @@ class Librarian(User):
                                                                      {"$set": {'approved_by_librarian': True,
                                                                                'approved_or_rejected_at': time.time()}})
 
-                    return True, "Admin has accepted the changes to the profile data of user: " + str(_id)
+                    return True, "Admin has accepted the personal data changes to the profile of user: " + str(_id)
                 else:
-                    return False, "User: " + str(_id) + " has no changes to approve by librarian"
+                    return False, "User: " + str(_id) + " has no personal data changes to approve by librarian"
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
@@ -390,9 +395,9 @@ class Librarian(User):
                                                                                {"approved_or_rejected_at": None}]},
                                                                      {"$set": {'approved_by_librarian': False,
                                                                                'approved_or_rejected_at': time.time()}})
-                    return True, "Admin has declines the changes to the profile data of user: " + str(_id)
+                    return True, "Admin has declines the personal data changes to the profile of user: " + str(_id)
                 else:
-                    return False, "User: " + str(_id) + " has no changes to approve by librarian"
+                    return False, "User: " + str(_id) + " has no personal data changes to approve by librarian"
             else:
                 return False, "There is no user with _id: " + str(_id)
         else:
