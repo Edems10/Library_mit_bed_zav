@@ -2,7 +2,7 @@ import codecs
 from dataclasses import dataclass
 from typing import Tuple, Union
 from datetime import datetime
-
+from tkinter.filedialog import askopenfilename
 import pandas as pd
 from bson.objectid import ObjectId
 from datamodels import Autocomplete_options_book, Autocomplete_options_user, Book, Person, Author, Person_changes, \
@@ -12,6 +12,8 @@ import bcrypt
 import re
 import time
 import os
+import gridfs
+import bson
 
 # DATABASE NAME
 DATABASE_NAME = 'library'
@@ -490,14 +492,22 @@ class Librarian(User):
         users = get_user_column(mongo_client)
         return list(users.find({"approved_by_librarian": False}, {"_id": 1}))
 
-    def add_book(self, mongo_client: pymongo.MongoClient, title: str, author_id, length: int, year: int, image: str,
-                 copies_available: int, genre: str, description: str, count_borrowed: int) -> Tuple[bool, str]:
+    def add_book(self, mongo_client: pymongo.MongoClient, title: str, author_id, length: int, year: int ,
+                 copies_available: int, genre: str, description: str, count_borrowed: int, image = None) -> Tuple[bool, str]:
         generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
         if not book_exists_id(mongo_client, generated_id):
             if author_exists_id(mongo_client, author_id):
+                if image is None:
+                    filename = askopenfilename(filetypes=[('JPG files', '*.jpg'),
+                                                          ('PNG files', '*.png'),
+                                                          ('all files', '.*')])
+                    if filename != '':
+                        with open(filename, 'rb') as f:
+                            contents = f.read()
+                    else:
+                        contents = None
                 new_book = Book(_id=generated_id, title=title, author=ObjectId(author_id), length=length, year=year,
-                                image=image,
-                                copies_available=copies_available, genre=genre,
+                                image=contents,copies_available=copies_available, genre=genre,
                                 description=description, count_borrowed=count_borrowed)
                 get_book_column(mongo_client).insert_one(new_book.to_dict())
                 return True, "Book: " + str(title) + " has been added to library"
@@ -508,8 +518,7 @@ class Librarian(User):
 
     # can only be done if no books borrowed
     def edit_book(self, mongo_client: pymongo.MongoClient, _id, title: str, author_id, length: int, year: int,
-                  image: str,
-                  copies_available: int, genre: str, description: str) -> Tuple[bool, str]:
+                  copies_available: int, genre: str, description: str,image=None) -> Tuple[bool, str]:
         if ObjectId.is_valid(_id):
             if ObjectId.is_valid(author_id):
                 books = get_book_column(mongo_client)
@@ -671,7 +680,7 @@ class Librarian(User):
 
     def find_all_books(self, mongo_client: pymongo.MongoClient):
         books = get_book_column(mongo_client)
-        return list(books.find({}, {"_id": 0, "title": 1, "author": 1}))
+        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1}))
 
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
