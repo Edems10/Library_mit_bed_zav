@@ -45,40 +45,44 @@ class User:
             if user_exists_id(mongo_client, self.user.id):
                 if self.user.role == Roles.Librarian.name:
                     if book_exists_id(mongo_client, _id):
-                        if user_exists_id(mongo_client, user_id):
-                            books = get_book_column(mongo_client)
-                            query = {"$and": [{"_id": ObjectId(_id)}, {"copies_available": {"$ne": 0}}]}
-                            result = books.find_one(query)
-                            actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
-                            if result is not None:
-                                if _id not in actual_borrowed_books:
-                                    if len(actual_borrowed_books) < 6:
-                                        new_book = Book_status(book_id=ObjectId(result["_id"]),
-                                                               user_id=ObjectId(user_id),
-                                                               date_borrowed=time.time(),
-                                                               date_returned=None,
-                                                               returned=False)
-                                        get_book_status_column(mongo_client).insert_one(new_book.to_dict())
-                                        get_user_column(mongo_client).update_one({"_id": ObjectId(user_id)},
-                                                                                 {'$inc': {"count_borrowed_books": 1}})
-                                        get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                                 {'$inc': {"count_borrowed": 1}})
-                                        get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                                 {'$inc': {"copies_available": -1}})
-                                        return True, "Admin just borrowed book to user: " + str(user_id) \
-                                                     + " book named: " + str(result["title"]) \
-                                                     + ", Book ID: " + str(result["_id"])
+                        if ObjectId.is_valid(user_id):
+                            if user_exists_id(mongo_client, user_id):
+                                books = get_book_column(mongo_client)
+                                query = {"$and": [{"_id": ObjectId(_id)}, {"copies_available": {"$ne": 0}}]}
+                                result = books.find_one(query)
+                                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
+                                if result is not None:
+                                    if _id not in actual_borrowed_books:
+                                        if len(actual_borrowed_books) < 6:
+                                            new_book = Book_status(book_id=ObjectId(result["_id"]),
+                                                                   user_id=ObjectId(user_id),
+                                                                   date_borrowed=time.time(),
+                                                                   date_returned=None,
+                                                                   returned=False)
+                                            get_book_status_column(mongo_client).insert_one(new_book.to_dict())
+                                            get_user_column(mongo_client).update_one({"_id": ObjectId(user_id)},
+                                                                                     {'$inc': {"count_borrowed_books": 1}})
+                                            get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                                     {'$inc': {"count_borrowed": 1}})
+                                            get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                                     {'$inc': {"copies_available": -1}})
+                                            return True, "Admin just borrowed book to user: " + str(user_id) \
+                                                         + " book named: " + str(result["title"]) \
+                                                         + ", Book ID: " + str(result["_id"])
+                                        else:
+                                            return False, "User: " + str(user_id) \
+                                                   + " has borrowed the maximum number of books"
                                     else:
-                                        return False, "User: " + str(user_id) \
-                                               + " has borrowed the maximum number of books"
+                                        return False, "User: " + str(user_id) + " has already borrowed book named: " \
+                                               + str(result["title"]) + ", Book ID: " + str(_id)
                                 else:
-                                    return False, "User: " + str(user_id) + " has already borrowed book named: " \
-                                           + str(result["title"]) + ", Book ID: " + str(_id)
+                                    return False, ", Book ID: " + str(_id) \
+                                           + " is currently borrowed and has none copies available"
                             else:
-                                return False, ", Book ID: " + str(_id) \
-                                       + " is currently borrowed and has none copies available"
+                                return False, "There is no user with this ID: " + str(user_id)
                         else:
-                            return False, "There is no user with this ID: " + str(user_id)
+                            return False, "ID: " + str(user_id) + " is not valid. ID Must be a single string" \
+                                                              " of 12 bytes or a string of 24 hex characters"
                     else:
                         return False, "There is no book with ID: " + str(_id)
                 else:
@@ -136,26 +140,30 @@ class User:
             if user_exists_id(mongo_client, self.user.id):
                 if self.user.role == Roles.Librarian.name:
                     if book_exists_id(mongo_client, _id):
-                        if user_exists_id(mongo_client, user_id):
-                            actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
-                            if _id in actual_borrowed_books:
-                                get_book_status_column(mongo_client).update_one({"$and":
-                                                                                [{"user_id": ObjectId(user_id)},
-                                                             {"book_id": ObjectId(_id)}], "returned": False},
-                                                             {"$set": {"returned": True, "date_returned": time.time()}})
-                                get_user_column(mongo_client).update_one({"_id": ObjectId(user_id)},
-                                                                         {'$inc': {"count_borrowed_books": -1}})
-                                get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                         {'$inc': {"count_borrowed": -1}})
-                                get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
-                                                                         {'$inc': {"copies_available": 1}})
-                                return True, "Admin just returned book to User: " + str(self.user.id) +\
-                                             ", book ID: " + str(_id)
+                        if ObjectId.is_valid(user_id):
+                            if user_exists_id(mongo_client, user_id):
+                                actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
+                                if _id in actual_borrowed_books:
+                                    get_book_status_column(mongo_client).update_one({"$and":
+                                                                                    [{"user_id": ObjectId(user_id)},
+                                                                 {"book_id": ObjectId(_id)}], "returned": False},
+                                                                 {"$set": {"returned": True, "date_returned": time.time()}})
+                                    get_user_column(mongo_client).update_one({"_id": ObjectId(user_id)},
+                                                                             {'$inc': {"count_borrowed_books": -1}})
+                                    get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                             {'$inc': {"count_borrowed": -1}})
+                                    get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
+                                                                             {'$inc': {"copies_available": 1}})
+                                    return True, "Admin just returned book to User: " + str(self.user.id) +\
+                                                 ", book ID: " + str(_id)
+                                else:
+                                    return False, "User: " + str(self.user.id) + " has not borrowed a book with ID: "\
+                                           + str(_id)
                             else:
-                                return False, "User: " + str(self.user.id) + " has not borrowed a book with ID: "\
-                                       + str(_id)
+                                return False, "There is no user with this ID: " + str(user_id)
                         else:
-                            return False, "There is no user with this ID: " + str(user_id)
+                            return False, "ID: " + str(user_id) + " is not valid. ID Must be a single string" \
+                                                              " of 12 bytes or a string of 24 hex characters"
                     else:
                         return False, "There is no book with ID: " + str(_id)
                 else:
@@ -235,14 +243,18 @@ class User:
                   login_name=None, password=None, _id=None) -> Tuple[bool, str]:
         if user_exists_id(mongo_client, self.user.id):
             if self.user.role == Roles.Librarian.name:
-                if user_exists_id(mongo_client, _id):
-                    query = {"_id": ObjectId(_id)}
-                    new_values = {"$set": {"first_name": first_name, "surname": surname, "pid": pid,
-                                           "address": address}}
-                    get_user_column(mongo_client).update_one(query, new_values)
-                    return True, "User: " + str(_id) + " has been updated!"
+                if ObjectId.is_valid(_id):
+                    if user_exists_id(mongo_client, _id):
+                        query = {"_id": ObjectId(_id)}
+                        new_values = {"$set": {"first_name": first_name, "surname": surname, "pid": pid,
+                                               "address": address}}
+                        get_user_column(mongo_client).update_one(query, new_values)
+                        return True, "User: " + str(_id) + " has been updated!"
+                    else:
+                        return False, "There is no user with _id: " + str(_id)
                 else:
-                    return False, "There is no user with _id: " + str(_id)
+                    return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
+                                                      " of 12 bytes or a string of 24 hex characters"
             else:
                 if user_is_verified(mongo_client, self.user.id):
                     if user_is_approved_by_librarian(mongo_client, self.user.id):
