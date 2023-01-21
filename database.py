@@ -21,7 +21,7 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 # print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
 # LOGIN LIBRARIAN
-login_result = login(mongo_client,"login_lib","lib_12345")
+#login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -32,7 +32,7 @@ login_result = login(mongo_client,"login_lib","lib_12345")
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-#login_result = login(mongo_client,"Dom2","password")
+login_result = login(mongo_client,"Dom2","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -68,7 +68,7 @@ if login_result[0]:
         print(user_is_not_banned(mongo_client, "862b3856cd1c7bd15797b58a"))
         print(user_is_verified(mongo_client, "06a6e72a01f0ffef240466ca"))
         print(user_is_approved_by_librarian(mongo_client, "06a6e72a01f0ffef240466ca"))
-        #print(current_user.edit_user(mongo_client, "test_of_changes40", "data2", 6543216, "CZ", _id= "06a6e72a01f0ffef240466ca")[1])
+        print(current_user.edit_user(mongo_client, "Dom", "data2", 6543216, "CZ", _id= "9aa02a0a8d0f1be94c16a6e7")[1])
         #print(current_user.borrow_book(mongo_client, '6362f102af7f10a4c3ab85f4', "f2106a1013a07981ba48bfea")[1])
         print(get_all_borrowed_books_from_user(mongo_client, "f2106a1013a07981ba48bfea"))
         #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4", "f2106a1013a07981ba48bfea")[1])
