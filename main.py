@@ -231,6 +231,7 @@ class App(customtkinter.CTk):
                 current_user = User(user)
                 print("User: " + current_user.user.login_name)
                 self.select_frame_by_name("main")
+                self.main_page_frame_label.configure(text="User: " + current_user.user.login_name + " is logged")
         else:
             print(login_result[1])
 
@@ -240,6 +241,9 @@ class App(customtkinter.CTk):
 
     def main_button_event(self):
         self.select_frame_by_name("register")
+
+    def ChangeLabelMainPageText(m):
+        m.config(text='You pressed the button!')
 
 if __name__ == "__main__":
     app = App()
