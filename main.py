@@ -27,7 +27,7 @@ def get_mongo_client():
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.title("title.py")
+        self.title("library.py")
         self.geometry("700x450")
 
         # set grid layout 1x2
@@ -67,25 +67,18 @@ class App(customtkinter.CTk):
         self.navigation_frame.grid(row=0, column=0, sticky="nsew")
         self.navigation_frame.grid_rowconfigure(4, weight=1)
 
-        self.navigation_frame_label = customtkinter.CTkLabel(self.navigation_frame, text=" Knihovníci",
+        self.navigation_frame_label = customtkinter.CTkLabel(self.navigation_frame, text=" Library",
                                                              image=self.logo_image,
                                                              compound="left",
                                                              font=customtkinter.CTkFont(size=15, weight="bold"))
         self.navigation_frame_label.grid(row=0, column=0, padx=20, pady=20)
-
-        self.home_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10,
-                                                   text="Home",
-                                                   fg_color="transparent", text_color=("gray10", "gray90"),
-                                                   hover_color=("gray70", "gray30"),
-                                                   image=self.login_image, anchor="w", command=self.home_button_event)
-        self.home_button.grid(row=1, column=0, sticky="ew")
 
         self.login_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10,
                                                    text="Login",
                                                    fg_color="transparent", text_color=("gray10", "gray90"),
                                                    hover_color=("gray70", "gray30"),
                                                    image=self.login_image, anchor="w", command=self.login_button_event)
-        self.login_button.grid(row=2, column=0, sticky="ew")
+        self.login_button.grid(row=1, column=0, sticky="ew")
 
         self.register_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40,
                                                        border_spacing=10, text="Register",
@@ -93,7 +86,14 @@ class App(customtkinter.CTk):
                                                        hover_color=("gray70", "gray30"),
                                                        image=self.register_image, anchor="w",
                                                        command=self.register_button_event)
-        self.register_button.grid(row=3, column=0, sticky="ew")
+        self.register_button.grid(row=2, column=0, sticky="ew")
+
+        self.home_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10,
+                                                   text="Home",
+                                                   fg_color="transparent", text_color=("gray10", "gray90"),
+                                                   hover_color=("gray70", "gray30"),
+                                                   image=self.login_image, anchor="w", command=self.home_button_event)
+        self.home_button.grid(row=3, column=0, sticky="ew")
 
 
 
@@ -103,19 +103,63 @@ class App(customtkinter.CTk):
         self.navigation_frame_logged.grid(row=0, column=0, sticky="nsew")
         self.navigation_frame_logged.grid_rowconfigure(4, weight=1)
 
-        self.navigation_frame_logged_label = customtkinter.CTkLabel(self.navigation_frame_logged, text=" Knihovníci",
+        self.navigation_frame_logged_label = customtkinter.CTkLabel(self.navigation_frame_logged, text=" Library",
                                                              image=self.logo_image,
                                                              compound="left",
                                                              font=customtkinter.CTkFont(size=15, weight="bold"))
         self.navigation_frame_logged_label.grid(row=0, column=0, padx=20, pady=20)
 
-        self.main_button = customtkinter.CTkButton(self.navigation_frame_logged, corner_radius=0, height=40,
+        self.navigation_frame_logged_main_button = customtkinter.CTkButton(self.navigation_frame_logged, corner_radius=0, height=40,
                                                        border_spacing=10, text="Library",
                                                        fg_color="transparent", text_color=("gray10", "gray90"),
                                                        hover_color=("gray70", "gray30"),
                                                        image=self.register_image, anchor="w",
                                                        command=self.main_button_event)
-        self.main_button.grid(row=3, column=0, sticky="ew")
+        self.navigation_frame_logged_main_button.grid(row=1, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged,
+                                                                                   corner_radius=0, height=40,
+                                                                                   border_spacing=10,
+                                                                                   text="Log out",
+                                                                                   fg_color="transparent",
+                                                                                   text_color=("gray10", "gray90"),
+                                                                                   hover_color=("gray70", "gray30"),
+                                                                                   image=self.register_image,
+                                                                                   anchor="w",
+                                                                                   command=self.navigation_frame_logged_admin_logout_button_event)
+        self.navigation_frame_logged_admin_logout_button.grid(row=2, column=0, sticky="ew")
+
+
+
+
+        # navigation frame for admin
+        self.navigation_frame_logged_admin = customtkinter.CTkFrame(self, corner_radius=0)
+        self.navigation_frame_logged_admin.grid(row=0, column=0, sticky="nsew")
+        self.navigation_frame_logged_admin.grid_rowconfigure(4, weight=1)
+
+        self.navigation_frame_logged_admin_label = customtkinter.CTkLabel(self.navigation_frame_logged_admin, text=" Library",
+                                                                    image=self.logo_image,
+                                                                    compound="left",
+                                                                    font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.navigation_frame_logged_admin_label.grid(row=0, column=0, padx=20, pady=20)
+
+        self.navigation_frame_logged_admin_main_button = customtkinter.CTkButton(self.navigation_frame_logged_admin, corner_radius=0, height=40,
+                                                   border_spacing=10, text="Library admin",
+                                                   fg_color="transparent", text_color=("gray10", "gray90"),
+                                                   hover_color=("gray70", "gray30"),
+                                                   image=self.register_image, anchor="w",
+                                                   command=self.main_button_event)
+
+        self.navigation_frame_logged_admin_main_button.grid(row=1, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged_admin,
+                                                                                 corner_radius=0, height=40,
+                                                                                 border_spacing=10,
+                                                                                 text="Log out",
+                                                                                 fg_color="transparent",
+                                                                                 text_color=("gray10", "gray90"),
+                                                                                 hover_color=("gray70", "gray30"),
+                                                                                 image=self.register_image, anchor="w",
+                                                                                 command=self.navigation_frame_logged_admin_logout_button_event)
+        self.navigation_frame_logged_admin_logout_button.grid(row=2, column=0, sticky="ew")
 
 
 
@@ -151,12 +195,24 @@ class App(customtkinter.CTk):
 
 
 
-        #create main page after user is logged sucessfully
+        #create main page after for normal user which logged sucessfully
         self.main_page_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_page_frame.grid_columnconfigure(0, weight=1)
 
         self.main_page_frame_label = customtkinter.CTkLabel(self.main_page_frame, text="User is logged")
         self.main_page_frame_label.grid(row=0, column=0, padx=20, pady=10)
+
+
+
+
+
+
+        # create main page after for admin which logged sucessfully
+        self.main_page_frame_admin = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.main_page_frame_admin.grid_columnconfigure(0, weight=1)
+
+        self.main_page_frame_admin_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="User is logged")
+        self.main_page_frame_admin_label.grid(row=0, column=0, padx=20, pady=10)
 
 
 
@@ -185,29 +241,46 @@ class App(customtkinter.CTk):
         self.home_button.configure(fg_color=("gray75", "gray25") if name == "home" else "transparent")
         self.login_button.configure(fg_color=("gray75", "gray25") if name == "login" else "transparent")
         self.register_button.configure(fg_color=("gray75", "gray25") if name == "register" else "transparent")
-        self.main_button.configure(fg_color=("gray75", "gray25") if name == "main" else "transparent")
+        self.navigation_frame_logged_main_button.configure(fg_color=("gray75", "gray25") if name == "main" else "transparent")
+        self.navigation_frame_logged_admin_main_button.configure(fg_color=("gray75", "gray25") if name == "main_admin" else "transparent")
 
         # show selected frame
         if name == "home":
             self.home_frame.grid(row=0, column=1, sticky="nsew")
+            self.navigation_frame.grid(row=0, column=0, sticky="nsew")
             self.navigation_frame_logged.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
         else:
             self.home_frame.grid_forget()
+
         if name == "login":
             self.login_frame.grid(row=0, column=1, sticky="nsew")
+            self.navigation_frame.grid(row=0, column=0, sticky="nsew")
             self.navigation_frame_logged.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
         else:
             self.login_frame.grid_forget()
+
         if name == "register":
+            self.navigation_frame.grid(row=0, column=0, sticky="nsew")
             self.navigation_frame_logged.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
 
         if name == "main":
             self.navigation_frame.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
             self.navigation_frame_logged.grid(row=0, column=0, sticky="nsew")
             self.main_page_frame.grid(row=0, column=1, sticky="nsew")
         else:
-
             self.main_page_frame.grid_forget()
+
+        if name == "main_admin":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged.grid_forget()
+            self.navigation_frame_logged_admin.grid(row=0, column=0, sticky="nsew")
+            self.main_page_frame_admin.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.main_page_frame_admin.grid_forget()
 
     def home_button_event(self):
         self.select_frame_by_name("home")
@@ -219,19 +292,23 @@ class App(customtkinter.CTk):
         mongo_client = get_mongo_client()
         username = self.login_entry_username.get()
         password = self.login_entry_password.get()
-        #Dom2 password
+        #Admin: login_lib lib_12345
+        #User: Dom2 password
         login_result = login(mongo_client, username, password)
         if login_result[0]:
             user = login_result[1]
             if user.role == Roles.Librarian.name:
                 current_user = Librarian(user)
                 print("User: " + current_user.user.login_name)
-                self.select_frame_by_name("main")
+                self.select_frame_by_name("main_admin")
+                self.main_page_frame_admin_label.configure(text="Admin: " + current_user.user.login_name + " is logged")
+                self.navigation_frame_logged_admin_label.configure(text=" " + current_user.user.login_name)
             else:
                 current_user = User(user)
                 print("User: " + current_user.user.login_name)
                 self.select_frame_by_name("main")
                 self.main_page_frame_label.configure(text="User: " + current_user.user.login_name + " is logged")
+                self.navigation_frame_logged_label.configure(text=" " + current_user.user.login_name)
         else:
             print(login_result[1])
 
@@ -242,8 +319,14 @@ class App(customtkinter.CTk):
     def main_button_event(self):
         self.select_frame_by_name("register")
 
-    def ChangeLabelMainPageText(m):
-        m.config(text='You pressed the button!')
+    def navigation_frame_logged_admin_logout_button_event(self):
+        self.select_frame_by_name("login")
+        self.login_entry_username.delete(0, "end")
+        self.login_entry_password.delete(0, "end")
+
+
+#    def ChangeLabelMainPageText(m):
+#        m.configure(text='You pressed the button!')
 
 if __name__ == "__main__":
     app = App()
