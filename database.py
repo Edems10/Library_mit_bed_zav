@@ -32,7 +32,7 @@ mongo_client = get_mongo_client()
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-login_result = login(mongo_client,"Dom2","password")
+login_result = login(mongo_client,"Dom3","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -60,7 +60,7 @@ if login_result[0]:
 
         #print(current_user.ban_user(mongo_client, "abab3d0d7172399f94acbd11")[1])
         print(current_user.unban_user(mongo_client, "862b3856cd1c7bd15797b58a")[1])
-        print(current_user.accept_user_changes(mongo_client, "06a6e72a01f0ffef240466ca")[1])
+        print(current_user.accept_user_changes(mongo_client, "f2106a1013a07981ba48bfea")[1])
         #print(current_user.decline_user_changes(mongo_client, "06a6e72a01f0ffef240466ca")[1])
         print(current_user.get_all_users_with_stashed_changes(mongo_client))
         print(current_user.verified_user(mongo_client, "f2106a1013a07981ba48bfea")[1])
@@ -79,8 +79,8 @@ if login_result[0]:
         current_user = User(user)
         user_current_id = current_user.user.id
         print(current_user.user_find_book(mongo_client, "f0eac029e9022e938b0561dd"))
-        print(current_user.edit_user(mongo_client, "test_of_changes1", "data", 24432, "CZ", "Dom2", "password")[1])
-        print(current_user.borrow_book(mongo_client, '6362f102af7f10a4c3ab85f4')[1])
+        #print(current_user.edit_user(mongo_client, "test_of_changes1", "data", 24432, "CZ", "Dom2", "password")[1])
+        print(current_user.borrow_book(mongo_client, '9c90b612da0d0c0816fcfc65')[1])
         print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
         #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])
         print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
