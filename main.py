@@ -409,12 +409,23 @@ class App(customtkinter.CTk):
 
 
     def register_button_event(self):
-        mongo_client = get_mongo_client()
-        create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom2", "password")
-        self.select_frame_by_name("login")
+        self.select_frame_by_name("register")
 
     def register_button_register_user(self):
-        self.select_frame_by_name("register")
+        mongo_client = get_mongo_client()
+        firstname = self.registration_entry_firstname.get()
+        surname = self.registration_entry_surname.get()
+        pid = self.registration_entry_pid.get()
+        address = self.registration_entry_address.get()
+        username = self.registration_entry_username.get()
+        password = self.registration_entry_password.get()
+        registration_result = create_account(mongo_client, firstname, surname, pid, address, username, password)
+        register_user = registration_result[0]
+        if register_user == True:
+            self.select_frame_by_name("login")
+            print(registration_result[0])
+        else:
+            print(registration_result[1])
 
     def main_button_event(self):
         self.select_frame_by_name("register")
