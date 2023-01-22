@@ -17,11 +17,12 @@ from datamodels import Autocomplete_options_book, Autocomplete_options_user, Per
 API_KEY = os.path.join(os.path.dirname(__file__), 'api_key.env')
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), 'Book_img')
 
-
 def get_mongo_client():
     with open(API_KEY) as f:
         secret = f.read()
     return pymongo.MongoClient(secret)
+
+mongo_client = get_mongo_client()
 
 
 class App(customtkinter.CTk):
@@ -29,10 +30,10 @@ class App(customtkinter.CTk):
         super().__init__()
         self.title("library.py")
         self.geometry("700x450")
-
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+
 
         # load images with light and dark mode image
         image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons")
@@ -162,6 +163,19 @@ class App(customtkinter.CTk):
                                                    command=self.main_button_event)
 
         self.navigation_frame_logged_admin_main_button.grid(row=1, column=0, sticky="ew")
+
+        self.navigation_frame_logged_admin_edit_user = customtkinter.CTkButton(self.navigation_frame_logged_admin,
+                                                                                 corner_radius=0, height=40,
+                                                                                 border_spacing=10,
+                                                                                 text="Edit user",
+                                                                                 fg_color="transparent",
+                                                                                 text_color=("gray10", "gray90"),
+                                                                                 hover_color=("gray70", "gray30"),
+                                                                                 image=self.register_image, anchor="w",
+                                                                                 command=self.admin_button_edit_user_event)
+
+        self.navigation_frame_logged_admin_edit_user.grid(row=2, column=0, sticky="ew")
+
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged_admin,
                                                                                  corner_radius=0, height=40,
                                                                                  border_spacing=10,
@@ -171,7 +185,7 @@ class App(customtkinter.CTk):
                                                                                  hover_color=("gray70", "gray30"),
                                                                                  image=self.register_image, anchor="w",
                                                                                  command=self.navigation_frame_logged_admin_logout_button_event)
-        self.navigation_frame_logged_admin_logout_button.grid(row=2, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button.grid(row=3, column=0, sticky="ew")
 
 
 
@@ -266,23 +280,89 @@ class App(customtkinter.CTk):
                                                            width=200, height=30, border_width=2, corner_radius=10)
         self.registration_entry_username.grid(row=4, column=1, padx=10, columnspan=2)
 
-        # Label Password
         self.registration_label_password = customtkinter.CTkLabel(self.registration_frame, text="Password: ", width=30, height=25,
                                                            corner_radius=7)
         self.registration_label_password.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
-        # Entry Password
         self.registration_entry_password = customtkinter.CTkEntry(self.registration_frame,
                                                            placeholder_text="Enter Password", width=200, height=30,
                                                            border_width=2, corner_radius=10, show="•")
         self.registration_entry_password.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
 
-        # Button Login
         self.registration_button_register = customtkinter.CTkButton(self.registration_frame,
                                                           text="Register", width=70, fg_color="#36719F",
                                                           hover_color="#3B8ED0", text_color="#FFF",
                                                           command=self.register_button_register_user)
         self.registration_button_register.grid(row=6, column=0, padx=0, sticky='e')
+
+
+
+
+
+        # admin edit user page frame
+        self.admin_edit_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.admin_edit_user_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        self.admin_edit_user_label_id = customtkinter.CTkLabel(self.admin_edit_user_frame,
+                                                                      text="User ID: ", width=30, height=25,
+                                                                      corner_radius=7)
+        self.admin_edit_user_label_id.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_user_entry_id = customtkinter.CTkEntry(self.admin_edit_user_frame,
+                                                                      placeholder_text="Enter User ID",
+                                                                      width=200, height=30, border_width=2,
+                                                                      corner_radius=10)
+        self.admin_edit_user_entry_id.grid(row=0, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_user_label_firstname = customtkinter.CTkLabel(self.admin_edit_user_frame,
+                                                                   text="First Name: ", width=30, height=25,
+                                                                   corner_radius=7)
+        self.admin_edit_user_label_firstname.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_user_entry_firstname = customtkinter.CTkEntry(self.admin_edit_user_frame,
+                                                                   placeholder_text="Enter First Name",
+                                                                   width=200, height=30, border_width=2,
+                                                                   corner_radius=10)
+        self.admin_edit_user_entry_firstname.grid(row=1, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_user_label_surname = customtkinter.CTkLabel(self.admin_edit_user_frame,
+                                                                 text="Surname: ", width=30, height=25,
+                                                                 corner_radius=7)
+        self.admin_edit_user_label_surname.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_user_entry_surname = customtkinter.CTkEntry(self.admin_edit_user_frame,
+                                                                 placeholder_text="Enter Surname",
+                                                                 width=200, height=30, border_width=2,
+                                                                 corner_radius=10)
+        self.admin_edit_user_entry_surname.grid(row=2, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_user_label_pid = customtkinter.CTkLabel(self.admin_edit_user_frame,
+                                                             text="PID: ", width=30, height=25,
+                                                             corner_radius=7)
+        self.admin_edit_user_label_pid.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_user_entry_pid = customtkinter.CTkEntry(self.admin_edit_user_frame,
+                                                             placeholder_text="Enter PID",
+                                                             width=200, height=30, border_width=2,
+                                                             corner_radius=10)
+        self.admin_edit_user_entry_pid.grid(row=3, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_user_label_address = customtkinter.CTkLabel(self.admin_edit_user_frame,
+                                                                 text="Address: ", width=30, height=25,
+                                                                 corner_radius=7)
+        self.admin_edit_user_label_address.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_user_entry_address = customtkinter.CTkEntry(self.admin_edit_user_frame,
+                                                                 placeholder_text="Enter Address",
+                                                                 width=200, height=30, border_width=2,
+                                                                 corner_radius=10)
+        self.admin_edit_user_entry_address.grid(row=4, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_user_button_edit = customtkinter.CTkButton(self.admin_edit_user_frame,
+                                                                    text="Edit", width=70, fg_color="#36719F",
+                                                                    hover_color="#3B8ED0", text_color="#FFF",
+                                                                    command=self.admin_button_edit_user)
+        self.admin_edit_user_button_edit.grid(row=5, column=0, padx=0, sticky='e')
 
 
 
@@ -329,12 +409,14 @@ class App(customtkinter.CTk):
         # select default frame
         self.select_frame_by_name("login")
 
+
     def select_frame_by_name(self, name):
         self.home_button.configure(fg_color=("gray75", "gray25") if name == "home" else "transparent")
         self.login_button.configure(fg_color=("gray75", "gray25") if name == "login" else "transparent")
         self.register_button.configure(fg_color=("gray75", "gray25") if name == "register" else "transparent")
         self.navigation_frame_logged_main_button.configure(fg_color=("gray75", "gray25") if name == "main" else "transparent")
         self.navigation_frame_logged_admin_main_button.configure(fg_color=("gray75", "gray25") if name == "main_admin" else "transparent")
+        self.admin_edit_user_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_user_admin" else "transparent")
 
         # show selected frame
         if name == "home":
@@ -377,11 +459,20 @@ class App(customtkinter.CTk):
         else:
             self.main_page_frame_admin.grid_forget()
 
+        if name == "edit_user_admin":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged.grid_forget()
+            self.admin_edit_user_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.admin_edit_user_frame.grid_forget()
+
     def home_button_event(self):
         self.select_frame_by_name("home")
 
     def login_button_event(self):
         self.select_frame_by_name("login")
+
+
 
     def login_button_log_user(self):
         mongo_client = get_mongo_client()
@@ -398,15 +489,36 @@ class App(customtkinter.CTk):
                 self.select_frame_by_name("main_admin")
                 self.main_page_frame_admin_label.configure(text="Admin: " + current_user.user.login_name + " is logged")
                 self.navigation_frame_logged_admin_label.configure(text=" " + current_user.user.login_name)
+                return user
             else:
                 current_user = User(user)
                 print("User: " + current_user.user.login_name)
                 self.select_frame_by_name("main")
                 self.main_page_frame_label.configure(text="User: " + current_user.user.login_name + " is logged")
                 self.navigation_frame_logged_label.configure(text=" " + current_user.user.login_name)
+                return user
         else:
             print(login_result[1])
 
+    def admin_button_edit_user_event(self):
+        self.select_frame_by_name("edit_user_admin")
+
+    def admin_button_edit_user(self):
+        user = self.login_button_log_user()
+        if user.role == Roles.Librarian.name:
+            current_user = Librarian(user)
+            id = self.admin_edit_user_entry_id.get()
+            firstname = self.admin_edit_user_entry_firstname.get()
+            surname = self.admin_edit_user_entry_surname.get()
+            pid = self.admin_edit_user_entry_pid.get()
+            address = self.admin_edit_user_entry_address.get()
+            edited_user = current_user.edit_user(mongo_client, firstname, surname, pid, address, _id = id)
+            if edited_user[0] == True:
+                self.select_frame_by_name("main_admin")
+                print(edited_user[0])
+            else:
+                print(edited_user[1])
+                self.select_frame_by_name("edit_user_admin")
 
     def register_button_event(self):
         self.select_frame_by_name("register")
@@ -427,8 +539,11 @@ class App(customtkinter.CTk):
         else:
             print(registration_result[1])
 
+
+
     def main_button_event(self):
         self.select_frame_by_name("register")
+
 
     def navigation_frame_logged_admin_logout_button_event(self):
         self.select_frame_by_name("login")
