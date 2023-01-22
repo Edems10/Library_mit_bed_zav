@@ -505,18 +505,22 @@ class Librarian(User):
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author_id, length: int, year: int, image: str,
                  copies_available: int, genre: str, description: str, count_borrowed: int) -> Tuple[bool, str]:
         generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
-        if not book_exists_id(mongo_client, generated_id):
-            if author_exists_id(mongo_client, author_id):
-                new_book = Book(_id=generated_id, title=title, author=ObjectId(author_id), length=length, year=year,
-                                image=image,
-                                copies_available=copies_available, genre=genre,
-                                description=description, count_borrowed=count_borrowed)
-                get_book_column(mongo_client).insert_one(new_book.to_dict())
-                return True, "Book: " + str(title) + " has been added to library"
+        if ObjectId.is_valid(author_id):
+            if not book_exists_id(mongo_client, generated_id):
+                if author_exists_id(mongo_client, author_id):
+                    new_book = Book(_id=generated_id, title=title, author=ObjectId(author_id), length=length, year=year,
+                                    image=image,
+                                    copies_available=copies_available, genre=genre,
+                                    description=description, count_borrowed=count_borrowed)
+                    get_book_column(mongo_client).insert_one(new_book.to_dict())
+                    return True, "Book: " + str(title) + " has been added to library"
+                else:
+                    return False, "There is no author the ID: " + str(author_id)
             else:
-                return False, "There is no author the ID: " + str(author_id)
+                return False, "Book with ID: " + str(generated_id) + " already exists in library"
         else:
-            return False, "Book with ID: " + str(generated_id) + " already exists in library"
+            return False, "ID: " + author_id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     # can only be done if no books borrowed
     def edit_book(self, mongo_client: pymongo.MongoClient, _id, title: str, author_id, length: int, year: int,
@@ -606,9 +610,12 @@ class Librarian(User):
     def add_author(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str) -> Tuple[bool, str]:
         generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
         if not author_exists_id(mongo_client, generated_id):
-            new_author = Author(_id=generated_id, first_name=first_name, surname=surname)
-            get_author_column(mongo_client).insert_one(new_author.to_dict())
-            return True, "Author: " + first_name + " " + surname + " has been added to library"
+            if len(first_name) != 0 and len(surname) != 0:
+                new_author = Author(_id=generated_id, first_name=first_name, surname=surname)
+                get_author_column(mongo_client).insert_one(new_author.to_dict())
+                return True, "Author: " + first_name + " " + surname + " has been added to library"
+            else:
+                return False, "First name or surname is null"
         else:
             return False, "Author with ID: " + str(generated_id) + " already exists in library"
 
