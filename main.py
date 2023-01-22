@@ -247,6 +247,18 @@ class App(customtkinter.CTk):
 
         self.navigation_frame_logged_admin_edit_user.grid(row=8, column=0, sticky="ew")
 
+        self.navigation_frame_logged_admin_delete_user = customtkinter.CTkButton(self.navigation_frame_logged_admin,
+                                                                               corner_radius=0, height=40,
+                                                                               border_spacing=10,
+                                                                               text="Delete user",
+                                                                               fg_color="transparent",
+                                                                               text_color=("gray10", "gray90"),
+                                                                               hover_color=("gray70", "gray30"),
+                                                                               image=self.register_image, anchor="w",
+                                                                               command=self.admin_button_delete_user_event)
+
+        self.navigation_frame_logged_admin_delete_user.grid(row=9, column=0, sticky="ew")
+
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged_admin,
                                                                                  corner_radius=0, height=40,
                                                                                  border_spacing=10,
@@ -256,7 +268,7 @@ class App(customtkinter.CTk):
                                                                                  hover_color=("gray70", "gray30"),
                                                                                  image=self.register_image, anchor="w",
                                                                                  command=self.navigation_frame_logged_admin_logout_button_event)
-        self.navigation_frame_logged_admin_logout_button.grid(row=9, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button.grid(row=10, column=0, sticky="ew")
 
 
 
@@ -274,17 +286,14 @@ class App(customtkinter.CTk):
         self.login_entry_username = customtkinter.CTkEntry(self.login_frame, placeholder_text="Enter Username", width=200, height=30, border_width=2, corner_radius=10)
         self.login_entry_username.grid(row=0, column=1, padx=10, columnspan=2)
 
-        # Label Password
         self.login_label_password = customtkinter.CTkLabel(self.login_frame, text="Password: ", width=30, height=25, corner_radius=7)
         self.login_label_password.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
-        # Entry Password
         self.login_entry_password = customtkinter.CTkEntry(self.login_frame,
                                                            placeholder_text="Enter Password", width=200, height=30,
                                                            border_width=2, corner_radius=10, show="•")
         self.login_entry_password.grid(row=1, column=1, padx=10, columnspan=2, pady=20)
 
-        # Button Login
         self.login_button_login = customtkinter.CTkButton(self.login_frame,
                                                           text="Login", width=70, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.login_button_log_user)
         self.login_button_login.grid(row=2, column=0, padx=0, sticky='e')
@@ -798,6 +807,30 @@ class App(customtkinter.CTk):
 
 
 
+        # admin delete user frame
+        self.admin_delete_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.admin_delete_user_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        self.admin_delete_user_label_ID = customtkinter.CTkLabel(self.admin_delete_user_frame,
+                                                                   text="Author ID: ", width=30, height=25,
+                                                                   corner_radius=7)
+        self.admin_delete_user_label_ID.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_delete_user_entry_ID = customtkinter.CTkEntry(self.admin_delete_user_frame,
+                                                                   placeholder_text="Enter Author ID",
+                                                                   width=200, height=30, border_width=2,
+                                                                   corner_radius=10)
+        self.admin_delete_user_entry_ID.grid(row=0, column=1, padx=10, columnspan=2)
+
+        self.admin_delete_user_button_delete = customtkinter.CTkButton(self.admin_delete_user_frame,
+                                                                         text="Delete", width=70, fg_color="#36719F",
+                                                                         hover_color="#3B8ED0", text_color="#FFF",
+                                                                         command=self.admin_button_delete_user)
+        self.admin_delete_user_button_delete.grid(row=1, column=0, padx=0, sticky='e')
+
+
+
+
         #create main page after for normal user which logged sucessfully
         self.main_page_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_page_frame.grid_columnconfigure(0, weight=1)
@@ -854,6 +887,7 @@ class App(customtkinter.CTk):
         self.admin_edit_book_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_book_admin" else "transparent")
         self.admin_delete_book_button_delete.configure(fg_color=("gray75", "gray25") if name == "delete_book_admin" else "transparent")
         self.admin_edit_user_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_user_admin" else "transparent")
+        self.admin_delete_user_button_delete.configure(fg_color=("gray75", "gray25") if name == "delete_user_admin" else "transparent")
 
         # show selected frame
         if name == "home":
@@ -945,6 +979,13 @@ class App(customtkinter.CTk):
         else:
             self.admin_edit_user_frame.grid_forget()
 
+        if name == "delete_user_admin":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged.grid_forget()
+            self.admin_delete_user_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.admin_delete_user_frame.grid_forget()
+
     def home_button_event(self):
         self.select_frame_by_name("home")
 
@@ -958,7 +999,7 @@ class App(customtkinter.CTk):
         username = self.login_entry_username.get()
         password = self.login_entry_password.get()
         #Admin: login_lib lib_12345
-        #User: Dom2 password
+        #User: user password
         login_result = login(mongo_client, "login_lib", "lib_12345")
         if login_result[0]:
             user = login_result[1]
@@ -977,6 +1018,7 @@ class App(customtkinter.CTk):
         else:
             print(login_result[1])
 
+
     def admin_button_add_author_event(self):
         self.select_frame_by_name("add_author_admin")
 
@@ -989,9 +1031,12 @@ class App(customtkinter.CTk):
             if added_author[0] == True:
                 self.select_frame_by_name("main_admin")
                 print(added_author[0])
+                self.admin_add_author_entry_firstname.delete(0, "end")
+                self.admin_add_author_entry_surname.delete(0, "end")
             else:
                 print(added_author[1])
                 self.select_frame_by_name("add_author_admin")
+
 
     def admin_button_edit_author_event(self):
         self.select_frame_by_name("edit_author_admin")
@@ -1006,9 +1051,13 @@ class App(customtkinter.CTk):
             if edited_author[0] == True:
                 self.select_frame_by_name("main_admin")
                 print(edited_author[0])
+                self.admin_edit_author_entry_ID.delete(0, "end")
+                self.admin_edit_author_entry_firstname.delete(0, "end")
+                self.admin_edit_author_entry_surname.delete(0, "end")
             else:
                 print(edited_author[1])
                 self.select_frame_by_name("edit_author_admin")
+
 
     def admin_button_delete_author_event(self):
         self.select_frame_by_name("delete_author_admin")
@@ -1021,9 +1070,11 @@ class App(customtkinter.CTk):
             if deleted_author[0] == True:
                 self.select_frame_by_name("main_admin")
                 print(deleted_author[0])
+                self.admin_delete_author_entry_ID.delete(0, "end")
             else:
                 print(deleted_author[1])
                 self.select_frame_by_name("delete_author_admin")
+
 
     def admin_button_add_book_event(self):
         self.select_frame_by_name("add_book_admin")
@@ -1044,9 +1095,20 @@ class App(customtkinter.CTk):
             if added_book[0] == True:
                 self.select_frame_by_name("main_admin")
                 print(added_book[0])
+                self.admin_add_book_entry_title.delete(0, "end")
+                self.admin_add_book_entry_author.delete(0, "end")
+                self.admin_add_book_entry_length.delete(0, "end")
+                self.admin_add_book_entry_year.delete(0, "end")
+                self.admin_add_book_entry_image.delete(0, "end")
+                self.admin_add_book_entry_copies_available.delete(0, "end")
+                self.admin_add_book_entry_genre.delete(0, "end")
+                self.admin_add_book_entry_description.delete(0, "end")
+                self.admin_add_book_entry_count_borrowed.delete(0, "end")
             else:
                 print(added_book[1])
                 self.select_frame_by_name("add_book_admin")
+
+
 
     def admin_button_edit_book_event(self):
         self.select_frame_by_name("edit_book_admin")
@@ -1063,13 +1125,26 @@ class App(customtkinter.CTk):
             copies_available = self.admin_edit_book_entry_copies_available.get()
             genre = self.admin_edit_book_entry_genre.get()
             description = self.admin_edit_book_entry_description.get()
-            edited_book = current_user.edit_book(mongo_client, book_id, title, author, int(length), int(year), image, int(copies_available), genre, description)
-            if edited_book[0] == True:
-                self.select_frame_by_name("main_admin")
-                print(edited_book[0])
+            if length != "" and year != "" and copies_available != "":
+                edited_book = current_user.edit_book(mongo_client, book_id, title, author, int(length), int(year), image, int(copies_available), genre, description)
+                if edited_book[0] == True:
+                    self.select_frame_by_name("main_admin")
+                    print(edited_book[0])
+                    self.admin_edit_book_entry_book_ID.delete(0, "end")
+                    self.admin_edit_book_entry_title.delete(0, "end")
+                    self.admin_edit_book_entry_author.delete(0, "end")
+                    self.admin_edit_book_entry_length.delete(0, "end")
+                    self.admin_edit_book_entry_year.delete(0, "end")
+                    self.admin_edit_book_entry_image.delete(0, "end")
+                    self.admin_edit_book_entry_copies_available.delete(0, "end")
+                    self.admin_edit_book_entry_genre.delete(0, "end")
+                    self.admin_edit_book_entry_description.delete(0, "end")
+                else:
+                    print(edited_book[1])
+                    self.select_frame_by_name("edit_book_admin")
             else:
-                print(edited_book[1])
-                self.select_frame_by_name("edit_book_admin")
+                print("Fill the values properly")
+
 
     def admin_button_delete_book_event(self):
         self.select_frame_by_name("delete_book_admin")
@@ -1082,9 +1157,11 @@ class App(customtkinter.CTk):
             if deleted_book[0] == True:
                 self.select_frame_by_name("main_admin")
                 print(deleted_book[0])
+                self.admin_delete_book_entry_ID.delete(0, "end")
             else:
                 print(deleted_book[1])
                 self.select_frame_by_name("delete_book_admin")
+
 
     def admin_button_edit_user_event(self):
         self.select_frame_by_name("edit_user_admin")
@@ -1102,11 +1179,32 @@ class App(customtkinter.CTk):
                 if edited_user[0] == True:
                     self.select_frame_by_name("main_admin")
                     print(edited_user[0])
+                    self.admin_edit_user_entry_id.delete(0, "end")
+                    self.admin_edit_user_entry_firstname.delete(0, "end")
+                    self.admin_edit_user_entry_surname.delete(0, "end")
+                    self.admin_edit_user_entry_pid.delete(0, "end")
+                    self.admin_edit_user_entry_address.delete(0, "end")
                 else:
                     print(edited_user[1])
                     self.select_frame_by_name("edit_user_admin")
             else:
                 print("Fill the values properly")
+    def admin_button_delete_user_event(self):
+        self.select_frame_by_name("delete_user_admin")
+
+    def admin_button_delete_user(self):
+        if current.role == Roles.Librarian.name:
+            current_user = Librarian(current)
+            id = self.admin_delete_user_entry_ID.get()
+            deleted_user = current_user.delete_user(mongo_client, id)
+            if deleted_user[0] == True:
+                self.select_frame_by_name("main_admin")
+                print(deleted_user[0])
+                self.admin_delete_book_entry_ID.delete(0, "end")
+            else:
+                print(deleted_user[1])
+                self.select_frame_by_name("delete_user_admin")
+
     def show_next_book_user(self):
         print("next book")
 
@@ -1126,8 +1224,15 @@ class App(customtkinter.CTk):
         if register_user == True:
             self.select_frame_by_name("login")
             print(registration_result[0])
+            self.registration_entry_firstname.delete(0, "end")
+            self.registration_entry_surname.delete(0, "end")
+            self.registration_entry_pid.delete(0, "end")
+            self.registration_entry_address.delete(0, "end")
+            self.registration_entry_username.delete(0, "end")
+            self.registration_entry_password.delete(0, "end")
         else:
             print(registration_result[1])
+
 
     def main_button_event(self):
         self.select_frame_by_name("register")
@@ -1138,8 +1243,8 @@ class App(customtkinter.CTk):
 
     def navigation_frame_logged_admin_logout_button_event(self):
         self.select_frame_by_name("login")
-        self.login_entry_username.delete(0, "end")
         self.login_entry_password.delete(0, "end")
+        self.login_entry_username.delete(0, "end")
 
 
 #    def ChangeLabelMainPageText(m):

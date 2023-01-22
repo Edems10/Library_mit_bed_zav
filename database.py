@@ -19,9 +19,9 @@ def get_mongo_client():
 
 # TODO run sanity check that all columns exist
 mongo_client = get_mongo_client()
-# print(create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345"))
+#create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345")
 # LOGIN LIBRARIAN
-#login_result = login(mongo_client,"login_lib","lib_12345")
+login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -32,7 +32,7 @@ mongo_client = get_mongo_client()
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-login_result = login(mongo_client,"Dom3","password")
+#login_result = login(mongo_client,"user","password")
 
 if login_result[0]:
     user = login_result[1]
@@ -63,7 +63,7 @@ if login_result[0]:
         print(current_user.accept_user_changes(mongo_client, "f2106a1013a07981ba48bfea")[1])
         #print(current_user.decline_user_changes(mongo_client, "06a6e72a01f0ffef240466ca")[1])
         print(current_user.get_all_users_with_stashed_changes(mongo_client))
-        print(current_user.verified_user(mongo_client, "f2106a1013a07981ba48bfea")[1])
+        print(current_user.verified_user(mongo_client, "238097f2d6dee1809e06821d")[1])
         #print(current_user.unverified_user(mongo_client, "862b3856cd1c7bd15797b58a")[1])
         print(user_is_not_banned(mongo_client, "862b3856cd1c7bd15797b58a"))
         print(user_is_verified(mongo_client, "06a6e72a01f0ffef240466ca"))
