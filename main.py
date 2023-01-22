@@ -215,41 +215,74 @@ class App(customtkinter.CTk):
         self.registration_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
 
         self.registration_label_firstname = customtkinter.CTkLabel(self.registration_frame,
-                                                                  text="Username: ", width=30, height=25,
+                                                                  text="First Name: ", width=30, height=25,
                                                                   corner_radius=7)
         self.registration_label_firstname.grid(row=0, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_firstname = customtkinter.CTkEntry(self.registration_frame,
-                                                                  placeholder_text="Enter Username",
+                                                                  placeholder_text="Enter First Name",
                                                                   width=200, height=30, border_width=2,
                                                                   corner_radius=10)
         self.registration_entry_firstname.grid(row=0, column=1, padx=10, columnspan=2)
 
+        self.registration_label_surname = customtkinter.CTkLabel(self.registration_frame,
+                                                                   text="Surname: ", width=30, height=25,
+                                                                   corner_radius=7)
+        self.registration_label_surname.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+
+        self.registration_entry_surname = customtkinter.CTkEntry(self.registration_frame,
+                                                                   placeholder_text="Enter Surname",
+                                                                   width=200, height=30, border_width=2,
+                                                                   corner_radius=10)
+        self.registration_entry_surname.grid(row=1, column=1, padx=10, columnspan=2)
+
+        self.registration_label_pid = customtkinter.CTkLabel(self.registration_frame,
+                                                                 text="PID: ", width=30, height=25,
+                                                                 corner_radius=7)
+        self.registration_label_pid.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+
+        self.registration_entry_pid = customtkinter.CTkEntry(self.registration_frame,
+                                                                 placeholder_text="Enter PID",
+                                                                 width=200, height=30, border_width=2,
+                                                                 corner_radius=10)
+        self.registration_entry_pid.grid(row=2, column=1, padx=10, columnspan=2)
+
+        self.registration_label_address = customtkinter.CTkLabel(self.registration_frame,
+                                                             text="Address: ", width=30, height=25,
+                                                             corner_radius=7)
+        self.registration_label_address.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+
+        self.registration_entry_address = customtkinter.CTkEntry(self.registration_frame,
+                                                             placeholder_text="Enter Address",
+                                                             width=200, height=30, border_width=2,
+                                                             corner_radius=10)
+        self.registration_entry_address.grid(row=3, column=1, padx=10, columnspan=2)
+
         self.registration_label_username = customtkinter.CTkLabel(self.registration_frame,
                                                            text="Username: ", width=30, height=25, corner_radius=7)
-        self.registration_label_username.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_username.grid(row=4, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_username = customtkinter.CTkEntry(self.registration_frame, placeholder_text="Enter Username",
                                                            width=200, height=30, border_width=2, corner_radius=10)
-        self.registration_entry_username.grid(row=1, column=1, padx=10, columnspan=2)
+        self.registration_entry_username.grid(row=4, column=1, padx=10, columnspan=2)
 
         # Label Password
         self.registration_label_password = customtkinter.CTkLabel(self.registration_frame, text="Password: ", width=30, height=25,
                                                            corner_radius=7)
-        self.registration_label_password.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_password.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
         # Entry Password
         self.registration_entry_password = customtkinter.CTkEntry(self.registration_frame,
                                                            placeholder_text="Enter Password", width=200, height=30,
                                                            border_width=2, corner_radius=10, show="•")
-        self.registration_entry_password.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
+        self.registration_entry_password.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
 
         # Button Login
         self.registration_button_register = customtkinter.CTkButton(self.registration_frame,
-                                                          text="Login", width=70, fg_color="#36719F",
+                                                          text="Register", width=70, fg_color="#36719F",
                                                           hover_color="#3B8ED0", text_color="#FFF",
                                                           command=self.register_button_register_user)
-        self.registration_button_register.grid(row=3, column=0, padx=0, sticky='e')
+        self.registration_button_register.grid(row=6, column=0, padx=0, sticky='e')
 
 
 
@@ -376,7 +409,9 @@ class App(customtkinter.CTk):
 
 
     def register_button_event(self):
-        self.select_frame_by_name("register")
+        mongo_client = get_mongo_client()
+        create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom2", "password")
+        self.select_frame_by_name("login")
 
     def register_button_register_user(self):
         self.select_frame_by_name("register")
