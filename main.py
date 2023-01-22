@@ -81,7 +81,7 @@ class App(customtkinter.CTk):
         self.login_button.grid(row=1, column=0, sticky="ew")
 
         self.register_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40,
-                                                       border_spacing=10, text="Register",
+                                                       border_spacing=10, text="Registration",
                                                        fg_color="transparent", text_color=("gray10", "gray90"),
                                                        hover_color=("gray70", "gray30"),
                                                        image=self.register_image, anchor="w",
@@ -89,7 +89,7 @@ class App(customtkinter.CTk):
         self.register_button.grid(row=2, column=0, sticky="ew")
 
         self.home_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10,
-                                                   text="Home",
+                                                   text="About",
                                                    fg_color="transparent", text_color=("gray10", "gray90"),
                                                    hover_color=("gray70", "gray30"),
                                                    image=self.login_image, anchor="w", command=self.home_button_event)
@@ -110,12 +110,23 @@ class App(customtkinter.CTk):
         self.navigation_frame_logged_label.grid(row=0, column=0, padx=20, pady=20)
 
         self.navigation_frame_logged_main_button = customtkinter.CTkButton(self.navigation_frame_logged, corner_radius=0, height=40,
-                                                       border_spacing=10, text="Library",
+                                                       border_spacing=10, text="Library 123",
                                                        fg_color="transparent", text_color=("gray10", "gray90"),
                                                        hover_color=("gray70", "gray30"),
                                                        image=self.register_image, anchor="w",
                                                        command=self.main_button_event)
         self.navigation_frame_logged_main_button.grid(row=1, column=0, sticky="ew")
+
+        self.navigation_frame_logged_my_books_button = customtkinter.CTkButton(self.navigation_frame_logged,
+                                                                           corner_radius=0, height=40,
+                                                                           border_spacing=10, text="My books",
+                                                                           fg_color="transparent",
+                                                                           text_color=("gray10", "gray90"),
+                                                                           hover_color=("gray70", "gray30"),
+                                                                           image=self.register_image, anchor="w",
+                                                                           command=self.main_button_event)
+        self.navigation_frame_logged_my_books_button.grid(row=2, column=0, sticky="ew")
+
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged,
                                                                                    corner_radius=0, height=40,
                                                                                    border_spacing=10,
@@ -126,7 +137,8 @@ class App(customtkinter.CTk):
                                                                                    image=self.register_image,
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
-        self.navigation_frame_logged_admin_logout_button.grid(row=2, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button.grid(row=3, column=0, sticky="ew")
+
 
 
 
@@ -191,6 +203,53 @@ class App(customtkinter.CTk):
         self.login_button_login = customtkinter.CTkButton(self.login_frame,
                                                           text="Login", width=70, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.login_button_log_user)
         self.login_button_login.grid(row=2, column=0, padx=0, sticky='e')
+
+
+
+
+
+
+
+        # register page frame
+        self.registration_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.registration_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        self.registration_label_firstname = customtkinter.CTkLabel(self.registration_frame,
+                                                                  text="Username: ", width=30, height=25,
+                                                                  corner_radius=7)
+        self.registration_label_firstname.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+
+        self.registration_entry_firstname = customtkinter.CTkEntry(self.registration_frame,
+                                                                  placeholder_text="Enter Username",
+                                                                  width=200, height=30, border_width=2,
+                                                                  corner_radius=10)
+        self.registration_entry_firstname.grid(row=0, column=1, padx=10, columnspan=2)
+
+        self.registration_label_username = customtkinter.CTkLabel(self.registration_frame,
+                                                           text="Username: ", width=30, height=25, corner_radius=7)
+        self.registration_label_username.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+
+        self.registration_entry_username = customtkinter.CTkEntry(self.registration_frame, placeholder_text="Enter Username",
+                                                           width=200, height=30, border_width=2, corner_radius=10)
+        self.registration_entry_username.grid(row=1, column=1, padx=10, columnspan=2)
+
+        # Label Password
+        self.registration_label_password = customtkinter.CTkLabel(self.registration_frame, text="Password: ", width=30, height=25,
+                                                           corner_radius=7)
+        self.registration_label_password.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+
+        # Entry Password
+        self.registration_entry_password = customtkinter.CTkEntry(self.registration_frame,
+                                                           placeholder_text="Enter Password", width=200, height=30,
+                                                           border_width=2, corner_radius=10, show="•")
+        self.registration_entry_password.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
+
+        # Button Login
+        self.registration_button_register = customtkinter.CTkButton(self.registration_frame,
+                                                          text="Login", width=70, fg_color="#36719F",
+                                                          hover_color="#3B8ED0", text_color="#FFF",
+                                                          command=self.register_button_register_user)
+        self.registration_button_register.grid(row=3, column=0, padx=0, sticky='e')
 
 
 
@@ -262,9 +321,12 @@ class App(customtkinter.CTk):
             self.login_frame.grid_forget()
 
         if name == "register":
+            self.registration_frame.grid(row=0, column=1, sticky="nsew")
             self.navigation_frame.grid(row=0, column=0, sticky="nsew")
             self.navigation_frame_logged.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
+        else:
+            self.registration_frame.grid_forget()
 
         if name == "main":
             self.navigation_frame.grid_forget()
@@ -314,6 +376,9 @@ class App(customtkinter.CTk):
 
 
     def register_button_event(self):
+        self.select_frame_by_name("register")
+
+    def register_button_register_user(self):
         self.select_frame_by_name("register")
 
     def main_button_event(self):
