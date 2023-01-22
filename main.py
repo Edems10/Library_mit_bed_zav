@@ -14,8 +14,14 @@ from dataclasses_json import dataclass_json
 
 from datamodels import Autocomplete_options_book, Autocomplete_options_user, Person, Roles
 
+IMAGES_DIR = os.path.join(os.path.dirname(__file__),'Book_img')
+
+
 API_KEY = os.path.join(os.path.dirname(__file__), 'api_key.env')
 IMAGES_DIR = os.path.join(os.path.dirname(__file__), 'Book_img')
+
+CURRENT_USER = None
+ALL_BOOKS_USER = None
 
 def get_mongo_client():
     with open(API_KEY) as f:
@@ -45,6 +51,13 @@ class App(customtkinter.CTk):
         # icon image
         self.image_icon_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "Logo.png")), size=(20, 20))
 
+        # WITCHER IMAGE TEST
+        self.book_test_image = customtkinter.CTkImage(
+            Image.open(os.path.join(image_path, "book.jpg")), size=(200, 300))
+        
+        self.no_book_image = customtkinter.CTkImage(
+            Image.open(os.path.join(image_path, "placeholder_no_book.png")), size=(200, 300))
+        
         self.login_image = customtkinter.CTkImage(
             light_image=Image.open(os.path.join(image_path, "icons8-login-rounded-90.png")),
             dark_image=Image.open(os.path.join(image_path, "icons8-login-rounded-90.png")), size=(20, 20))
@@ -103,18 +116,18 @@ class App(customtkinter.CTk):
         self.navigation_frame_logged.grid(row=0, column=0, sticky="nsew")
         self.navigation_frame_logged.grid_rowconfigure(10, weight=1)
 
-        self.navigation_frame_logged_label = customtkinter.CTkLabel(self.navigation_frame_logged, text=" Library",
+        self.navigation_frame_logged_label = customtkinter.CTkLabel(self.navigation_frame_logged, text="Library",
                                                              image=self.logo_image,
                                                              compound="left",
                                                              font=customtkinter.CTkFont(size=15, weight="bold"))
         self.navigation_frame_logged_label.grid(row=0, column=0, padx=20, pady=20)
 
         self.navigation_frame_logged_main_button = customtkinter.CTkButton(self.navigation_frame_logged, corner_radius=0, height=40,
-                                                       border_spacing=10, text="Library 123",
+                                                       border_spacing=10, text="Your Library",
                                                        fg_color="transparent", text_color=("gray10", "gray90"),
                                                        hover_color=("gray70", "gray30"),
                                                        image=self.register_image, anchor="w",
-                                                       command=self.main_button_event)
+                                                       command=self.navigation_frame_logged_main_page_event)
         self.navigation_frame_logged_main_button.grid(row=1, column=0, sticky="ew")
 
         self.navigation_frame_logged_my_books_button = customtkinter.CTkButton(self.navigation_frame_logged,
@@ -124,7 +137,7 @@ class App(customtkinter.CTk):
                                                                            text_color=("gray10", "gray90"),
                                                                            hover_color=("gray70", "gray30"),
                                                                            image=self.register_image, anchor="w",
-                                                                           command=self.main_button_event)
+                                                                           command=self.navigation_frame_logged_my_books_button_event)
         self.navigation_frame_logged_my_books_button.grid(row=2, column=0, sticky="ew")
 
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged,
@@ -138,6 +151,8 @@ class App(customtkinter.CTk):
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
         self.navigation_frame_logged_admin_logout_button.grid(row=3, column=0, sticky="ew")
+        
+        
 
 
 
@@ -159,7 +174,7 @@ class App(customtkinter.CTk):
                                                    fg_color="transparent", text_color=("gray10", "gray90"),
                                                    hover_color=("gray70", "gray30"),
                                                    image=self.register_image, anchor="w",
-                                                   command=self.main_admin_button_event)
+                                                   command=self.navigation_frame_logged_main_page_event)
 
         self.navigation_frame_logged_admin_main_button.grid(row=1, column=0, sticky="ew")
 
@@ -273,6 +288,58 @@ class App(customtkinter.CTk):
 
 
 
+        #Main page LIBRARY page for logged in user
+
+        
+        self.main_page_logged_in_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.main_page_logged_in_user_frame.grid(row=3, column=2, sticky="nsew")
+        
+        self.book_image_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="",
+                                                           image=self.book_test_image, compound="right")
+        self.book_image_main_page.grid(row=1, column=2, padx=0, pady=20,  sticky='e')
+        
+        self.book_title_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Title:", compound="right")
+        self.book_title_main_page.grid(row=1, column=3, padx=10, pady=20,  sticky='e')
+        
+        self.book_author_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Author:", compound="right")
+        self.book_author_main_page.grid(row=2, column=3, padx=10, pady=20,  sticky='e')
+        
+        self.book_description_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Description:", compound="right")
+        self.book_description_main_page.grid(row=3, column=3, padx=10, pady=20,  sticky='e')
+        
+        self.next_boook_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
+                                                          text="Next book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_main_page)
+        self.next_boook_button_main_page.grid(row=3, column=2,padx=0, sticky='e')
+        
+        self.borrow_book_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
+                                                          text="Borrow book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.borrow_book_user)
+        self.borrow_book_button_main_page.grid(row=4, column=2, padx=0, sticky='e')
+        
+        
+
+        #MY BOOKS page for logged in user
+        self.my_book_loged_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.my_book_loged_user_frame.grid(row=3, column=2, sticky="nsew")
+        
+        self.book_image_my_books = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="",
+                                                           image=self.book_test_image, compound="right")
+        self.book_image_my_books.grid(row=1, column=2, padx=0, pady=20,  sticky='e')
+        
+        self.book_title = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Title:", compound="right")
+        self.book_title.grid(row=1, column=3, padx=10, pady=20,  sticky='e')
+        
+        self.book_author = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Author:", compound="right")
+        self.book_author.grid(row=2, column=3, padx=10, pady=20,  sticky='e')
+        
+        self.book_description = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Description:", compound="right")
+        self.book_description.grid(row=3, column=3, padx=10, pady=20,  sticky='e')
+        
+        self.next_boook_button = customtkinter.CTkButton(self.my_book_loged_user_frame,
+                                                          text="Next book in colection", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_user)
+        self.next_boook_button.grid(row=3, column=2,padx=0, sticky='e')
+        self.return_book_button = customtkinter.CTkButton(self.my_book_loged_user_frame,
+                                                          text="Return book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.return_book_user)
+        self.return_book_button.grid(row=4, column=2, padx=0, sticky='e')
 
 
         #login page frame
@@ -841,8 +908,6 @@ class App(customtkinter.CTk):
 
 
 
-
-
         # create main page after for admin which logged sucessfully
         self.main_page_frame_admin = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_page_frame_admin.grid_columnconfigure(0, weight=1)
@@ -878,6 +943,8 @@ class App(customtkinter.CTk):
         self.home_button.configure(fg_color=("gray75", "gray25") if name == "home" else "transparent")
         self.login_button.configure(fg_color=("gray75", "gray25") if name == "login" else "transparent")
         self.register_button.configure(fg_color=("gray75", "gray25") if name == "register" else "transparent")
+        self.navigation_frame_logged_main_button.configure(fg_color=("gray75", "gray25") if name == "main_page_logged" else "transparent")
+        self.navigation_frame_logged_main_button.configure(fg_color=("gray75", "gray25") if name == "my_books" else "transparent")
         self.navigation_frame_logged_main_button.configure(fg_color=("gray75", "gray25") if name == "main" else "transparent")
         self.navigation_frame_logged_admin_main_button.configure(fg_color=("gray75", "gray25") if name == "main_admin" else "transparent")
         self.admin_add_author_button_add.configure(fg_color=("gray75", "gray25") if name == "add_author_admin" else "transparent")
@@ -929,6 +996,23 @@ class App(customtkinter.CTk):
             self.main_page_frame_admin.grid(row=0, column=1, sticky="nsew")
         else:
             self.main_page_frame_admin.grid_forget()
+        
+        if name == "main_page_logged":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
+            self.main_page_frame.grid_forget()
+            self.main_page_logged_in_user_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.main_page_logged_in_user_frame.grid_forget()
+        
+        if name == "my_books":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
+            self.main_page_frame.grid_forget()
+            self.my_book_loged_user_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.my_book_loged_user_frame.grid_forget()
+
 
         if name == "add_author_admin":
             self.navigation_frame.grid_forget()
@@ -1206,8 +1290,19 @@ class App(customtkinter.CTk):
                 self.select_frame_by_name("delete_user_admin")
 
     def show_next_book_user(self):
-        print("next book")
+        pass
+    
+    def show_next_book_main_page(self):
+        pass
+        
+    
+    def return_book_user(self):
+        pass
 
+
+    def borrow_book_user(self):
+        pass
+    
     def register_button_event(self):
         self.select_frame_by_name("register")
 
@@ -1237,14 +1332,32 @@ class App(customtkinter.CTk):
     def main_button_event(self):
         self.select_frame_by_name("register")
 
-    def main_admin_button_event(self):
-        self.select_frame_by_name("main_admin")
 
-
+    def navigation_frame_logged_main_page_event(self):
+        self.select_frame_by_name("main_page_logged")
+        
+        
     def navigation_frame_logged_admin_logout_button_event(self):
         self.select_frame_by_name("login")
         self.login_entry_password.delete(0, "end")
-        self.login_entry_username.delete(0, "end")
+    
+    def navigation_frame_logged_my_books_button_event(self):
+        global ALL_BOOKS_USER
+        current_user = User(current)
+        ALL_BOOKS_USER = get_all_borrowed_books_from_user(mongo_client, current.id)
+        if len(ALL_BOOKS_USER) == 0:
+            self.book_image_my_books.configure(image=self.no_book_image)
+            self.book_title.configure(text="Title\n You have no books borrowed")
+            self.book_author.configure(text="Author\n You have no books borrowed")
+            self.book_description.configure(text="Description:\n You have no books borrowed")
+        else:
+            first_book = current_user.user_find_book(mongo_client,ALL_BOOKS_USER[0])
+            self.book_title.configure(text=f"Title\n {first_book['title']}")
+            print(current_user.user_find_author(mongo_client,first_book['author']))
+            self.book_description.configure(text=f"Description:\n {first_book['description']}")
+            #self.book_author.configure(text=f"Author\n {first_book['']}")
+        self.select_frame_by_name("my_books")
+        
 
 
 #    def ChangeLabelMainPageText(m):

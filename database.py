@@ -9,7 +9,7 @@ from dataclasses_json import dataclass_json
 from datamodels import Autocomplete_options_book, Autocomplete_options_user, Person, Roles
 
 API_KEY = os.path.join(os.path.dirname(__file__), 'api_key.env')
-
+IMAGES_DIR = os.path.join(os.path.dirname(__file__),'Book_img')
 
 def get_mongo_client():
     with open(API_KEY) as f:
@@ -32,12 +32,17 @@ login_result = login(mongo_client,"login_lib","lib_12345")
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-#login_result = login(mongo_client,"user","password")
+login_result = login(mongo_client,"login_lib","lib_12345")
 
+# login login_lib 
+# pw lib_12345
+# user 
+# password
 if login_result[0]:
     user = login_result[1]
     if user.role == Roles.Librarian.name:
         current_user = Librarian(user)
+        print(current_user.add_book(mongo_client, "Bílá nemoc", "c117252e015f529cd3cc965a", 78, 1937, 2, "drama", "Bílá nemoc je divadelní hra – drama Karla Čapka z roku 1937. Dílo varuje před nastupujícím fašismem. Jde o jedno z děl varujících před nástupem nacismu v Německu a stalo se posléze i jedním z důvodů plánované autorovy perzekuce gestapem.", 0))
         #print(current_user.add_book(mongo_client, "New book", "3bef9919eca266bb9af0248f", 231, 2003, "dragon", 2,
         #                            "fantasy", "description", 0))
         #print(current_user.add_author(mongo_client, "Dominik", "Borec"))
