@@ -175,7 +175,19 @@ class App(customtkinter.CTk):
 
         self.navigation_frame_logged_admin_add_author.grid(row=2, column=0, sticky="ew")
 
-        self.navigation_frame_logged_admin_edit_user = customtkinter.CTkButton(self.navigation_frame_logged_admin,
+        self.navigation_frame_logged_admin_edit_author = customtkinter.CTkButton(self.navigation_frame_logged_admin,
+                                                                                corner_radius=0, height=40,
+                                                                                border_spacing=10,
+                                                                                text="Edit author",
+                                                                                fg_color="transparent",
+                                                                                text_color=("gray10", "gray90"),
+                                                                                hover_color=("gray70", "gray30"),
+                                                                                image=self.register_image, anchor="w",
+                                                                                command=self.admin_button_edit_author_event)
+
+        self.navigation_frame_logged_admin_edit_author.grid(row=3, column=0, sticky="ew")
+
+        self.navigation_frame_logged_admin_add_book = customtkinter.CTkButton(self.navigation_frame_logged_admin,
                                                                                  corner_radius=0, height=40,
                                                                                  border_spacing=10,
                                                                                  text="Add book",
@@ -185,7 +197,7 @@ class App(customtkinter.CTk):
                                                                                  image=self.register_image, anchor="w",
                                                                                  command=self.admin_button_add_book_event)
 
-        self.navigation_frame_logged_admin_edit_user.grid(row=3, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_add_book.grid(row=4, column=0, sticky="ew")
 
         self.navigation_frame_logged_admin_edit_user = customtkinter.CTkButton(self.navigation_frame_logged_admin,
                                                                                corner_radius=0, height=40,
@@ -197,7 +209,7 @@ class App(customtkinter.CTk):
                                                                                image=self.register_image, anchor="w",
                                                                                command=self.admin_button_edit_user_event)
 
-        self.navigation_frame_logged_admin_edit_user.grid(row=4, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_edit_user.grid(row=5, column=0, sticky="ew")
 
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged_admin,
                                                                                  corner_radius=0, height=40,
@@ -208,7 +220,7 @@ class App(customtkinter.CTk):
                                                                                  hover_color=("gray70", "gray30"),
                                                                                  image=self.register_image, anchor="w",
                                                                                  command=self.navigation_frame_logged_admin_logout_button_event)
-        self.navigation_frame_logged_admin_logout_button.grid(row=5, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button.grid(row=6, column=0, sticky="ew")
 
 
 
@@ -348,6 +360,53 @@ class App(customtkinter.CTk):
                                                           hover_color="#3B8ED0", text_color="#FFF",
                                                           command=self.admin_button_add_author)
         self.admin_add_author_button_add.grid(row=2, column=0, padx=0, sticky='e')
+
+
+
+
+        # admin edit author frame
+
+        self.admin_edit_author_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.admin_edit_author_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        self.admin_edit_author_label_ID = customtkinter.CTkLabel(self.admin_edit_author_frame,
+                                                                        text="Author ID: ", width=30, height=25,
+                                                                        corner_radius=7)
+        self.admin_edit_author_label_ID.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_author_entry_ID = customtkinter.CTkEntry(self.admin_edit_author_frame,
+                                                                        placeholder_text="Enter Author ID",
+                                                                        width=200, height=30, border_width=2,
+                                                                        corner_radius=10)
+        self.admin_edit_author_entry_ID.grid(row=0, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_author_label_firstname = customtkinter.CTkLabel(self.admin_edit_author_frame,
+                                                                       text="First name: ", width=30, height=25,
+                                                                       corner_radius=7)
+        self.admin_edit_author_label_firstname.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_author_entry_firstname = customtkinter.CTkEntry(self.admin_edit_author_frame,
+                                                                       placeholder_text="Enter First name",
+                                                                       width=200, height=30, border_width=2,
+                                                                       corner_radius=10)
+        self.admin_edit_author_entry_firstname.grid(row=1, column=1, padx=10, columnspan=2)
+
+        self.admin_edit_author_label_surname = customtkinter.CTkLabel(self.admin_edit_author_frame, text="Surname: ",
+                                                                     width=30, height=25,
+                                                                     corner_radius=7)
+        self.admin_edit_author_label_surname.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+
+        self.admin_edit_author_entry_surname = customtkinter.CTkEntry(self.admin_edit_author_frame,
+                                                                     placeholder_text="Enter Surname", width=200,
+                                                                     height=30,
+                                                                     border_width=2, corner_radius=10)
+        self.admin_edit_author_entry_surname.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
+
+        self.admin_edit_author_button_edit = customtkinter.CTkButton(self.admin_edit_author_frame,
+                                                                   text="Edit", width=70, fg_color="#36719F",
+                                                                   hover_color="#3B8ED0", text_color="#FFF",
+                                                                   command=self.admin_button_add_author)
+        self.admin_edit_author_button_edit.grid(row=3, column=0, padx=0, sticky='e')
 
 
 
@@ -588,6 +647,7 @@ class App(customtkinter.CTk):
         self.navigation_frame_logged_main_button.configure(fg_color=("gray75", "gray25") if name == "main" else "transparent")
         self.navigation_frame_logged_admin_main_button.configure(fg_color=("gray75", "gray25") if name == "main_admin" else "transparent")
         self.admin_add_author_button_add.configure(fg_color=("gray75", "gray25") if name == "add_author_admin" else "transparent")
+        self.admin_edit_author_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_author_admin" else "transparent")
         self.admin_add_book_button_add.configure(fg_color=("gray75", "gray25") if name == "add_book_admin" else "transparent")
         self.admin_edit_user_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_user_admin" else "transparent")
 
@@ -639,6 +699,13 @@ class App(customtkinter.CTk):
         else:
             self.admin_add_author_frame.grid_forget()
 
+        if name == "edit_author_admin":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged.grid_forget()
+            self.admin_edit_author_frame.grid(row=0, column=1, sticky="nsew")
+        else:
+            self.admin_edit_author_frame.grid_forget()
+
         if name == "add_book_admin":
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
@@ -676,7 +743,7 @@ class App(customtkinter.CTk):
                 current_user = Librarian(user)
                 self.select_frame_by_name("main_admin")
                 self.main_page_frame_admin_label.configure(text="Admin: " + current_user.user.login_name + " is logged")
-                self.navigation_frame_logged_admin_label.configure(text=" " + current_user.user.login_name)
+                self.navigation_frame_logged_admin_label.configure(text=" Admin")
             else:
                 current_user = User(user)
                 self.select_frame_by_name("main")
@@ -700,6 +767,22 @@ class App(customtkinter.CTk):
             else:
                 print(added_author[1])
                 self.select_frame_by_name("add_author_admin")
+
+    def admin_button_edit_author_event(self):
+        self.select_frame_by_name("edit_author_admin")
+
+    def admin_button_edit_author(self):
+        if current.role == Roles.Librarian.name:
+            current_user = Librarian(current)
+            firstname = self.admin_add_author_entry_firstname.get()
+            surname = self.admin_add_author_entry_surname.get()
+            added_author = current_user.add_author(mongo_client, firstname, surname)
+            if added_author[0] == True:
+                self.select_frame_by_name("main_admin")
+                print(added_author[0])
+            else:
+                print(added_author[1])
+                self.select_frame_by_name("edit_author_admin")
 
     def admin_button_add_book_event(self):
         self.select_frame_by_name("add_book_admin")
@@ -725,7 +808,7 @@ class App(customtkinter.CTk):
                 self.select_frame_by_name("add_book_admin")
 
     def admin_button_edit_user_event(self):
-        self.select_frame_by_name("add_author_admin")
+        self.select_frame_by_name("edit_user_admin")
 
     def admin_button_edit_user(self):
         if current.role == Roles.Librarian.name:
