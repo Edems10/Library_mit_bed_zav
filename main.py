@@ -336,41 +336,39 @@ class App(customtkinter.CTk):
 
 
         #Main page LIBRARY page for logged in user
-
-        
         self.main_page_logged_in_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.main_page_logged_in_user_frame.grid(row=1, column=2, sticky="nsew")
         
         self.book_image_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="",
                                                            image=self.book_test_image, compound="right")
-        self.book_image_main_page.grid(row=1, column=2, padx=0, pady=20,  sticky='e')
+        self.book_image_main_page.grid(row=0, column=0, padx=0, pady=20,  sticky='e')
         
         self.next_boook_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
                                                           text="Next book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_main_page)
-        self.next_boook_button_main_page.grid(row=2, column=2,padx=0)
+        self.next_boook_button_main_page.grid(row=1, column=0,padx=0)
         
         self.borrow_book_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
                                                           text="Borrow book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.borrow_book_user)
-        self.borrow_book_button_main_page.grid(row=3, column=2, padx=0)
+        self.borrow_book_button_main_page.grid(row=2, column=0, padx=0)
         
         
         self.book_title_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Title:", compound="right")
-        self.book_title_main_page.grid(row=1, column=3, padx=10, pady=20,  sticky='e')
+        self.book_title_main_page.grid(row=0, column=1, padx=10, pady=20,  sticky='e')
         
         self.textbox_title_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=100,height=100)
-        self.textbox_title_main_page.grid(row=1, column=4, padx=(20, 0), pady=(20, 0))
+        self.textbox_title_main_page.grid(row=0, column=2, padx=(20, 0), pady=(20, 0))
         
         self.book_author_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Author:", compound="right")
-        self.book_author_main_page.grid(row=2, column=3, padx=10, pady=20,  sticky='e')
+        self.book_author_main_page.grid(row=1, column=1, padx=10, pady=20,  sticky='e')
         
         self.textbox_author_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=100,height=100)
-        self.textbox_author_main_page.grid(row=2, column=4, padx=(20, 0), pady=(20, 0))
+        self.textbox_author_main_page.grid(row=1, column=2, padx=(20, 0), pady=(20, 0))
         
         self.book_description_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Description:", compound="right")
-        self.book_description_main_page.grid(row=3, column=3, padx=10, pady=20,  sticky='e')
+        self.book_description_main_page.grid(row=2, column=1, padx=10, pady=20,  sticky='e')
         
         self.textbox_book_description_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=100,height=100)
-        self.textbox_book_description_main_page.grid(row=3, column=4, padx=(20, 0), pady=(20, 0))
+        self.textbox_book_description_main_page.grid(row=2, column=2, padx=(20, 0), pady=(20, 0))
         
         
         
@@ -1476,7 +1474,7 @@ class App(customtkinter.CTk):
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
             self.main_page_frame.grid_forget()
-            self.main_page_logged_in_user_frame.grid(row=0, column=1, sticky="nsew")
+            self.main_page_logged_in_user_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         else:
             self.main_page_logged_in_user_frame.grid_forget()
         
@@ -1587,7 +1585,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         #Admin: login_lib lib_12345
         #User: user password
-        login_result = login(mongo_client, "login_lib", "lib_12345")
+        login_result = login(mongo_client, "user", "password")
         if login_result[0]:
             user = login_result[1]
             global current
@@ -1600,6 +1598,7 @@ class App(customtkinter.CTk):
             else:
                 current_user = User(user)
                 self.select_frame_by_name("main")
+                self.navigation_frame_logged_main_page_event()
                 self.main_page_frame_label.configure(text="User: " + current_user.user.login_name + " is logged")
                 self.navigation_frame_logged_label.configure(text=" " + current_user.user.login_name)
         else:
