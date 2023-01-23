@@ -503,6 +503,10 @@ class Librarian(User):
     def get_all_users_with_stashed_changes(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
         return list(users.find({"approved_by_librarian": False}, {"_id": 1}))
+    
+    def get_all_users_with_stashed_changes_all_info(self, mongo_client: pymongo.MongoClient):
+        users = get_user_column(mongo_client)
+        return list(users.find({"approved_by_librarian": False}, {"_id": 1,"person_id":1,"first_name":1,"surname":1,"pid":1,"address":1,"login_name":1,"created_at":1}))
 
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author_id, length: int, year: int ,
                  copies_available: int, genre: str, description: str, count_borrowed: int, image = None) -> Tuple[bool, str]:
