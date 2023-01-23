@@ -54,7 +54,7 @@ class User:
                                 result = books.find_one(query)
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
                                 if result is not None:
-                                    if _id not in actual_borrowed_books:
+                                    if str(_id) not in actual_borrowed_books:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(user_id),
@@ -96,7 +96,7 @@ class User:
                                 result = books.find_one(query)
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
                                 if result is not None:
-                                    if _id not in actual_borrowed_books:
+                                    if str(_id) not in actual_borrowed_books:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(self.user.id),
@@ -145,7 +145,7 @@ class User:
                         if ObjectId.is_valid(user_id):
                             if user_exists_id(mongo_client, user_id):
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
-                                if _id in actual_borrowed_books:
+                                if str(_id) in actual_borrowed_books:
                                     get_book_status_column(mongo_client).update_one({"$and":
                                                                                     [{"user_id": ObjectId(user_id)},
                                                                  {"book_id": ObjectId(_id)}], "returned": False},
@@ -173,7 +173,7 @@ class User:
                         if user_is_approved_by_librarian(mongo_client, self.user.id):
                             if book_exists_id(mongo_client, _id):
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
-                                if _id in actual_borrowed_books:
+                                if str(_id) in actual_borrowed_books:
                                     get_book_status_column(mongo_client).update_one({"$and":
                                                                                          [{"user_id": ObjectId(
                                                                                              self.user.id)},
