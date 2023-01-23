@@ -570,6 +570,11 @@ class App(customtkinter.CTk):
                                                           text="Login", width=70, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.login_button_log_user)
         self.login_button_login.grid(row=3, column=1, padx=70, pady=20, sticky='w')
 
+        self.login_label_error = customtkinter.CTkLabel(self.login_frame, text="",
+                                                                  width=30, height=25,
+                                                                  corner_radius=7)
+        self.login_label_error.grid(row=4, column=1, padx=10, pady=0)
+
 
 
 
@@ -650,6 +655,11 @@ class App(customtkinter.CTk):
                                                           hover_color="#3B8ED0", text_color="#FFF",
                                                           command=self.register_button_register_user)
         self.registration_button_register.grid(row=7, column=1, padx=70, pady=20, sticky='w')
+
+        self.registration_label_error = customtkinter.CTkLabel(self.registration_frame, text="",
+                                                        width=30, height=25,
+                                                        corner_radius=7)
+        self.registration_label_error.grid(row=8, column=1, padx=10, pady=0)
 
 
 
@@ -1807,8 +1817,7 @@ class App(customtkinter.CTk):
 
     def login_button_event(self):
         self.select_frame_by_name("login")
-
-
+        self.login_label_error.configure(text="")
 
     def login_button_log_user(self):
         mongo_client = get_mongo_client()
@@ -1816,7 +1825,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         #Admin: login_lib lib_12345
         #User: user password
-        login_result = login(mongo_client, "login_lib", "lib_12345")
+        login_result = login(mongo_client, "user", "password")
         if login_result[0]:
             user = login_result[1]
             global current
@@ -1834,6 +1843,7 @@ class App(customtkinter.CTk):
                 self.navigation_frame_logged_label.configure(text=" " + current_user.user.login_name)
         else:
             print(login_result[1])
+            self.login_label_error.configure(text="Incorrect user name or password")
 
 
     def admin_button_add_author_event(self):
@@ -2364,6 +2374,7 @@ class App(customtkinter.CTk):
     
     def register_button_event(self):
         self.select_frame_by_name("register")
+        self.registration_label_error.configure(text="")
 
     def register_button_register_user(self):
         mongo_client = get_mongo_client()
@@ -2373,19 +2384,23 @@ class App(customtkinter.CTk):
         address = self.registration_entry_address.get()
         username = self.registration_entry_username.get()
         password = self.registration_entry_password.get()
-        registration_result = create_account(mongo_client, firstname, surname, int(pid), address, username, password)
-        register_user = registration_result[0]
-        if register_user == True:
-            self.select_frame_by_name("login")
-            print(registration_result[0])
-            self.registration_entry_firstname.delete(0, "end")
-            self.registration_entry_surname.delete(0, "end")
-            self.registration_entry_pid.delete(0, "end")
-            self.registration_entry_address.delete(0, "end")
-            self.registration_entry_username.delete(0, "end")
-            self.registration_entry_password.delete(0, "end")
+        if firstname != "" and surname != "" and pid != "" and address != "" and username != "" and password != "":
+            registration_result = create_account(mongo_client, firstname, surname, int(pid), address, username, password)
+            register_user = registration_result[0]
+            if register_user == True:
+                self.select_frame_by_name("login")
+                print(registration_result[0])
+                self.registration_entry_firstname.delete(0, "end")
+                self.registration_entry_surname.delete(0, "end")
+                self.registration_entry_pid.delete(0, "end")
+                self.registration_entry_address.delete(0, "end")
+                self.registration_entry_username.delete(0, "end")
+                self.registration_entry_password.delete(0, "end")
+            else:
+                print(registration_result[1])
+                self.registration_label_error.configure(text="Error: Fill all labels properly!")
         else:
-            print(registration_result[1])
+            self.registration_label_error.configure(text="Error: Fill all labels properly!")
 
 
     def main_button_event(self):
@@ -2477,6 +2492,7 @@ class App(customtkinter.CTk):
     
     def navigation_frame_logged_admin_logout_button_event(self):
         self.select_frame_by_name("login")
+        self.login_label_error.configure(text="")
         self.login_entry_password.delete(0, "end")
     
     def navigation_frame_logged_my_books_button_event(self):
@@ -2510,8 +2526,10 @@ class App(customtkinter.CTk):
                 else:
                     print(edited_user[1])
                     self.select_frame_by_name("edit_user")
+
             else:
                 print("Fill the values properly")
+
         
 
     
