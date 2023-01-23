@@ -421,7 +421,7 @@ class Librarian(User):
     def get_all_users(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
         return list(users.find({}, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1,
-                                    "count_borrowed_books": 1, "created_at": 1}))
+                                    "count_borrowed_books": 1, "created_at": 1,"banned":1,"verified":1,}))
 
     def find_user(self, mongo_client: pymongo.MongoClient, _id):
         if ObjectId.is_valid(_id):
