@@ -338,37 +338,46 @@ class App(customtkinter.CTk):
         #Main page LIBRARY page for logged in user
         self.main_page_logged_in_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.main_page_logged_in_user_frame.grid(row=1, column=2, sticky="nsew")
-        
+        self.book_image_main_page_label = customtkinter.CTkLabel(self.main_page_logged_in_user_frame,
+                                                            text="Browse collection of all books", width=60, height=20,
+                                                            corner_radius=7, font=('Helvetica', 20))
+        self.book_image_main_page_label.grid(row=0, column=1, padx=0, pady=0)
         self.book_image_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="",
                                                            image=self.book_test_image, compound="right")
-        self.book_image_main_page.grid(row=0, column=0, padx=0, pady=20,  sticky='e')
+        self.book_image_main_page.grid(row=1, column=1,padx=(0, 0), pady=10,  sticky='nsew')
         
         self.next_boook_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
-                                                          text="Next book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_main_page)
-        self.next_boook_button_main_page.grid(row=1, column=0,padx=0)
+                                                          text="Next book", width=100, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_main_page)
+        self.next_boook_button_main_page.grid(row=1, column=2,padx=5,  sticky='e')
         
         self.borrow_book_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
                                                           text="Borrow book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.borrow_book_user)
-        self.borrow_book_button_main_page.grid(row=2, column=0, padx=0)
+        self.borrow_book_button_main_page.grid(row=5, column=1, padx=0)
+
+        self.borrow_book_button_previous_book = customtkinter.CTkButton(self.main_page_logged_in_user_frame,
+                                                                    text="Previous book", width=100, fg_color="#36719F",
+                                                                    hover_color="#3B8ED0", text_color="#FFF",
+                                                                    command=self.borrow_book_user)
+        self.borrow_book_button_previous_book.grid(row=1, column=0, padx=5, sticky='w')
         
         
         self.book_title_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Title:", compound="right")
-        self.book_title_main_page.grid(row=0, column=1, padx=10, pady=20,  sticky='e')
+        self.book_title_main_page.grid(row=2, column=0, padx=10, pady=20,  sticky='e')
         
-        self.textbox_title_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=100,height=100)
-        self.textbox_title_main_page.grid(row=0, column=2, padx=(20, 0), pady=(20, 0))
+        self.textbox_title_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=200,height=40, activate_scrollbars=False)
+        self.textbox_title_main_page.grid(row=2, column=1, padx=(0, 0), pady=(20, 0))
         
         self.book_author_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Author:", compound="right")
-        self.book_author_main_page.grid(row=1, column=1, padx=10, pady=20,  sticky='e')
+        self.book_author_main_page.grid(row=3, column=0, padx=10, pady=20,  sticky='e')
         
-        self.textbox_author_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=100,height=100)
-        self.textbox_author_main_page.grid(row=1, column=2, padx=(20, 0), pady=(20, 0))
+        self.textbox_author_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=200,height=40, activate_scrollbars=False)
+        self.textbox_author_main_page.grid(row=3, column=1, padx=(0, 0), pady=(20, 0))
         
         self.book_description_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Description:", compound="right")
-        self.book_description_main_page.grid(row=2, column=1, padx=10, pady=20,  sticky='e')
+        self.book_description_main_page.grid(row=4, column=0, padx=10, pady=20,  sticky='e')
         
-        self.textbox_book_description_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=100,height=100)
-        self.textbox_book_description_main_page.grid(row=2, column=2, padx=(20, 0), pady=(20, 0))
+        self.textbox_book_description_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=200,height=200, activate_scrollbars=False)
+        self.textbox_book_description_main_page.grid(row=4, column=1, padx=(0, 0), pady=(20, 20))
         
         
         
@@ -378,38 +387,50 @@ class App(customtkinter.CTk):
 
         #MY BOOKS page for logged in user
         self.my_book_loged_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
-        self.my_book_loged_user_frame.grid(row=3, column=2, sticky="nsew")
+        self.my_book_loged_user_frame.grid(row=1, column=2, sticky="nsew")
+        self.book_image_mybooks_label = customtkinter.CTkLabel(self.my_book_loged_user_frame,
+                                                                 text="Your borrowed books", width=60,
+                                                                 height=20,
+                                                                 corner_radius=7, font=('Helvetica', 20))
+        self.book_image_mybooks_label.grid(row=0, column=1, padx=0, pady=0)
         
         self.book_image_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="",
                                                            image=self.book_test_image, compound="right")
-        self.book_image_my_books_page.grid(row=1, column=2, padx=0, pady=20,  sticky='e')
+        self.book_image_my_books_page.grid(row=1, column=1,padx=(0, 0), pady=10,  sticky='nsew')
         
         self.next_boook_button_my_books_page = customtkinter.CTkButton(self.my_book_loged_user_frame,
-                                                          text="Next borrowed book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_my_page)
-        self.next_boook_button_my_books_page.grid(row=2, column=2,padx=0)
+                                                          text="Next book", width=100, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.show_next_book_my_page)
+        self.next_boook_button_my_books_page.grid(row=1, column=2,padx=35,  sticky='e')
         
         self.return_book_button_my_books_page = customtkinter.CTkButton(self.my_book_loged_user_frame,
                                                           text="Return Book", width=200, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.return_book_user)
-        self.return_book_button_my_books_page.grid(row=3, column=2, padx=0)
+        self.return_book_button_my_books_page.grid(row=5, column=1, padx=0)
+
+        self.return_book_button_my_books_previous_book = customtkinter.CTkButton(self.my_book_loged_user_frame,
+                                                                        text="Previous book", width=100,
+                                                                        fg_color="#36719F",
+                                                                        hover_color="#3B8ED0", text_color="#FFF",
+                                                                        command=self.show_next_book_my_page)
+        self.return_book_button_my_books_previous_book.grid(row=1, column=0, padx=35, sticky='w')
         
         
         self.book_title_my_books_page= customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Title:", compound="right")
-        self.book_title_my_books_page.grid(row=1, column=3, padx=10, pady=20,  sticky='e')
+        self.book_title_my_books_page.grid(row=2, column=0, padx=10, pady=20,  sticky='e')
         
-        self.textbox_title_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=100,height=100)
-        self.textbox_title_my_books_page.grid(row=1, column=4, padx=(20, 0), pady=(20, 0))
+        self.textbox_title_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=200,height=40, activate_scrollbars=False)
+        self.textbox_title_my_books_page.grid(row=2, column=1, padx=(0, 0), pady=(20, 0))
         
         self.book_author_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Author:", compound="right")
-        self.book_author_my_books_page.grid(row=2, column=3, padx=10, pady=20,  sticky='e')
+        self.book_author_my_books_page.grid(row=3, column=0, padx=10, pady=20,  sticky='e')
         
-        self.textbox_author_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=100,height=100)
-        self.textbox_author_my_books_page.grid(row=2, column=4, padx=(20, 0), pady=(20, 0))
+        self.textbox_author_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=200,height=40, activate_scrollbars=False)
+        self.textbox_author_my_books_page.grid(row=3, column=1, padx=(0, 0), pady=(20, 0))
         
         self.book_description_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Description:", compound="right")
-        self.book_description_my_books_page.grid(row=3, column=3, padx=10, pady=20,  sticky='e')
+        self.book_description_my_books_page.grid(row=4, column=0, padx=10, pady=20,  sticky='e')
         
-        self.textbox_book_description_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=100,height=100)
-        self.textbox_book_description_my_books_page.grid(row=3, column=4, padx=(20, 0), pady=(20, 0))
+        self.textbox_book_description_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=200,height=200, activate_scrollbars=False)
+        self.textbox_book_description_my_books_page.grid(row=4, column=1, padx=(0, 0), pady=(20, 20))
 
 
         #login page frame
@@ -1474,7 +1495,7 @@ class App(customtkinter.CTk):
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
             self.main_page_frame.grid_forget()
-            self.main_page_logged_in_user_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+            self.main_page_logged_in_user_frame.grid(row=0, column=1, padx=(30, 0), pady=(20, 0), sticky="nsew")
         else:
             self.main_page_logged_in_user_frame.grid_forget()
         
@@ -1482,7 +1503,7 @@ class App(customtkinter.CTk):
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
             self.main_page_frame.grid_forget()
-            self.my_book_loged_user_frame.grid(row=0, column=1, sticky="nsew")
+            self.my_book_loged_user_frame.grid(row=0, column=1, padx=(10, 0), pady=(20, 0), sticky="nsew")
         else:
             self.my_book_loged_user_frame.grid_forget()
 
