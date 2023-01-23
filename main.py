@@ -57,7 +57,6 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
 
-
         # load images with light and dark mode image
         image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons")
         # main image on top left
@@ -120,9 +119,6 @@ class App(customtkinter.CTk):
                                                    image=self.login_image, anchor="w", command=self.home_button_event)
         self.home_button.grid(row=3, column=0, sticky="ew")
 
-
-
-
         #navigation frame for logged user
         self.navigation_frame_logged = customtkinter.CTkFrame(self, corner_radius=0)
         self.navigation_frame_logged.grid(row=0, column=0, sticky="nsew")
@@ -175,8 +171,7 @@ class App(customtkinter.CTk):
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
         self.navigation_frame_logged_admin_logout_button.grid(row=4, column=0, sticky="ew")
-        
-        
+
         # navigation frame for admin
         self.navigation_frame_logged_admin = customtkinter.CTkFrame(self, corner_radius=0)
         self.navigation_frame_logged_admin.grid(row=0, column=0, sticky="nsew")
@@ -343,6 +338,20 @@ class App(customtkinter.CTk):
 
         self.navigation_frame_logged_admin_accept_changes_user.grid(row=13, column=0, sticky="ew")
 
+        self.navigation_frame_logged_admin_import = customtkinter.CTkButton(
+                                                                                    self.navigation_frame_logged_admin,
+                                                                                    corner_radius=0, height=40,
+                                                                                    border_spacing=10,
+                                                                                    text="Import / Export",
+                                                                                    fg_color="transparent",
+                                                                                    text_color=("gray10", "gray90"),
+                                                                                    hover_color=("gray70", "gray30"),
+                                                                                    image=self.register_image,
+                                                                                    anchor="w",
+                                                                                    command=self.admin_button_import_event)
+
+        self.navigation_frame_logged_admin_import.grid(row=13, column=0, sticky="ew")
+
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged_admin,
                                                                                  corner_radius=0, height=40,
                                                                                  border_spacing=10,
@@ -353,9 +362,6 @@ class App(customtkinter.CTk):
                                                                                  image=self.register_image, anchor="w",
                                                                                  command=self.navigation_frame_logged_admin_logout_button_event)
         self.navigation_frame_logged_admin_logout_button.grid(row=14, column=0, sticky="ew")
-
-
-
 
         #Main page LIBRARY page for logged in user
         self.main_page_logged_in_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -400,12 +406,6 @@ class App(customtkinter.CTk):
         
         self.textbox_book_description_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_frame, width=200,height=200, activate_scrollbars=False)
         self.textbox_book_description_main_page.grid(row=4, column=1, padx=(0, 0), pady=(20, 20))
-        
-        
-        
-        
-        
-        
 
         #MY BOOKS page for logged in user
         self.my_book_loged_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -453,10 +453,6 @@ class App(customtkinter.CTk):
         
         self.textbox_book_description_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=200,height=200, activate_scrollbars=False)
         self.textbox_book_description_my_books_page.grid(row=4, column=1, padx=(0, 0), pady=(20, 20))
-
-
-
-
 
         # user edit user page frame
         self.user_edit_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -539,10 +535,6 @@ class App(customtkinter.CTk):
                                                                    command=self.user_button_edit_user)
         self.user_edit_user_button_edit.grid(row=7, column=1, padx=10, pady=20, sticky='e')
 
-
-
-
-
         #login page frame
         self.login_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.login_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -574,11 +566,6 @@ class App(customtkinter.CTk):
                                                                   width=30, height=25,
                                                                   corner_radius=7)
         self.login_label_error.grid(row=4, column=1, padx=10, pady=0)
-
-
-
-
-
 
 
         # register page frame
@@ -662,9 +649,6 @@ class App(customtkinter.CTk):
         self.registration_label_error.grid(row=8, column=1, padx=10, pady=0)
 
 
-
-
-
         # admin add author frame
         self.admin_add_author_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_add_author_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -700,9 +684,6 @@ class App(customtkinter.CTk):
                                                                      width=30, height=25,
                                                                      corner_radius=7)
         self.admin_add_author_label_error.grid(row=4, column=1, padx=10, pady=0)
-
-
-
 
         # admin edit author frame
         self.admin_edit_author_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -757,9 +738,6 @@ class App(customtkinter.CTk):
         self.admin_edit_author_label_error.grid(row=5, column=1, padx=10, pady=0)
 
 
-
-
-
         # admin delete author frame
         self.admin_delete_author_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_delete_author_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -789,9 +767,6 @@ class App(customtkinter.CTk):
                                                                     width=30, height=25,
                                                                     corner_radius=7)
         self.admin_delete_author_label_error.grid(row=3, column=1, padx=10, pady=0)
-
-
-
 
 
         # admin add book frame
@@ -906,9 +881,6 @@ class App(customtkinter.CTk):
         self.admin_add_book_label_error.grid(row=10, column=1, padx=10, pady=0)
 
 
-
-
-
         # admin edit book frame
         self.admin_edit_book_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_edit_book_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -1021,7 +993,6 @@ class App(customtkinter.CTk):
         self.admin_edit_book_label_error.grid(row=10, column=1, padx=10, pady=0)
 
 
-
         # admin delete book frame
         self.admin_delete_book_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_delete_book_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -1051,8 +1022,6 @@ class App(customtkinter.CTk):
                                                                   width=30, height=25,
                                                                   corner_radius=7)
         self.admin_delete_book_label_error.grid(row=3, column=1, padx=10, pady=0)
-
-
 
 
         # admin add user page frame
@@ -1136,9 +1105,6 @@ class App(customtkinter.CTk):
         self.admin_add_user_label_error.grid(row=8, column=1, padx=10, pady=0)
 
 
-
-
-
         # admin edit user page frame
         self.admin_edit_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_edit_user_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -1215,8 +1181,6 @@ class App(customtkinter.CTk):
         self.admin_edit_user_label_error.grid(row=7, column=1, padx=10, pady=0)
 
 
-
-
         # admin delete user frame
         self.admin_delete_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_delete_user_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -1246,8 +1210,6 @@ class App(customtkinter.CTk):
                                                                   width=30, height=25,
                                                                   corner_radius=7)
         self.admin_delete_user_label_error.grid(row=3, column=1, padx=10, pady=0)
-
-
 
         # admin ban & unban user frame
         self.admin_ban_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -1314,9 +1276,6 @@ class App(customtkinter.CTk):
         self.admin_unban_user_label_error.grid(row=8, column=1, padx=10, pady=0)
 
 
-
-
-
         # admin verified & unverified user frame
         self.admin_verified_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_verified_user_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
@@ -1381,9 +1340,6 @@ class App(customtkinter.CTk):
                                                                       width=30, height=25,
                                                                       corner_radius=7)
         self.admin_unverified_user_label_error.grid(row=8, column=1, padx=10, pady=0)
-
-
-
 
         # admin accept & decline user changes frame
         self.admin_accept_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -1453,8 +1409,46 @@ class App(customtkinter.CTk):
                                                                     corner_radius=7)
         self.admin_decline_user_label_error.grid(row=8, column=1, padx=10, pady=0)
 
+        # admin import frame
+        self.admin_import_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.admin_import_frame.grid(row=0, column=1, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.admin_import_label_import = customtkinter.CTkLabel(self.admin_import_frame,
+                                                                text="Import", width=30, height=25,
+                                                                corner_radius=7)
+        self.admin_import_label_import.grid(row=0, column=1, padx=90, pady=20, sticky='w')
 
+        self.admin_import_label_ID = customtkinter.CTkLabel(self.admin_import_frame,
+                                                            text="File name: ", width=30, height=25,
+                                                            corner_radius=7)
+        self.admin_import_label_ID.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
+        self.admin_import_entry_ID = customtkinter.CTkEntry(self.admin_import_frame,
+                                                            placeholder_text="Enter File name",
+                                                            width=200, height=30, border_width=2,
+                                                            corner_radius=10)
+        self.admin_import_entry_ID.grid(row=1, column=1, padx=10, columnspan=2)
+
+        self.admin_import_button_import = customtkinter.CTkButton(self.admin_import_frame,
+                                                                  text="Import file", width=70, fg_color="#36719F",
+                                                                  hover_color="#3B8ED0", text_color="#FFF",
+                                                                  command=self.admin_button_import)
+        self.admin_import_button_import.grid(row=2, column=1, padx=85, sticky='w')
+
+        self.admin_import_label_error = customtkinter.CTkLabel(self.admin_import_frame, text="",
+                                                               width=30, height=25,
+                                                               corner_radius=7)
+        self.admin_import_label_error.grid(row=3, column=1, padx=10, pady=0)
+
+        self.admin_export_label_export = customtkinter.CTkLabel(self.admin_import_frame,
+                                                                text="Export files", width=30, height=25,
+                                                                corner_radius=7)
+        self.admin_export_label_export.grid(row=4, column=0, padx=10, pady=20, sticky='w')
+
+        self.admin_export_button_export = customtkinter.CTkButton(self.admin_import_frame,
+                                                                  text="Export files", width=70, fg_color="#36719F",
+                                                                  hover_color="#3B8ED0", text_color="#FFF",
+                                                                  command=self.admin_button_export)
+        self.admin_export_button_export.grid(row=4, column=1, padx=20, sticky='w')
 
         #create main page after for normal user which logged sucessfully
         self.main_page_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
@@ -1463,17 +1457,13 @@ class App(customtkinter.CTk):
         self.main_page_frame_label = customtkinter.CTkLabel(self.main_page_frame, text="User is logged")
         self.main_page_frame_label.grid(row=0, column=0, padx=20, pady=10)
 
-
-
-        
         def get_position_of_clicked(choice):
             if ALL_USERS == None:
                 return
             for i,user in enumerate(ALL_USERS):
                 if user['login_name']== choice:
                     return i
-                
-        
+
         def optionmenu_callback(choice):
             global SELECTE_ADMIN_INDEX
             SELECTE_ADMIN_INDEX= get_position_of_clicked(choice)
@@ -1613,12 +1603,6 @@ class App(customtkinter.CTk):
                                                                    command=self.admin_button_add_book)
         self.admin_add_book_button_add.grid(row=7, column=1, padx=30, pady=0, sticky='e')
 
-        
-       
-
-        
-                
-
 
         # create home frame
         self.home_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
@@ -1634,11 +1618,8 @@ class App(customtkinter.CTk):
                                                            image=self.image_icon_image, compound="right")
         self.home_frame_button_2.grid(row=2, column=0, padx=20, pady=10)
 
-
-
         # select default frame
         self.select_frame_by_name("login")
-
 
     def select_frame_by_name(self, name):
         self.home_button.configure(fg_color=("gray75", "gray25") if name == "home" else "transparent")
@@ -1660,6 +1641,7 @@ class App(customtkinter.CTk):
         self.admin_verified_user_button_verified.configure(fg_color=("gray75", "gray25") if name == "verified_user_admin" else "transparent")
         self.admin_accept_user_button_accept.configure(fg_color=("gray75", "gray25") if name == "accept_changes_user_admin" else "transparent")
         self.admin_delete_user_button_delete.configure(fg_color=("gray75", "gray25") if name == "delete_user_admin" else "transparent")
+        self.admin_import_button_import.configure(fg_color=("gray75", "gray25") if name == "import_admin" else "transparent")
         self.user_edit_user_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_user" else "transparent")
 
         # show selected frame
@@ -1726,7 +1708,6 @@ class App(customtkinter.CTk):
             self.user_edit_user_frame.grid(row=0, column=1, padx=(80, 0), pady=(20, 0), sticky="nsew")
         else:
             self.user_edit_user_frame.grid_forget()
-
 
         if name == "add_author_admin":
             self.navigation_frame.grid_forget()
@@ -1812,6 +1793,13 @@ class App(customtkinter.CTk):
         else:
             self.admin_accept_user_frame.grid_forget()
 
+        if name == "import_admin":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged.grid_forget()
+            self.admin_import_frame.grid(row=0, column=1, padx=(80, 20), pady=(20, 0), sticky="nsew")
+        else:
+            self.admin_import_frame.grid_forget()
+
     def home_button_event(self):
         self.select_frame_by_name("home")
 
@@ -1825,7 +1813,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         #Admin: login_lib lib_12345
         #User: user password
-        login_result = login(mongo_client, "user", "password")
+        login_result = login(mongo_client, "login_lib", "lib_12345")
         if login_result[0]:
             user = login_result[1]
             global current
@@ -1845,11 +1833,9 @@ class App(customtkinter.CTk):
             print(login_result[1])
             self.login_label_error.configure(text="Incorrect user name or password")
 
-
     def admin_button_add_author_event(self):
         self.select_frame_by_name("add_author_admin")
         self.admin_add_author_label_error.configure(text="")
-
 
     def admin_button_add_author(self):
         if current.role == Roles.Librarian.name:
@@ -1866,7 +1852,6 @@ class App(customtkinter.CTk):
                 print(added_author[1])
                 self.select_frame_by_name("add_author_admin")
                 self.admin_add_author_label_error.configure(text="Error: Please fill all labels properly!")
-
 
     def admin_button_edit_author_event(self):
         self.select_frame_by_name("edit_author_admin")
@@ -1890,7 +1875,6 @@ class App(customtkinter.CTk):
                 self.select_frame_by_name("edit_author_admin")
                 self.admin_edit_author_label_error.configure(text="Error: Please fill all labels properly!")
 
-
     def admin_button_delete_author_event(self):
         self.select_frame_by_name("delete_author_admin")
         self.admin_delete_author_label_error.configure(text="")
@@ -1909,11 +1893,9 @@ class App(customtkinter.CTk):
                 self.select_frame_by_name("delete_author_admin")
                 self.admin_delete_author_label_error.configure(text="Error: Please fill all labels properly!")
 
-
     def admin_button_add_book_event(self):
         self.select_frame_by_name("add_book_admin")
         self.admin_add_book_label_error.configure(text="")
-
 
     def admin_button_add_book(self):
         if current.role == Roles.Librarian.name:
@@ -1946,8 +1928,6 @@ class App(customtkinter.CTk):
             else:
                 print("Fill the values properly")
                 self.admin_add_book_label_error.configure(text="Error: Please fill all labels properly!")
-
-
 
     def admin_button_edit_book_event(self):
         self.select_frame_by_name("edit_book_admin")
@@ -1985,7 +1965,6 @@ class App(customtkinter.CTk):
                 print("Fill the values properly")
                 self.admin_edit_book_label_error.configure(text="Error: Please fill all labels properly!")
 
-
     def admin_button_delete_book_event(self):
         self.select_frame_by_name("delete_book_admin")
         self.admin_delete_book_label_error.configure(text="")
@@ -2003,7 +1982,6 @@ class App(customtkinter.CTk):
                 print(deleted_book[1])
                 self.select_frame_by_name("delete_book_admin")
                 self.admin_delete_book_label_error.configure(text="Error: Please fill all labels properly!")
-
 
     def admin_button_add_user_event(self):
         self.select_frame_by_name("add_user_admin")
@@ -2183,6 +2161,30 @@ class App(customtkinter.CTk):
                 print(declined_user[1])
                 self.select_frame_by_name("accept_changes_user_admin")
                 self.admin_decline_user_label_error.configure(text="Error: Please fill all labels properly!")
+
+    def admin_button_import_event(self):
+        self.select_frame_by_name("import_admin")
+        self.admin_import_label_error.configure(text="")
+
+    def admin_button_import(self):
+        if current.role == Roles.Librarian.name:
+            name = self.admin_import_entry_ID.get()
+            if name != "":
+                imported_file = import_from_csv(mongo_client, name)
+                if imported_file[0] == True:
+                    self.select_frame_by_name("main_admin")
+                    print(imported_file[0])
+                    self.admin_verified_user_entry_ID.delete(0, "end")
+                else:
+                    print(imported_file[1])
+                    self.select_frame_by_name("import_admin")
+                    self.admin_import_label_error.configure(text="Error: Please fill all labels properly!")
+            else:
+                self.admin_import_label_error.configure(text="Error: Please fill all labels properly!")
+
+    def admin_button_export(self):
+        export_to_csv(mongo_client)
+        self.select_frame_by_name("main_admin")
 
     def get_user_login_names(self,all_users):
         user_names = []
