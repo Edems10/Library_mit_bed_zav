@@ -102,7 +102,7 @@ class Book:
     year: int
     #FIXME toto muze byt i sama classa o sobe 
     #zalezi potom jak budeme ukladat images
-    image: str
+    image: bytes
     copies_available: int
     genre: Optional[str]
     description: Optional[str]

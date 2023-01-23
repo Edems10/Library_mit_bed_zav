@@ -213,7 +213,7 @@ class User:
                     if book_exists_id(mongo_client, _id):
                         books = get_book_column(mongo_client)
                         query = {"_id": ObjectId(_id)}
-                        return books.find_one(query, {"_id": 0, "count_borrowed": 0})
+                        return books.find_one(query, {"_id": 1, "count_borrowed": 0})
                     else:
                         return False, "There is no book with ID: " + str(_id)
                 else:
@@ -696,10 +696,8 @@ class Librarian(User):
         else:
             return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
+    
 
-    def find_all_books(self, mongo_client: pymongo.MongoClient):
-        books = get_book_column(mongo_client)
-        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1}))
 
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
@@ -717,6 +715,10 @@ def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
         return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                      " of 12 bytes or a string of 24 hex characters"
 
+
+def find_all_books(mongo_client: pymongo.MongoClient):
+        books = get_book_column(mongo_client)
+        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1,"description":1}))
 
 def get_book_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][BOOK]
@@ -944,6 +946,19 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union
             return False, "Password must have at least 6 characters"
     else:
         return False, "Incorrect username or password"
+
+def find_author(mongo_client: pymongo.MongoClient, _id):
+        if ObjectId.is_valid(_id):
+            authors = get_author_column(mongo_client)
+            query = {"_id": ObjectId(_id)}
+            result = authors.find_one(query)
+            if result is not None:
+                return True, result
+            else:
+                return False, "There is no author with ID: " + str(_id)
+        else:
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
 
 def autocomplete_book(mongo_client: pymongo.MongoClient, query: str,

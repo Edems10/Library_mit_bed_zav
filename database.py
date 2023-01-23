@@ -42,7 +42,9 @@ if login_result[0]:
     user = login_result[1]
     if user.role == Roles.Librarian.name:
         current_user = Librarian(user)
-        print(current_user.add_book(mongo_client, "Bílá nemoc", "c117252e015f529cd3cc965a", 78, 1937, 2, "drama", "Bílá nemoc je divadelní hra – drama Karla Čapka z roku 1937. Dílo varuje před nastupujícím fašismem. Jde o jedno z děl varujících před nástupem nacismu v Německu a stalo se posléze i jedním z důvodů plánované autorovy perzekuce gestapem.", 0))
+        print(current_user.add_book(mongo_client, "The Last Wish", "b9e84cbe95def52ebeb48c03", 253, 1993, 4, "Fantasy Fiction", 
+                                    "The Last Wish is the third published short story collection in Polish fantasy writer Andrzej Sapkowski's The Witcher series. Published by SuperNowa in 1993,[1] it was preceded by 1992's Sword of Destiny, but is officially considered the first entry in the series and Sword of Destiny the second. The collection contains seven short stories interspersed with a continuing frame story: Geralt of Rivia, after having been injured in battle, rests in a temple. During that time he has flashbacks to recent events in his life, with each flashback forming a short story..",
+                                    0))
         #print(current_user.add_book(mongo_client, "New book", "3bef9919eca266bb9af0248f", 231, 2003, "dragon", 2,
         #                            "fantasy", "description", 0))
         #print(current_user.add_author(mongo_client, "Dominik", "Borec"))
