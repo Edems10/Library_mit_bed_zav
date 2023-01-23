@@ -142,6 +142,18 @@ class App(customtkinter.CTk):
                                                                            command=self.navigation_frame_logged_my_books_button_event)
         self.navigation_frame_logged_my_books_button.grid(row=2, column=0, sticky="ew")
 
+        self.navigation_frame_logged_edit_user = customtkinter.CTkButton(self.navigation_frame_logged,
+                                                                               corner_radius=0, height=40,
+                                                                               border_spacing=10,
+                                                                               text="Edit user",
+                                                                               fg_color="transparent",
+                                                                               text_color=("gray10", "gray90"),
+                                                                               hover_color=("gray70", "gray30"),
+                                                                               image=self.register_image, anchor="w",
+                                                                               command=self.user_button_edit_user_event)
+
+        self.navigation_frame_logged_edit_user.grid(row=3, column=0, sticky="ew")
+
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged,
                                                                                    corner_radius=0, height=40,
                                                                                    border_spacing=10,
@@ -152,7 +164,7 @@ class App(customtkinter.CTk):
                                                                                    image=self.register_image,
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
-        self.navigation_frame_logged_admin_logout_button.grid(row=3, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button.grid(row=4, column=0, sticky="ew")
         
         
         # navigation frame for admin
@@ -431,6 +443,94 @@ class App(customtkinter.CTk):
         
         self.textbox_book_description_my_books_page = customtkinter.CTkTextbox(self.my_book_loged_user_frame, width=200,height=200, activate_scrollbars=False)
         self.textbox_book_description_my_books_page.grid(row=4, column=1, padx=(0, 0), pady=(20, 20))
+
+
+
+
+
+        # user edit user page frame
+        self.user_edit_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.user_edit_user_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+
+        self.user_edit_user_label_edit = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                 text="Edit user", width=60, height=20,
+                                                                 corner_radius=7)
+        self.user_edit_user_label_edit.grid(row=0, column=1, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_label_firstname = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                      text="First Name: ", width=30, height=25,
+                                                                      corner_radius=7)
+        self.user_edit_user_label_firstname.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_entry_firstname = customtkinter.CTkEntry(self.user_edit_user_frame,
+                                                                      placeholder_text="Enter First Name",
+                                                                      width=200, height=30, border_width=2,
+                                                                      corner_radius=10)
+        self.user_edit_user_entry_firstname.grid(row=1, column=1, padx=10, columnspan=2)
+
+        self.user_edit_user_label_surname = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                    text="Surname: ", width=30, height=25,
+                                                                    corner_radius=7)
+        self.user_edit_user_label_surname.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_entry_surname = customtkinter.CTkEntry(self.user_edit_user_frame,
+                                                                    placeholder_text="Enter Surname",
+                                                                    width=200, height=30, border_width=2,
+                                                                    corner_radius=10)
+        self.user_edit_user_entry_surname.grid(row=2, column=1, padx=10, columnspan=2)
+
+        self.user_edit_user_label_pid = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                text="PID: ", width=30, height=25,
+                                                                corner_radius=7)
+        self.user_edit_user_label_pid.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_entry_pid = customtkinter.CTkEntry(self.user_edit_user_frame,
+                                                                placeholder_text="Enter PID",
+                                                                width=200, height=30, border_width=2,
+                                                                corner_radius=10)
+        self.user_edit_user_entry_pid.grid(row=3, column=1, padx=10, columnspan=2)
+
+        self.user_edit_user_label_address = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                    text="Address: ", width=30, height=25,
+                                                                    corner_radius=7)
+        self.user_edit_user_label_address.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_entry_address = customtkinter.CTkEntry(self.user_edit_user_frame,
+                                                                    placeholder_text="Enter Address",
+                                                                    width=200, height=30, border_width=2,
+                                                                    corner_radius=10)
+        self.user_edit_user_entry_address.grid(row=4, column=1, padx=10, columnspan=2)
+
+        self.user_edit_user_label_login = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                   text="Login name: ", width=30, height=25,
+                                                                   corner_radius=7)
+        self.user_edit_user_label_login.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_entry_login = customtkinter.CTkEntry(self.user_edit_user_frame,
+                                                                   placeholder_text="Enter Login name",
+                                                                   width=200, height=30, border_width=2,
+                                                                   corner_radius=10)
+        self.user_edit_user_entry_login.grid(row=5, column=1, padx=10, columnspan=2)
+
+        self.user_edit_user_label_password = customtkinter.CTkLabel(self.user_edit_user_frame,
+                                                                   text="Password: ", width=30, height=25,
+                                                                   corner_radius=7)
+        self.user_edit_user_label_password.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_edit_user_entry_password = customtkinter.CTkEntry(self.user_edit_user_frame,
+                                                                   placeholder_text="Enter Password",
+                                                                   width=200, height=30, border_width=2,
+                                                                   corner_radius=10, show="•")
+        self.user_edit_user_entry_password.grid(row=6, column=1, padx=10, columnspan=2)
+
+        self.user_edit_user_button_edit = customtkinter.CTkButton(self.user_edit_user_frame,
+                                                                   text="Edit", width=70, fg_color="#36719F",
+                                                                   hover_color="#3B8ED0", text_color="#FFF",
+                                                                   command=self.user_button_edit_user)
+        self.user_edit_user_button_edit.grid(row=7, column=1, padx=10, pady=20, sticky='e')
+
+
+
 
 
         #login page frame
@@ -1449,6 +1549,7 @@ class App(customtkinter.CTk):
         self.admin_verified_user_button_verified.configure(fg_color=("gray75", "gray25") if name == "verified_user_admin" else "transparent")
         self.admin_accept_user_button_accept.configure(fg_color=("gray75", "gray25") if name == "accept_changes_user_admin" else "transparent")
         self.admin_delete_user_button_delete.configure(fg_color=("gray75", "gray25") if name == "delete_user_admin" else "transparent")
+        self.user_edit_user_button_edit.configure(fg_color=("gray75", "gray25") if name == "edit_user" else "transparent")
 
         # show selected frame
         if name == "home":
@@ -1506,6 +1607,14 @@ class App(customtkinter.CTk):
             self.my_book_loged_user_frame.grid(row=0, column=1, padx=(10, 0), pady=(20, 0), sticky="nsew")
         else:
             self.my_book_loged_user_frame.grid_forget()
+
+        if name == "edit_user":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
+            self.main_page_frame.grid_forget()
+            self.user_edit_user_frame.grid(row=0, column=1, padx=(80, 0), pady=(20, 0), sticky="nsew")
+        else:
+            self.user_edit_user_frame.grid_forget()
 
 
         if name == "add_author_admin":
@@ -2188,6 +2297,35 @@ class App(customtkinter.CTk):
         
         self.show_my_book(0)
         self.select_frame_by_name("my_books")
+
+    def user_button_edit_user_event(self):
+        self.select_frame_by_name("edit_user")
+
+    def user_button_edit_user(self):
+        if current.role == Roles.User.name:
+            current_user = User(current)
+            firstname = self.user_edit_user_entry_firstname.get()
+            surname = self.user_edit_user_entry_surname.get()
+            pid = self.user_edit_user_entry_pid.get()
+            address = self.user_edit_user_entry_address.get()
+            login = self.user_edit_user_entry_login.get()
+            password = self.user_edit_user_entry_password.get()
+            if firstname != "" or surname != "" or pid != "" or address != "" or login != "" or password != "":
+                edited_user = current_user.edit_user(mongo_client, firstname, surname, int(pid), address, login, password)
+                if edited_user[0] == True:
+                    self.select_frame_by_name("main_page_logged")
+                    print(edited_user[0])
+                    self.user_edit_user_entry_firstname.delete(0, "end")
+                    self.user_edit_user_entry_surname.delete(0, "end")
+                    self.user_edit_user_entry_pid.delete(0, "end")
+                    self.user_edit_user_entry_address.delete(0, "end")
+                    self.user_edit_user_entry_login.delete(0, "end")
+                    self.user_edit_user_entry_password.delete(0, "end")
+                else:
+                    print(edited_user[1])
+                    self.select_frame_by_name("edit_user")
+            else:
+                print("Fill the values properly")
         
 
     
