@@ -32,7 +32,7 @@ mongo_client = get_mongo_client()
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-login_result = login(mongo_client,"tom","password")
+login_result = login(mongo_client,"adam","123456")
 
 # login login_lib 
 # pw lib_12345
@@ -84,14 +84,14 @@ if login_result[0]:
 
     else:
         current_user = User(user)
-        user_current_id = current_user.user.id
-        print(current_user.user_find_book(mongo_client, "aa7d6b0c12fc001b9e01187e"))
-        #print(current_user.edit_user(mongo_client, "test_of_changes1", "data", 24432, "CZ", "Dom2", "password")[1])
-        print(current_user.borrow_book(mongo_client, 'aa7d6b0c12fc001b9e01187e')[1])
-        print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
-        #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])
-        print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
-        print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
+        # user_current_id = current_user.user.id
+        # print(current_user.user_find_book(mongo_client, "aa7d6b0c12fc001b9e01187e"))
+        print(current_user.edit_user(mongo_client, "not_adam", "Mitrenga", 14410, "Praha ", "adam", "123456")[1])
+        # print(current_user.borrow_book(mongo_client, 'aa7d6b0c12fc001b9e01187e')[1])
+        # print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
+        # #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])
+        # print(autocomplete_book(mongo_client,"train",Autocomplete_options_book.title))
+        # print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
 
 else:
     print(login_result[1])

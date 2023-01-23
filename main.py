@@ -1,4 +1,5 @@
 from ast import List
+from enum import Enum
 import tkinter
 
 import customtkinter
@@ -28,8 +29,18 @@ ALL_LIBRARY_BOOKS = None
 CURRENT_USER = None
 CURRENT_USER_BORROWED_BOOKS = None
 ALL_USERS = None
+ALL_USERS_CHANGED = None
+
 PATH_TO_LOCAL_IMAGES_BOOKS = os.path.join(os.path.dirname(__file__), 'book_images')
 
+class Categories(Enum):
+    All_users = 0
+    All_authors = 1
+    All_books = 2
+    All_user_changes = 3
+    All_borrowed_books = 4
+
+CURRENT_CATEGORY_ADMIN : Categories  = Categories.All_users
 
 def get_mongo_client():
     with open(API_KEY) as f:
@@ -1388,7 +1399,7 @@ class App(customtkinter.CTk):
         self.main_page_frame_admin = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.main_page_frame_admin.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.main_page_admin_label = customtkinter.CTkLabel(self.main_page_frame_admin,
-                                                                 text="Browse collection of all users", width=60, height=20,
+                                                                 text="Browse all users", width=60, height=20,
                                                                  corner_radius=7, font= ('Helvetica', 20))
         self.main_page_admin_label.grid(row=0, column=1, padx=0, pady=20)
         
@@ -1403,6 +1414,22 @@ class App(customtkinter.CTk):
                                                                    hover_color="#3B8ED0", text_color="#FFF",
                                                                    command=self.details_for_main_page_admin)
         self.main_page_admin_details_button.grid(row=1, column=1, padx=60, pady=20, sticky='e')
+        
+        
+         # TODO ADD IMAGE sipka
+        self.main_page_admin_move_cattegory_forward_button = customtkinter.CTkButton(self.main_page_frame_admin,
+                                                                   text="-->", width=70, fg_color="#36719F",
+                                                                   hover_color="#3B8ED0", text_color="#FFF",
+                                                                   command=self.move_category_right)
+        self.main_page_admin_move_cattegory_forward_button.grid(row=0, column=3, padx=60, pady=20, sticky='e')
+        
+        
+        # TODO ADD IMAGE sipka
+        self.main_page_admin_move_cattegory_back_button = customtkinter.CTkButton(self.main_page_frame_admin,
+                                                                   text="<--", width=70, fg_color="#36719F",
+                                                                   hover_color="#3B8ED0", text_color="#FFF",
+                                                                   command=self.details_for_main_page_admin)
+        self.main_page_admin_move_cattegory_back_button.grid(row=0, column=0, padx=60, pady=20, sticky='e')
 
         self.main_page_admin_id_label = customtkinter.CTkLabel(self.main_page_frame_admin,
                                                                        text="ID: ", width=30, height=25,
@@ -1738,6 +1765,7 @@ class App(customtkinter.CTk):
     def admin_button_add_author_event(self):
         self.select_frame_by_name("add_author_admin")
 
+
     def admin_button_add_author(self):
         if current.role == Roles.Librarian.name:
             current_user = Librarian(current)
@@ -1842,7 +1870,7 @@ class App(customtkinter.CTk):
             copies_available = self.admin_edit_book_entry_copies_available.get()
             genre = self.admin_edit_book_entry_genre.get()
             description = self.admin_edit_book_entry_description.get()
-            if book_id != "" or title != "" or author != "" or length != "" or year != "" or copies_available != "" or genre != "" or description != "":
+            if book_id != "" and title != "" and author != "" and length != "" and year != "" and copies_available != "" and genre != "" and description != "":
                 edited_book = current_user.edit_book(mongo_client, book_id, title, author, int(length), int(year), int(copies_available), genre, description)
                 if edited_book[0] == True:
                     self.select_frame_by_name("main_admin")
@@ -1891,7 +1919,7 @@ class App(customtkinter.CTk):
             address = self.admin_add_user_entry_address.get()
             login = self.admin_add_user_entry_username.get()
             password = self.admin_add_user_entry_password.get()
-            if firstname != "" or surname != "" or pid != "" or address != "" or login != "" or password != "":
+            if firstname != "" and surname != "" and pid != "" and address != "" and login != "" and password != "":
                 added_user = current_user.admin_create_account(mongo_client, firstname, surname, int(pid), address, login, password)
                 if added_user[0] == True:
                     self.select_frame_by_name("main_admin")
@@ -1919,7 +1947,7 @@ class App(customtkinter.CTk):
             surname = self.admin_edit_user_entry_surname.get()
             pid = self.admin_edit_user_entry_pid.get()
             address = self.admin_edit_user_entry_address.get()
-            if firstname != "" or surname != "" or pid != "" or address != "" or id != "":
+            if firstname != "" and surname != "" and pid != "" and address != "" and id != "":
                 edited_user = current_user.edit_user(mongo_client, firstname, surname, int(pid), address, _id = id)
                 if edited_user[0] == True:
                     self.select_frame_by_name("main_admin")
@@ -2052,11 +2080,26 @@ class App(customtkinter.CTk):
         for i,user in enumerate(ALL_USERS):
             if user['login_name']== choice:
                 return i
-                
-    def details_for_main_page_admin(self):
-        currently_selected_user = ALL_USERS[SELECTE_ADMIN_INDEX]
-
+    
+    def get_current_category(self):
+        global CURRENT_CATEGORY_ADMIN
+        return CURRENT_CATEGORY_ADMIN
         
+    def move_category_right(self):
+        pass
+        
+    def move_category_left(self):
+        pass   
+              
+    
+              
+    def move_category_right(self):
+        self.get_current_category()
+        pass
+              
+    
+    def configure_all_users_admin(self):
+        currently_selected_user = ALL_USERS[SELECTE_ADMIN_INDEX]
         self.main_page_admin_id_entry.configure(state="normal")
         self.main_page_admin_first_name_entry.configure(state="normal")
         self.main_page_admin_surname_entry.configure(state="normal")
@@ -2065,6 +2108,9 @@ class App(customtkinter.CTk):
         self.main_page_admin_status_banned_entry.configure(state="normal")
         self.main_page_admin_status_verified_entry.configure(state="normal")
         self.main_page_admin_created_at_entry.configure(state="normal")
+        
+        
+        
         
         self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_user['_id']}")
         self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_user['first_name']}")
@@ -2084,6 +2130,36 @@ class App(customtkinter.CTk):
         self.main_page_admin_status_banned_entry.configure(state="readonly")
         self.main_page_admin_status_verified_entry.configure(state="readonly")
         self.main_page_admin_created_at_entry.configure(state="readonly")
+    
+    
+    def configure_all_books_admin(self):
+        pass
+    
+    def configure_all_borrowed_books_admin(self):
+        pass
+    
+    def configure_all_authors_admin(self):
+        pass
+    
+    def configure_all_user_changes(self):
+        currently_selected_user = ALL_USERS[SELECTE_ADMIN_INDEX]
+    
+    def details_for_main_page_admin(self):
+        
+        curret_category= self.get_current_category()
+        
+        if curret_category == Categories.All_users:
+            self.configure_all_users_admin()
+        elif curret_category == Categories.All_books:
+            self.configure_all_books_admin()
+        elif curret_category == Categories.All_borrowed_books:
+            self.configure_all_borrowed_books_admin()
+        elif curret_category == Categories.All_authors:
+            self.configure_all_authors_admin()
+        elif curret_category == Categories.All_user_changes:
+            self.configure_all_user_changes()
+           
+        
         
         
         #self.main_page_admin_edit_user_entry_address.configure(text=f"{currently_selected_user['address']}")
@@ -2095,8 +2171,10 @@ class App(customtkinter.CTk):
 
     def navigation_frame_admin_main_page_event(self):
         current_user = Librarian(current)
-        global ALL_USERS 
+        global ALL_USERS
+        global ALL_USERS_CHANGED
         ALL_USERS=current_user.get_all_users(mongo_client)
+        ALL_USERS_CHANGED = current_user.get_all_users_with_stashed_changes(mongo_client)
         user_names = self.get_user_login_names(ALL_USERS)
         self.main_page_frame_select_box.configure(values=user_names)
         self.select_frame_by_name("main_admin")
@@ -2310,7 +2388,7 @@ class App(customtkinter.CTk):
             address = self.user_edit_user_entry_address.get()
             login = self.user_edit_user_entry_login.get()
             password = self.user_edit_user_entry_password.get()
-            if firstname != "" or surname != "" or pid != "" or address != "" or login != "" or password != "":
+            if firstname != "" and surname != "" and pid != "" and address !="" and login != "" and password != "":
                 edited_user = current_user.edit_user(mongo_client, firstname, surname, int(pid), address, login, password)
                 if edited_user[0] == True:
                     self.select_frame_by_name("main_page_logged")
