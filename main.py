@@ -417,6 +417,10 @@ class App(customtkinter.CTk):
         #login page frame
         self.login_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.login_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.login_frame_label = customtkinter.CTkLabel(self.login_frame,
+                                                               text="Log in", width=60, height=20,
+                                                               corner_radius=7)
+        self.login_frame_label.grid(row=0, column=1, padx=70, pady=20, sticky='w')
 
         self.login_label_username = customtkinter.CTkLabel(self.login_frame,
                                                            text="Username: ", width=30, height=25, corner_radius=7)
@@ -435,7 +439,7 @@ class App(customtkinter.CTk):
 
         self.login_button_login = customtkinter.CTkButton(self.login_frame,
                                                           text="Login", width=70, fg_color="#36719F", hover_color="#3B8ED0", text_color="#FFF", command=self.login_button_log_user)
-        self.login_button_login.grid(row=3, column=1, padx=70, sticky='w')
+        self.login_button_login.grid(row=3, column=1, padx=70, pady=20, sticky='w')
 
 
 
@@ -446,73 +450,77 @@ class App(customtkinter.CTk):
         # register page frame
         self.registration_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.registration_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.registration_frame_label = customtkinter.CTkLabel(self.registration_frame,
+                                                                 text="Registration", width=60, height=20,
+                                                                 corner_radius=7)
+        self.registration_frame_label.grid(row=0, column=1, padx=70, pady=20, sticky='w')
 
         self.registration_label_firstname = customtkinter.CTkLabel(self.registration_frame,
                                                                   text="First Name: ", width=30, height=25,
                                                                   corner_radius=7)
-        self.registration_label_firstname.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_firstname.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_firstname = customtkinter.CTkEntry(self.registration_frame,
                                                                   placeholder_text="Enter First Name",
                                                                   width=200, height=30, border_width=2,
                                                                   corner_radius=10)
-        self.registration_entry_firstname.grid(row=0, column=1, padx=10, columnspan=2)
+        self.registration_entry_firstname.grid(row=1, column=1, padx=10, columnspan=2)
 
         self.registration_label_surname = customtkinter.CTkLabel(self.registration_frame,
                                                                    text="Surname: ", width=30, height=25,
                                                                    corner_radius=7)
-        self.registration_label_surname.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_surname.grid(row=2, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_surname = customtkinter.CTkEntry(self.registration_frame,
                                                                    placeholder_text="Enter Surname",
                                                                    width=200, height=30, border_width=2,
                                                                    corner_radius=10)
-        self.registration_entry_surname.grid(row=1, column=1, padx=10, columnspan=2)
+        self.registration_entry_surname.grid(row=2, column=1, padx=10, columnspan=2)
 
         self.registration_label_pid = customtkinter.CTkLabel(self.registration_frame,
                                                                  text="PID: ", width=30, height=25,
                                                                  corner_radius=7)
-        self.registration_label_pid.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_pid.grid(row=3, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_pid = customtkinter.CTkEntry(self.registration_frame,
                                                                  placeholder_text="Enter PID",
                                                                  width=200, height=30, border_width=2,
                                                                  corner_radius=10)
-        self.registration_entry_pid.grid(row=2, column=1, padx=10, columnspan=2)
+        self.registration_entry_pid.grid(row=3, column=1, padx=10, columnspan=2)
 
         self.registration_label_address = customtkinter.CTkLabel(self.registration_frame,
                                                              text="Address: ", width=30, height=25,
                                                              corner_radius=7)
-        self.registration_label_address.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_address.grid(row=4, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_address = customtkinter.CTkEntry(self.registration_frame,
                                                              placeholder_text="Enter Address",
                                                              width=200, height=30, border_width=2,
                                                              corner_radius=10)
-        self.registration_entry_address.grid(row=3, column=1, padx=10, columnspan=2)
+        self.registration_entry_address.grid(row=4, column=1, padx=10, columnspan=2)
 
         self.registration_label_username = customtkinter.CTkLabel(self.registration_frame,
                                                            text="Username: ", width=30, height=25, corner_radius=7)
-        self.registration_label_username.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_username.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_username = customtkinter.CTkEntry(self.registration_frame, placeholder_text="Enter Username",
                                                            width=200, height=30, border_width=2, corner_radius=10)
-        self.registration_entry_username.grid(row=4, column=1, padx=10, columnspan=2)
+        self.registration_entry_username.grid(row=5, column=1, padx=10, columnspan=2)
 
         self.registration_label_password = customtkinter.CTkLabel(self.registration_frame, text="Password: ", width=30, height=25,
                                                            corner_radius=7)
-        self.registration_label_password.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+        self.registration_label_password.grid(row=6, column=0, padx=10, pady=20, sticky='e')
 
         self.registration_entry_password = customtkinter.CTkEntry(self.registration_frame,
                                                            placeholder_text="Enter Password", width=200, height=30,
                                                            border_width=2, corner_radius=10, show="•")
-        self.registration_entry_password.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+        self.registration_entry_password.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
 
         self.registration_button_register = customtkinter.CTkButton(self.registration_frame,
                                                           text="Register", width=70, fg_color="#36719F",
                                                           hover_color="#3B8ED0", text_color="#FFF",
                                                           command=self.register_button_register_user)
-        self.registration_button_register.grid(row=6, column=0, padx=0, sticky='e')
+        self.registration_button_register.grid(row=7, column=1, padx=70, pady=20, sticky='w')
 
 
 
@@ -1122,7 +1130,7 @@ class App(customtkinter.CTk):
         self.admin_verified_user_label_verified = customtkinter.CTkLabel(self.admin_verified_user_frame,
                                                                text="Verify User", width=60, height=20, text_color="green",
                                                                corner_radius=7)
-        self.admin_verified_user_label_verified.grid(row=0, column=1, padx=10, pady=20, sticky='e')
+        self.admin_verified_user_label_verified.grid(row=0, column=1, padx=80, pady=20, sticky='w')
 
         self.admin_verified_user_label_ID = customtkinter.CTkLabel(self.admin_verified_user_frame,
                                                               text="User ID: ", width=30, height=25,
@@ -1139,13 +1147,19 @@ class App(customtkinter.CTk):
                                                                  text="Verify user", width=70, fg_color="#36719F",
                                                                  hover_color="#3B8ED0", text_color="#FFF",
                                                                  command=self.admin_button_verified_user)
-        self.admin_verified_user_button_verified.grid(row=2, column=0, padx=0, sticky='e')
+        self.admin_verified_user_button_verified.grid(row=2, column=1, padx=80, sticky='w')
+
+        self.admin_verified_user_label_space = customtkinter.CTkLabel(self.admin_verified_user_frame,
+                                                                   text="", width=60, height=20,
+                                                                   text_color="green",
+                                                                   corner_radius=7)
+        self.admin_verified_user_label_space.grid(row=3, column=1, padx=70, pady=30, sticky='w')
 
         self.admin_unverified_user_label_unverified = customtkinter.CTkLabel(self.admin_verified_user_frame,
                                                                    text="Unverify User", width=60, height=20,
                                                                    text_color="red",
                                                                    corner_radius=7)
-        self.admin_unverified_user_label_unverified.grid(row=4, column=1, padx=10, pady=20, sticky='e')
+        self.admin_unverified_user_label_unverified.grid(row=4, column=1, padx=70, pady=20, sticky='w')
 
         self.admin_unverified_user_label_ID = customtkinter.CTkLabel(self.admin_verified_user_frame,
                                                                 text="User ID: ", width=30, height=25,
@@ -1162,7 +1176,7 @@ class App(customtkinter.CTk):
                                                                    text="Unverify user", width=70, fg_color="#36719F",
                                                                    hover_color="#3B8ED0", text_color="#FFF",
                                                                    command=self.admin_button_unverified_user)
-        self.admin_unverified_user_button_unverified.grid(row=6, column=0, padx=0, sticky='e')
+        self.admin_unverified_user_button_unverified.grid(row=6, column=1, padx=70, sticky='w')
 
 
 
@@ -1175,7 +1189,7 @@ class App(customtkinter.CTk):
                                                                          text="Accept user changes", width=60, height=20,
                                                                          text_color="green",
                                                                          corner_radius=7)
-        self.admin_accept_user_label_accept.grid(row=0, column=1, padx=10, pady=20, sticky='e')
+        self.admin_accept_user_label_accept.grid(row=0, column=1, padx=80, pady=20, sticky='w')
 
         self.admin_accept_user_label_ID = customtkinter.CTkLabel(self.admin_accept_user_frame,
                                                                    text="User ID: ", width=30, height=25,
@@ -1193,13 +1207,19 @@ class App(customtkinter.CTk):
                                                                            fg_color="#36719F",
                                                                            hover_color="#3B8ED0", text_color="#FFF",
                                                                            command=self.admin_button_accept_changes_user)
-        self.admin_accept_user_button_accept.grid(row=2, column=0, padx=0, sticky='e')
+        self.admin_accept_user_button_accept.grid(row=2, column=1, padx=80, sticky='w')
+
+        self.admin_accept_user_label_space = customtkinter.CTkLabel(self.admin_accept_user_frame,
+                                                                      text="", width=60, height=20,
+                                                                      text_color="green",
+                                                                      corner_radius=7)
+        self.admin_accept_user_label_space.grid(row=3, column=1, padx=70, pady=30, sticky='w')
 
         self.admin_decline_user_label_decline = customtkinter.CTkLabel(self.admin_accept_user_frame,
                                                                              text="Decline user changes", width=60, height=20,
                                                                              text_color="red",
                                                                              corner_radius=7)
-        self.admin_decline_user_label_decline.grid(row=4, column=1, padx=10, pady=20, sticky='e')
+        self.admin_decline_user_label_decline.grid(row=4, column=1, padx=75, pady=20, sticky='w')
 
         self.admin_decline_user_label_ID = customtkinter.CTkLabel(self.admin_accept_user_frame,
                                                                      text="User ID: ", width=30, height=25,
@@ -1217,7 +1237,7 @@ class App(customtkinter.CTk):
                                                                                fg_color="#36719F",
                                                                                hover_color="#3B8ED0", text_color="#FFF",
                                                                                command=self.admin_button_decline_changes_user)
-        self.admin_decline_user_button_decline.grid(row=6, column=0, padx=0, sticky='e')
+        self.admin_decline_user_button_decline.grid(row=6, column=1, padx=70, sticky='w')
 
 
 
@@ -1248,116 +1268,120 @@ class App(customtkinter.CTk):
         # create main page after for admin which logged sucessfully
         self.main_page_frame_admin = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.main_page_frame_admin.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.main_page_admin_label = customtkinter.CTkLabel(self.main_page_frame_admin,
+                                                                 text="Browse collection of all users", width=60, height=20,
+                                                                 corner_radius=7, font= ('Helvetica', 20))
+        self.main_page_admin_label.grid(row=0, column=1, padx=0, pady=20)
         
         self.main_page_frame_select_box = customtkinter.CTkOptionMenu(self.main_page_frame_admin,
                                             values=[""],
                                             command=optionmenu_callback,corner_radius=7,width=100, height=20,)
-        self.main_page_frame_select_box.grid(row=0, column=1, padx=80, pady=20, sticky='w')
+        self.main_page_frame_select_box.grid(row=1, column=0, padx=0, pady=20, sticky='e')
         self.main_page_frame_select_box.set("Select User")  # set initial value
         
         self.main_page_admin_details_button = customtkinter.CTkButton(self.main_page_frame_admin,
                                                                    text="Details", width=70, fg_color="#36719F",
                                                                    hover_color="#3B8ED0", text_color="#FFF",
                                                                    command=self.details_for_main_page_admin)
-        self.main_page_admin_details_button.grid(row=0, column=2, padx=60, pady=20, sticky='w')
+        self.main_page_admin_details_button.grid(row=1, column=1, padx=60, pady=20, sticky='e')
 
         self.main_page_admin_id_label = customtkinter.CTkLabel(self.main_page_frame_admin,
-                                                                       text="_id: ", width=30, height=25,
+                                                                       text="ID: ", width=30, height=25,
                                                                        corner_radius=7)
-        self.main_page_admin_id_label.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_id_label.grid(row=2, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_id_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                        placeholder_text="_id",
                                                                        width=200, height=30, border_width=2,
                                                                        corner_radius=10)
-        self.main_page_admin_id_entry.grid(row=1, column=1, padx=10, columnspan=2)
+        self.main_page_admin_id_entry.grid(row=2, column=1, padx=10, columnspan=2)
 
         self.main_page_admin_first_name_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="First Name: ",
                                                                      width=30, height=25,
                                                                      corner_radius=7)
-        self.main_page_admin_first_name_label.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_first_name_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_first_name_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                      placeholder_text="John", width=200,
                                                                      height=30,
                                                                      border_width=2, corner_radius=10)
-        self.main_page_admin_first_name_entry.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_first_name_entry.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_surname_label= customtkinter.CTkLabel(self.main_page_frame_admin, text="Surname: ",
                                                                     width=30, height=25,
                                                                     corner_radius=7)
-        self.main_page_admin_surname_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_surname_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_surname_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                     placeholder_text="Doe", width=200,
                                                                     height=30,
                                                                     border_width=2, corner_radius=10)
-        self.main_page_admin_surname_entry.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_surname_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_login_name_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="Nickname: ",
                                                                     width=30, height=25,
                                                                     corner_radius=7)
-        self.main_page_admin_login_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_login_name_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_login_name_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                     placeholder_text="TheBestReader34", width=200,
                                                                     height=30,
                                                                     border_width=2, corner_radius=10)
-        self.main_page_admin_login_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_login_name_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_count_borrowed_books_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="Borrowed books: ",
                                                                   width=30, height=25,
                                                                   corner_radius=7)
-        self.main_page_admin_count_borrowed_books_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_count_borrowed_books_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_count_borrowed_books_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                   placeholder_text="3", width=200,
                                                                   height=30,
                                                                   border_width=2, corner_radius=10)
-        self.main_page_admin_count_borrowed_books_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_count_borrowed_books_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_status_banned_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="Banned: ",
                                                                    width=30, height=25,
                                                                    corner_radius=7)
-        self.main_page_admin_status_banned_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_status_banned_label.grid(row=8, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_status_banned_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                    placeholder_text="False", width=200,
                                                                    height=30,
                                                                    border_width=2, corner_radius=10)
-        self.main_page_admin_status_banned_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_status_banned_entry.grid(row=8, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_status_verified_label = customtkinter.CTkLabel(self.main_page_frame_admin,
                                                                               text="Verified: ",
                                                                               width=30, height=25,
                                                                               corner_radius=7)
-        self.main_page_admin_status_verified_label.grid(row=7, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_status_verified_label.grid(row=9, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_status_verified_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                               placeholder_text="True",
                                                                               width=200,
                                                                               height=30,
                                                                               border_width=2, corner_radius=10)
-        self.main_page_admin_status_verified_entry.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_status_verified_entry.grid(row=9, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_created_at_label = customtkinter.CTkLabel(self.main_page_frame_admin,
                                                                          text="Created at: ",
                                                                          width=30, height=25,
                                                                          corner_radius=7)
-        self.main_page_admin_created_at_label.grid(row=8, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_created_at_label.grid(row=10, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_created_at_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                          placeholder_text="1674412442.629799",
                                                                          width=200,
                                                                          height=30,
                                                                          border_width=2, corner_radius=10)
-        self.main_page_admin_created_at_entry.grid(row=8, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_created_at_entry.grid(row=10, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_button_add = customtkinter.CTkButton(self.main_page_frame_admin,
                                                                    text="Borrowed Books details", width=70, fg_color="#36719F",
                                                                    hover_color="#3B8ED0", text_color="#FFF",
                                                                    command=self.admin_button_add_book)
-        self.admin_add_book_button_add.grid(row=9, column=1, padx=60, pady=20, sticky='w')
+        self.admin_add_book_button_add.grid(row=7, column=1, padx=30, pady=0, sticky='e')
 
         
        
@@ -1425,7 +1449,7 @@ class App(customtkinter.CTk):
             self.login_frame.grid_forget()
 
         if name == "register":
-            self.registration_frame.grid(row=0, column=1, sticky="nsew")
+            self.registration_frame.grid(row=0, column=1, padx=(80, 0), pady=(20, 0), sticky="nsew")
             self.navigation_frame.grid(row=0, column=0, sticky="nsew")
             self.navigation_frame_logged.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
@@ -1444,7 +1468,7 @@ class App(customtkinter.CTk):
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
             self.navigation_frame_logged_admin.grid(row=0, column=0, sticky="nsew")
-            self.main_page_frame_admin.grid(row=0, column=1, sticky="nsew")
+            self.main_page_frame_admin.grid(row=0, column=1, padx=(35, 0), pady=(20, 0), sticky="nsew")
         else:
             self.main_page_frame_admin.grid_forget()
         
@@ -1571,6 +1595,7 @@ class App(customtkinter.CTk):
             if user.role == Roles.Librarian.name:
                 current_user = Librarian(user)
                 self.select_frame_by_name("main_admin")
+                self.navigation_frame_admin_main_page_event()
                 self.navigation_frame_logged_admin_label.configure(text=" Admin")
             else:
                 current_user = User(user)
