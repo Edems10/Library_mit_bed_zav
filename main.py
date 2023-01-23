@@ -169,7 +169,7 @@ class App(customtkinter.CTk):
                                                    fg_color="transparent", text_color=("gray10", "gray90"),
                                                    hover_color=("gray70", "gray30"),
                                                    image=self.register_image, anchor="w",
-                                                   command=self.navigation_frame_logged_main_page_event)
+                                                   command=self.navigation_frame_admin_main_page_event)
 
         self.navigation_frame_logged_admin_main_button.grid(row=1, column=0, sticky="ew")
 
@@ -596,23 +596,27 @@ class App(customtkinter.CTk):
         # admin delete author frame
         self.admin_delete_author_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_delete_author_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.admin_delete_author_label_delete = customtkinter.CTkLabel(self.admin_delete_author_frame,
+                                                               text="Delete author", width=60, height=20,
+                                                               corner_radius=7)
+        self.admin_delete_author_label_delete.grid(row=0, column=1, padx=80, pady=20, sticky='w')
 
         self.admin_delete_author_label_ID = customtkinter.CTkLabel(self.admin_delete_author_frame,
                                                                  text="Author ID: ", width=30, height=25,
                                                                  corner_radius=7)
-        self.admin_delete_author_label_ID.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+        self.admin_delete_author_label_ID.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_delete_author_entry_ID = customtkinter.CTkEntry(self.admin_delete_author_frame,
                                                                  placeholder_text="Enter Author ID",
                                                                  width=200, height=30, border_width=2,
                                                                  corner_radius=10)
-        self.admin_delete_author_entry_ID.grid(row=0, column=1, padx=10, columnspan=2)
+        self.admin_delete_author_entry_ID.grid(row=1, column=1, padx=10, columnspan=2)
 
         self.admin_delete_author_button_delete = customtkinter.CTkButton(self.admin_delete_author_frame,
                                                                      text="Delete", width=70, fg_color="#36719F",
                                                                      hover_color="#3B8ED0", text_color="#FFF",
                                                                      command=self.admin_button_delete_author)
-        self.admin_delete_author_button_delete.grid(row=1, column=0, padx=0, sticky='e')
+        self.admin_delete_author_button_delete.grid(row=2, column=1, padx=85, sticky='w')
 
 
 
@@ -621,105 +625,108 @@ class App(customtkinter.CTk):
         # admin add book frame
         self.admin_add_book_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_add_book_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
-
+        self.admin_add_book_label_add = customtkinter.CTkLabel(self.admin_add_book_frame,
+                                                                 text="Add book", width=60, height=20,
+                                                                 corner_radius=7)
+        self.admin_add_book_label_add.grid(row=0, column=1, padx=80, pady=20, sticky='w')
 
         self.admin_add_book_label_title = customtkinter.CTkLabel(self.admin_add_book_frame,
                                                                        text="Title: ", width=30, height=25,
                                                                        corner_radius=7)
-        self.admin_add_book_label_title.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_title.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_title = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                        placeholder_text="Enter Title",
                                                                        width=200, height=30, border_width=2,
                                                                        corner_radius=10)
-        self.admin_add_book_entry_title.grid(row=0, column=1, padx=10, columnspan=2)
+        self.admin_add_book_entry_title.grid(row=1, column=1, padx=10, columnspan=2)
 
         self.admin_add_book_label_author = customtkinter.CTkLabel(self.admin_add_book_frame, text="Author ID: ",
                                                                      width=30, height=25,
                                                                      corner_radius=7)
-        self.admin_add_book_label_author.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_author.grid(row=2, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_author = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                      placeholder_text="Enter Author ID", width=200,
                                                                      height=30,
                                                                      border_width=2, corner_radius=10)
-        self.admin_add_book_entry_author.grid(row=1, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_author.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_label_length = customtkinter.CTkLabel(self.admin_add_book_frame, text="Length: ",
                                                                     width=30, height=25,
                                                                     corner_radius=7)
-        self.admin_add_book_label_length.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_length.grid(row=3, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_length = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                     placeholder_text="Enter Length", width=200,
                                                                     height=30,
                                                                     border_width=2, corner_radius=10)
-        self.admin_add_book_entry_length.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_length.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_label_year = customtkinter.CTkLabel(self.admin_add_book_frame, text="Year: ",
                                                                     width=30, height=25,
                                                                     corner_radius=7)
-        self.admin_add_book_label_year.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_year.grid(row=4, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_year = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                     placeholder_text="Enter Year", width=200,
                                                                     height=30,
                                                                     border_width=2, corner_radius=10)
-        self.admin_add_book_entry_year.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_year.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_label_copies_available = customtkinter.CTkLabel(self.admin_add_book_frame, text="Copies available: ",
                                                                   width=30, height=25,
                                                                   corner_radius=7)
-        self.admin_add_book_label_copies_available.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_copies_available.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_copies_available = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                   placeholder_text="Enter Copies available", width=200,
                                                                   height=30,
                                                                   border_width=2, corner_radius=10)
-        self.admin_add_book_entry_copies_available.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_copies_available.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_label_genre = customtkinter.CTkLabel(self.admin_add_book_frame, text="Genre: ",
                                                                    width=30, height=25,
                                                                    corner_radius=7)
-        self.admin_add_book_label_genre.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_genre.grid(row=6, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_genre = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                    placeholder_text="Enter Genre", width=200,
                                                                    height=30,
                                                                    border_width=2, corner_radius=10)
-        self.admin_add_book_entry_genre.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_genre.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_label_description = customtkinter.CTkLabel(self.admin_add_book_frame,
                                                                               text="Description: ",
                                                                               width=30, height=25,
                                                                               corner_radius=7)
-        self.admin_add_book_label_description.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_description.grid(row=7, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_description = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                               placeholder_text="Enter Description",
                                                                               width=200,
                                                                               height=30,
                                                                               border_width=2, corner_radius=10)
-        self.admin_add_book_entry_description.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_description.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_label_count_borrowed = customtkinter.CTkLabel(self.admin_add_book_frame,
                                                                          text="Count borrowed: ",
                                                                          width=30, height=25,
                                                                          corner_radius=7)
-        self.admin_add_book_label_count_borrowed.grid(row=7, column=0, padx=10, pady=20, sticky='e')
+        self.admin_add_book_label_count_borrowed.grid(row=8, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_add_book_entry_count_borrowed = customtkinter.CTkEntry(self.admin_add_book_frame,
                                                                          placeholder_text="Enter Count borrowed",
                                                                          width=200,
                                                                          height=30,
                                                                          border_width=2, corner_radius=10)
-        self.admin_add_book_entry_count_borrowed.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_add_book_entry_count_borrowed.grid(row=8, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_button_add = customtkinter.CTkButton(self.admin_add_book_frame,
                                                                    text="Add", width=70, fg_color="#36719F",
                                                                    hover_color="#3B8ED0", text_color="#FFF",
                                                                    command=self.admin_button_add_book)
-        self.admin_add_book_button_add.grid(row=8, column=0, padx=0, sticky='e')
+        self.admin_add_book_button_add.grid(row=9, column=1, padx=60, pady=20, sticky='w')
 
 
 
@@ -728,127 +735,135 @@ class App(customtkinter.CTk):
         # admin edit book frame
         self.admin_edit_book_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_edit_book_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.admin_edit_book_label_edit = customtkinter.CTkLabel(self.admin_edit_book_frame,
+                                                                     text="Edit book", width=60, height=20,
+                                                                     corner_radius=7)
+        self.admin_edit_book_label_edit.grid(row=0, column=1, padx=80, pady=20, sticky='w')
 
         self.admin_edit_book_label_book_ID = customtkinter.CTkLabel(self.admin_edit_book_frame,
                                                                   text="Book ID: ", width=30, height=25,
                                                                   corner_radius=7)
-        self.admin_edit_book_label_book_ID.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_book_ID.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_book_ID = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                   placeholder_text="Enter Book ID",
                                                                   width=200, height=30, border_width=2,
                                                                   corner_radius=10)
-        self.admin_edit_book_entry_book_ID.grid(row=0, column=1, padx=10, columnspan=2)
+        self.admin_edit_book_entry_book_ID.grid(row=1, column=1, padx=10, columnspan=2)
 
         self.admin_edit_book_label_title = customtkinter.CTkLabel(self.admin_edit_book_frame,
                                                                  text="Title: ", width=30, height=25,
                                                                  corner_radius=7)
-        self.admin_edit_book_label_title.grid(row=1, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_title.grid(row=2, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_title = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                  placeholder_text="Enter Title",
                                                                  width=200, height=30, border_width=2,
                                                                  corner_radius=10)
-        self.admin_edit_book_entry_title.grid(row=1, column=1, padx=10, columnspan=2)
+        self.admin_edit_book_entry_title.grid(row=2, column=1, padx=10, columnspan=2)
 
         self.admin_edit_book_label_author = customtkinter.CTkLabel(self.admin_edit_book_frame, text="Author ID: ",
                                                                   width=30, height=25,
                                                                   corner_radius=7)
-        self.admin_edit_book_label_author.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_author.grid(row=3, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_author = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                   placeholder_text="Enter Author ID", width=200,
                                                                   height=30,
                                                                   border_width=2, corner_radius=10)
-        self.admin_edit_book_entry_author.grid(row=2, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_edit_book_entry_author.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_edit_book_label_length = customtkinter.CTkLabel(self.admin_edit_book_frame, text="Length: ",
                                                                   width=30, height=25,
                                                                   corner_radius=7)
-        self.admin_edit_book_label_length.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_length.grid(row=4, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_length = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                   placeholder_text="Enter Length", width=200,
                                                                   height=30,
                                                                   border_width=2, corner_radius=10)
-        self.admin_edit_book_entry_length.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_edit_book_entry_length.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_edit_book_label_year = customtkinter.CTkLabel(self.admin_edit_book_frame, text="Year: ",
                                                                 width=30, height=25,
                                                                 corner_radius=7)
-        self.admin_edit_book_label_year.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_year.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_year = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                 placeholder_text="Enter Year", width=200,
                                                                 height=30,
                                                                 border_width=2, corner_radius=10)
-        self.admin_edit_book_entry_year.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_edit_book_entry_year.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_edit_book_label_copies_available = customtkinter.CTkLabel(self.admin_edit_book_frame,
                                                                             text="Copies available: ",
                                                                             width=30, height=25,
                                                                             corner_radius=7)
-        self.admin_edit_book_label_copies_available.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_copies_available.grid(row=6, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_copies_available = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                             placeholder_text="Enter Copies available",
                                                                             width=200,
                                                                             height=30,
                                                                             border_width=2, corner_radius=10)
-        self.admin_edit_book_entry_copies_available.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_edit_book_entry_copies_available.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_edit_book_label_genre = customtkinter.CTkLabel(self.admin_edit_book_frame, text="Genre: ",
                                                                  width=30, height=25,
                                                                  corner_radius=7)
-        self.admin_edit_book_label_genre.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_genre.grid(row=7, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_genre = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                  placeholder_text="Enter Genre", width=200,
                                                                  height=30,
                                                                  border_width=2, corner_radius=10)
-        self.admin_edit_book_entry_genre.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_edit_book_entry_genre.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_edit_book_label_description = customtkinter.CTkLabel(self.admin_edit_book_frame,
                                                                        text="Description: ",
                                                                        width=30, height=25,
                                                                        corner_radius=7)
-        self.admin_edit_book_label_description.grid(row=7, column=0, padx=10, pady=20, sticky='e')
+        self.admin_edit_book_label_description.grid(row=8, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_edit_book_entry_description = customtkinter.CTkEntry(self.admin_edit_book_frame,
                                                                        placeholder_text="Enter Description",
                                                                        width=200,
                                                                        height=30,
                                                                        border_width=2, corner_radius=10)
-        self.admin_edit_book_entry_description.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
+        self.admin_edit_book_entry_description.grid(row=8, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_edit_book_button_edit = customtkinter.CTkButton(self.admin_edit_book_frame,
                                                                  text="Edit", width=70, fg_color="#36719F",
                                                                  hover_color="#3B8ED0", text_color="#FFF",
                                                                  command=self.admin_button_edit_book)
-        self.admin_edit_book_button_edit.grid(row=8, column=0, padx=0, sticky='e')
+        self.admin_edit_book_button_edit.grid(row=9, column=1, padx=60, pady=20, sticky='w')
 
 
 
         # admin delete book frame
         self.admin_delete_book_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.admin_delete_book_frame.grid(row=2, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.admin_delete_book_label_delete = customtkinter.CTkLabel(self.admin_delete_book_frame,
+                                                               text="Delete book", width=60, height=20,
+                                                               corner_radius=7)
+        self.admin_delete_book_label_delete.grid(row=0, column=1, padx=80, pady=20, sticky='w')
 
         self.admin_delete_book_label_ID = customtkinter.CTkLabel(self.admin_delete_book_frame,
                                                                    text="Book ID: ", width=30, height=25,
                                                                    corner_radius=7)
-        self.admin_delete_book_label_ID.grid(row=0, column=0, padx=10, pady=20, sticky='e')
+        self.admin_delete_book_label_ID.grid(row=1, column=0, padx=10, pady=20, sticky='e')
 
         self.admin_delete_book_entry_ID = customtkinter.CTkEntry(self.admin_delete_book_frame,
                                                                    placeholder_text="Enter Book ID",
                                                                    width=200, height=30, border_width=2,
                                                                    corner_radius=10)
-        self.admin_delete_book_entry_ID.grid(row=0, column=1, padx=10, columnspan=2)
+        self.admin_delete_book_entry_ID.grid(row=1, column=1, padx=10, columnspan=2)
 
         self.admin_delete_book_button_delete = customtkinter.CTkButton(self.admin_delete_book_frame,
                                                                          text="Delete", width=70, fg_color="#36719F",
                                                                          hover_color="#3B8ED0", text_color="#FFF",
                                                                          command=self.admin_button_delete_book)
-        self.admin_delete_book_button_delete.grid(row=1, column=0, padx=0, sticky='e')
+        self.admin_delete_book_button_delete.grid(row=2, column=1, padx=85, sticky='w')
 
 
 
@@ -1329,28 +1344,28 @@ class App(customtkinter.CTk):
         if name == "delete_author_admin":
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
-            self.admin_delete_author_frame.grid(row=0, column=1, sticky="nsew")
+            self.admin_delete_author_frame.grid(row=0, column=1, padx=(80, 0), pady=(20, 0), sticky="nsew")
         else:
             self.admin_delete_author_frame.grid_forget()
 
         if name == "add_book_admin":
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
-            self.admin_add_book_frame.grid(row=0, column=1, sticky="nsew")
+            self.admin_add_book_frame.grid(row=0, column=1, padx=(53, 0), pady=(20, 0), sticky="nsew")
         else:
             self.admin_add_book_frame.grid_forget()
 
         if name == "edit_book_admin":
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
-            self.admin_edit_book_frame.grid(row=0, column=1, sticky="nsew")
+            self.admin_edit_book_frame.grid(row=0, column=1, padx=(53, 0), pady=(20, 0), sticky="nsew")
         else:
             self.admin_edit_book_frame.grid_forget()
 
         if name == "delete_book_admin":
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
-            self.admin_delete_book_frame.grid(row=0, column=1, sticky="nsew")
+            self.admin_delete_book_frame.grid(row=0, column=1, padx=(80, 20), pady=(20, 0), sticky="nsew")
         else:
             self.admin_delete_book_frame.grid_forget()
 
@@ -1410,7 +1425,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         #Admin: login_lib lib_12345
         #User: user password
-        login_result = login(mongo_client, "adam", "123456")
+        login_result = login(mongo_client, "login_lib", "lib_12345")
         if login_result[0]:
             user = login_result[1]
             global current
@@ -1732,6 +1747,9 @@ class App(customtkinter.CTk):
                 print(declined_user[1])
                 self.select_frame_by_name("accept_changes_user_admin")
 
+    def navigation_frame_admin_main_page_event(self):
+        self.select_frame_by_name("main_admin")
+
     def show_next_book_my_page(self):
         global CURRENT_USER_BORROWED_BOOKS
         global CURRENT_USER_SELECTED_MY_BOOK
@@ -1835,6 +1853,8 @@ class App(customtkinter.CTk):
 
     def main_button_event(self):
         self.select_frame_by_name("register")
+
+
 
 
     def get_all_books_localy(self,all_books_from_db):
