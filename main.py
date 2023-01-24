@@ -92,7 +92,65 @@ class App(customtkinter.CTk):
         self.add_user_image = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "Logo.png")),
                                                      dark_image=Image.open(os.path.join(image_path, "Logo.png")),
                                                      size=(20, 20))
+        
+        self.image_home = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-home.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-home.png")),
+                                                     size=(20, 20))
+        
+        self.image_book = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-book.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-book.png")),
+                                                     size=(20, 20))
 
+        self.image_author = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-quill-with-ink.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-quill-with-ink.png")),
+                                                     size=(20, 20))
+        
+        self.image_edit_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-edit-profile.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-edit-profile.png")),
+                                                     size=(20, 20))
+        
+        self.image_delete_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-denied.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-denied.png")),
+                                                     size=(20, 20))
+
+        self.image_ban_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-law-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-law-30.png")),
+                                                     size=(20, 20))
+        
+        self.image_verified_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-verified-account-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-verified-account-30.png")),
+                                                     size=(20, 20))
+        
+        self.image_change_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-change-user-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-change-user-30.png")),
+                                                     size=(20, 20))
+        
+        
+        self.image_import= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-import-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-import-30.png")),
+                                                     size=(20, 20))
+        
+        self.image_logout= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-logout-rounded-left-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-logout-rounded-left-30.png")),
+                                                     size=(20, 20))
+        
+        self.image_add_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-add-book-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-add-book-30.png")),
+                                                     size=(20, 20))
+        
+        self.image_remove_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-remove-book-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-remove-book-30.png")),
+                                                     size=(20, 20))
+        
+        self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
+                                                     size=(20, 20))
+        
+        
+        
+        
+        
+        
         # navigation frame for not logged user
         self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.navigation_frame.grid(row=0, column=0, sticky="nsew")
@@ -127,6 +185,8 @@ class App(customtkinter.CTk):
                                                    image=self.login_image, anchor="w", command=self.home_button_event)
         self.home_button.grid(row=3, column=0, sticky="ew")
 
+
+        
         # navigation frame for logged user
         self.navigation_frame_logged = customtkinter.CTkFrame(self, corner_radius=0)
         self.navigation_frame_logged.grid(row=0, column=0, sticky="nsew")
@@ -148,15 +208,6 @@ class App(customtkinter.CTk):
                                                                            command=self.navigation_frame_logged_find_book)
         self.navigation_frame_logged_main_button.grid(row=1, column=0, sticky="ew")
 
-        # self.navigation_frame_logged_find_book_button = customtkinter.CTkButton(self.navigation_frame_logged,
-        #                                                                    corner_radius=0, height=40,
-        #                                                                    border_spacing=10, text="Find book",
-        #                                                                    fg_color="transparent",
-        #                                                                    text_color=("gray10", "gray90"),
-        #                                                                    hover_color=("gray70", "gray30"),
-        #                                                                    image=self.register_image, anchor="w",
-        #                                                                    command=self.navigation_frame_logged_find_book_event)
-        # self.navigation_frame_logged_find_book_button.grid(row=2, column=0, sticky="ew")
 
         self.navigation_frame_logged_my_books_button = customtkinter.CTkButton(self.navigation_frame_logged,
                                                                                corner_radius=0, height=40,
@@ -164,7 +215,7 @@ class App(customtkinter.CTk):
                                                                                fg_color="transparent",
                                                                                text_color=("gray10", "gray90"),
                                                                                hover_color=("gray70", "gray30"),
-                                                                               image=self.register_image, anchor="w",
+                                                                               image=self.image_book, anchor="w",
                                                                                command=self.navigation_frame_logged_my_books_button_event)
         self.navigation_frame_logged_my_books_button.grid(row=2, column=0, sticky="ew")
 
@@ -175,7 +226,7 @@ class App(customtkinter.CTk):
                                                                          fg_color="transparent",
                                                                          text_color=("gray10", "gray90"),
                                                                          hover_color=("gray70", "gray30"),
-                                                                         image=self.register_image, anchor="w",
+                                                                         image=self.image_edit_user, anchor="w",
                                                                          command=self.user_button_edit_user_event)
 
         self.navigation_frame_logged_edit_user.grid(row=3, column=0, sticky="ew")
@@ -187,7 +238,7 @@ class App(customtkinter.CTk):
                                                                                    fg_color="transparent",
                                                                                    text_color=("gray10", "gray90"),
                                                                                    hover_color=("gray70", "gray30"),
-                                                                                   image=self.register_image,
+                                                                                   image=self.image_logout,
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
         self.navigation_frame_logged_admin_logout_button.grid(row=4, column=0, sticky="ew")
@@ -212,7 +263,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="transparent",
                                                                                  text_color=("gray10", "gray90"),
                                                                                  hover_color=("gray70", "gray30"),
-                                                                                 image=self.register_image, anchor="w",
+                                                                                 image=self.image_home, anchor="w",
                                                                                  command=self.navigation_frame_admin_main_page_event)
 
         self.navigation_frame_logged_admin_main_button.grid(row=1, column=0, sticky="ew")
@@ -224,7 +275,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="transparent",
                                                                                  text_color=("gray10", "gray90"),
                                                                                  hover_color=("gray70", "gray30"),
-                                                                                 image=self.register_image, anchor="w",
+                                                                                 image=self.image_book, anchor="w",
                                                                                  command=self.admin_button_borrow_book_event)
 
         self.navigation_frame_logged_admin_borrow_book.grid(row=2, column=0, sticky="ew")
@@ -236,7 +287,7 @@ class App(customtkinter.CTk):
                                                                                 fg_color="transparent",
                                                                                 text_color=("gray10", "gray90"),
                                                                                 hover_color=("gray70", "gray30"),
-                                                                                image=self.register_image, anchor="w",
+                                                                                image=self.image_author, anchor="w",
                                                                                 command=self.admin_button_add_author_event)
 
         self.navigation_frame_logged_admin_add_author.grid(row=3, column=0, sticky="ew")
@@ -248,7 +299,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="transparent",
                                                                                  text_color=("gray10", "gray90"),
                                                                                  hover_color=("gray70", "gray30"),
-                                                                                 image=self.register_image, anchor="w",
+                                                                                 image=self.image_author, anchor="w",
                                                                                  command=self.admin_button_edit_author_event)
 
         self.navigation_frame_logged_admin_edit_author.grid(row=4, column=0, sticky="ew")
@@ -260,7 +311,7 @@ class App(customtkinter.CTk):
                                                                                    fg_color="transparent",
                                                                                    text_color=("gray10", "gray90"),
                                                                                    hover_color=("gray70", "gray30"),
-                                                                                   image=self.register_image,
+                                                                                   image=self.image_author,
                                                                                    anchor="w",
                                                                                    command=self.admin_button_delete_author_event)
 
@@ -273,7 +324,7 @@ class App(customtkinter.CTk):
                                                                               fg_color="transparent",
                                                                               text_color=("gray10", "gray90"),
                                                                               hover_color=("gray70", "gray30"),
-                                                                              image=self.register_image, anchor="w",
+                                                                              image=self.image_add_book, anchor="w",
                                                                               command=self.admin_button_add_book_event)
 
         self.navigation_frame_logged_admin_add_book.grid(row=6, column=0, sticky="ew")
@@ -285,7 +336,7 @@ class App(customtkinter.CTk):
                                                                                fg_color="transparent",
                                                                                text_color=("gray10", "gray90"),
                                                                                hover_color=("gray70", "gray30"),
-                                                                               image=self.register_image, anchor="w",
+                                                                               image=self.image_edit_book, anchor="w",
                                                                                command=self.admin_button_edit_book_event)
 
         self.navigation_frame_logged_admin_edit_book.grid(row=7, column=0, sticky="ew")
@@ -297,7 +348,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="transparent",
                                                                                  text_color=("gray10", "gray90"),
                                                                                  hover_color=("gray70", "gray30"),
-                                                                                 image=self.register_image, anchor="w",
+                                                                                 image=self.image_remove_book, anchor="w",
                                                                                  command=self.admin_button_delete_book_event)
 
         self.navigation_frame_logged_admin_delete_book.grid(row=8, column=0, sticky="ew")
@@ -321,7 +372,7 @@ class App(customtkinter.CTk):
                                                                                fg_color="transparent",
                                                                                text_color=("gray10", "gray90"),
                                                                                hover_color=("gray70", "gray30"),
-                                                                               image=self.register_image, anchor="w",
+                                                                               image=self.image_edit_user, anchor="w",
                                                                                command=self.admin_button_edit_user_event)
 
         self.navigation_frame_logged_admin_edit_user.grid(row=10, column=0, sticky="ew")
@@ -333,7 +384,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="transparent",
                                                                                  text_color=("gray10", "gray90"),
                                                                                  hover_color=("gray70", "gray30"),
-                                                                                 image=self.register_image, anchor="w",
+                                                                                 image=self.image_delete_user, anchor="w",
                                                                                  command=self.admin_button_delete_user_event)
 
         self.navigation_frame_logged_admin_delete_user.grid(row=11, column=0, sticky="ew")
@@ -345,7 +396,7 @@ class App(customtkinter.CTk):
                                                                                     fg_color="transparent",
                                                                                     text_color=("gray10", "gray90"),
                                                                                     hover_color=("gray70", "gray30"),
-                                                                                    image=self.register_image,
+                                                                                    image=self.image_ban_user,
                                                                                     anchor="w",
                                                                                     command=self.admin_button_ban_user_event)
 
@@ -358,7 +409,7 @@ class App(customtkinter.CTk):
                                                                                    fg_color="transparent",
                                                                                    text_color=("gray10", "gray90"),
                                                                                    hover_color=("gray70", "gray30"),
-                                                                                   image=self.register_image,
+                                                                                   image=self.image_verified_user,
                                                                                    anchor="w",
                                                                                    command=self.admin_button_verified_user_event)
 
@@ -372,7 +423,7 @@ class App(customtkinter.CTk):
             fg_color="transparent",
             text_color=("gray10", "gray90"),
             hover_color=("gray70", "gray30"),
-            image=self.register_image,
+            image=self.image_change_user,
             anchor="w",
             command=self.admin_button_accept_changes_user_event)
 
@@ -386,7 +437,7 @@ class App(customtkinter.CTk):
             fg_color="transparent",
             text_color=("gray10", "gray90"),
             hover_color=("gray70", "gray30"),
-            image=self.register_image,
+            image=self.image_import,
             anchor="w",
             command=self.admin_button_import_event)
 
@@ -399,7 +450,7 @@ class App(customtkinter.CTk):
                                                                                    fg_color="transparent",
                                                                                    text_color=("gray10", "gray90"),
                                                                                    hover_color=("gray70", "gray30"),
-                                                                                   image=self.register_image,
+                                                                                   image=self.image_logout,
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
         self.navigation_frame_logged_admin_logout_button.grid(row=16, column=0, sticky="ew")

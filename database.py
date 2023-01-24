@@ -32,11 +32,8 @@ mongo_client = get_mongo_client()
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-<<<<<<< HEAD
 login_result = login(mongo_client,"test_ttl","test_ttl")
-=======
-#login_result = login(mongo_client,"adam","123456")
->>>>>>> 0aedccd602325d22f4ad06bacd958d00774e570f
+
 
 # login login_lib 
 # pw lib_12345
