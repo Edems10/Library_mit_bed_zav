@@ -58,7 +58,7 @@ class User:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(user_id),
-                                                                   date_borrowed=time.time(),
+                                                                   date_borrowed=datetime.utcnow(),
                                                                    date_returned=None,
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
@@ -100,7 +100,7 @@ class User:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(self.user.id),
-                                                                   date_borrowed=time.time(),
+                                                                   date_borrowed=datetime.utcnow(),
                                                                    date_returned=None,
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
@@ -722,10 +722,18 @@ def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
 
 def find_all_books(mongo_client: pymongo.MongoClient):
         books = get_book_column(mongo_client)
-        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1,"description":1}))
+        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1,"description":1, "copies_available": 1, "year": 1, "genre": 1}))
+
+
+def find_all_book_status(mongo_client: pymongo.MongoClient):
+    book_status = get_book_status_column(mongo_client)
+    return list(book_status.find({}, {"_id": 1, "book_id": 1, "user_id": 1, "date_borrowed": 1, "returned": 1}))
 
 def get_book_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][BOOK]
+
+def get_book_status_column(mongo_client: pymongo.MongoClient):
+    return mongo_client[DATABASE_NAME][BOOK_STATUS]
 
 
 def book_exists(mongo_client: pymongo.MongoClient, book_name):
