@@ -15,6 +15,7 @@ from tkinter.filedialog import askopenfilename
 import gridfs
 import bson
 
+
 # DATABASE NAME
 DATABASE_NAME = 'library'
 
@@ -41,6 +42,10 @@ class User:
         # if person.verified == False:
         #    self.user = None
 
+    
+    def create_index(self, mongo_client: pymongo.MongoClient):
+        mongo_client[DATABASE_NAME][BOOK_STATUS].create_index("date_borrowed", expireAfterSeconds=518400)  
+    
     # check limit=6 and time=6 days
     def borrow_book(self, mongo_client: pymongo.MongoClient, _id, user_id=None) -> Tuple[bool, str]:
         if ObjectId.is_valid(_id):
@@ -58,7 +63,7 @@ class User:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(user_id),
-                                                                   date_borrowed=time.time(),
+                                                                   date_borrowed=datetime.utcnow(),
                                                                    date_returned=None,
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
@@ -100,7 +105,7 @@ class User:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(self.user.id),
-                                                                   date_borrowed=time.time(),
+                                                                   date_borrowed=datetime.utcnow(),
                                                                    date_returned=None,
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
@@ -508,6 +513,9 @@ class Librarian(User):
         users = get_user_column(mongo_client)
         return list(users.find({"approved_by_librarian": False}, {"_id": 1,"person_id":1,"first_name":1,"surname":1,"pid":1,"address":1,"login_name":1,"created_at":1}))
 
+    def get_all_authors(self,mongo_client: pymongo.MongoClient):
+        return list(mongo_client[DATABASE_NAME]['author'].find({},{"_id": 1,"first_name":1,"surname":1}))
+
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author_id, length: int, year: int ,
                  copies_available: int, genre: str, description: str, count_borrowed: int, image = None) -> Tuple[bool, str]:
         generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
@@ -719,6 +727,9 @@ def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
         return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                      " of 12 bytes or a string of 24 hex characters"
 
+def get_all_borrowed_books(mongo_client: pymongo.MongoClient):
+        return list(mongo_client[DATABASE_NAME]["book_status"].find({"returned": False}, {"_id": 1, "book_id": 1, "user_id": 1, "date_borrowed": 1, "date_returned": 1,
+                                    "returned": 1}))
 
 def find_all_books(mongo_client: pymongo.MongoClient):
         books = get_book_column(mongo_client)

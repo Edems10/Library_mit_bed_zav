@@ -30,6 +30,9 @@ CURRENT_USER = None
 CURRENT_USER_BORROWED_BOOKS = None
 ALL_USERS = None
 ALL_USERS_CHANGED = None
+ALL_BOOKS_ADMIN = None
+ALL_BORROWED_BOOKS_ADMIN = None
+ALL_AUTHORS_ADMIN = None
 
 PATH_TO_LOCAL_IMAGES_BOOKS = os.path.join(os.path.dirname(__file__), 'book_images')
 
@@ -1554,23 +1557,28 @@ class App(customtkinter.CTk):
 
         
         def get_position_of_clicked(choice):
+            value_to_find = None
             if CURRENT_CATEGORY_ADMIN == Categories.All_users:
                 indexer = ALL_USERS
+                value_to_find = 'login_name'
             elif CURRENT_CATEGORY_ADMIN == Categories.All_user_changes:
                 indexer = ALL_USERS_CHANGED
+                value_to_find = 'login_name'
             elif CURRENT_CATEGORY_ADMIN == Categories.All_books:
-                #TODO
-                pass
+                indexer = ALL_BOOKS_ADMIN
+                value_to_find = 'title'
             elif CURRENT_CATEGORY_ADMIN == Categories.All_borrowed_books:
-                #TODO
-                pass
+                for i,searchable in enumerate(ALL_BORROWED_BOOKS_ADMIN):
+                    if str(searchable['_id']) == choice:
+                        return i
             elif CURRENT_CATEGORY_ADMIN == Categories.All_authors:
-                #TODO
+                indexer = ALL_AUTHORS_ADMIN
+                value_to_find = 'surname'
                 pass
             if ALL_USERS == None:
                 return
-            for i,user in enumerate(indexer):
-                if user['login_name']== choice:
+            for i,searchable in enumerate(indexer):
+                if searchable[value_to_find]== choice:
                     return i
                 
         
@@ -2356,10 +2364,16 @@ class App(customtkinter.CTk):
                 print(declined_user[1])
                 self.select_frame_by_name("accept_changes_user_admin")
 
-    def get_user_login_names(self,all_users):
+    def get_login_names(self,all_users):
         user_names = []
         for user in all_users:
             user_names.append(user['login_name'])
+        return user_names
+    
+    def get_names(self,all_users):
+        user_names = []
+        for user in all_users:
+            user_names.append(user['surname'])
         return user_names
     
 
@@ -2370,6 +2384,18 @@ class App(customtkinter.CTk):
         for i,user in enumerate(ALL_USERS):
             if user['login_name']== choice:
                 return i
+    
+    def get_titles(self,all_books):
+        book_titles = []
+        for user in all_books:
+            book_titles.append(user['title'])
+        return book_titles
+    
+    def get_ids(self,all_borrowed_books):
+        ids = []
+        for user in all_borrowed_books:
+            ids.append(str(user['_id']))
+        return ids
     
     def get_current_category(self):
         global CURRENT_CATEGORY_ADMIN
@@ -2385,7 +2411,7 @@ class App(customtkinter.CTk):
             CURRENT_CATEGORY_ADMIN = Categories(4)
         else:
             CURRENT_CATEGORY_ADMIN = Categories(value-1)
-        print(CURRENT_CATEGORY_ADMIN.value)
+        print(CURRENT_CATEGORY_ADMIN.name)
         self.details_for_main_page_admin()
        
     def admin_button_export(self):
@@ -2402,15 +2428,20 @@ class App(customtkinter.CTk):
             CURRENT_CATEGORY_ADMIN = Categories(0)
         else:
             CURRENT_CATEGORY_ADMIN = Categories(value+1)
-        print(CURRENT_CATEGORY_ADMIN.value)
+        print(CURRENT_CATEGORY_ADMIN.name)
         self.details_for_main_page_admin()
         
     
 
     def configure_all_users_admin(self):
         self.main_page_admin_label.configure(text="Browse all Users")
+        
         if ALL_USERS != None:
             currently_selected_user = ALL_USERS[SELECTED_ADMIN_INDEX]
+            
+            login = self.get_login_names(ALL_USERS)
+            self.main_page_frame_select_box.configure(values=login)
+            
             self.main_page_admin_id_entry.configure(state="normal")
             self.main_page_admin_first_name_entry.configure(state="normal")
             self.main_page_admin_surname_entry.configure(state="normal")
@@ -2420,6 +2451,38 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_verified_entry.configure(state="normal")
             self.main_page_admin_created_at_entry.configure(state="normal")
          
+         
+            self.main_page_admin_id_entry.grid()
+            self.main_page_admin_first_name_entry.grid()
+            self.main_page_admin_surname_entry.grid()
+            self.main_page_admin_login_name_entry.grid()
+            self.main_page_admin_count_borrowed_books_entry.grid()
+            self.main_page_admin_status_banned_entry.grid()
+            self.main_page_admin_status_verified_entry.grid()
+            self.main_page_admin_created_at_entry.grid()
+            self.admin_add_book_button_add.grid()
+            
+            self.main_page_admin_id_label.grid()
+            self.main_page_admin_first_name_label.grid()
+            self.main_page_admin_surname_label.grid()
+            self.main_page_admin_login_name_label.grid()
+            self.main_page_admin_count_borrowed_books_label.grid()
+            self.main_page_admin_status_banned_label.grid()
+            self.main_page_admin_status_verified_label.grid()
+            self.main_page_admin_created_at_label.grid()
+            
+            
+            
+            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_first_name_label.configure(text ="First name:")
+            self.main_page_admin_surname_label.configure(text ="Surname:")
+            self.main_page_admin_login_name_label.configure(text ="Username:")
+            self.main_page_admin_count_borrowed_books_label.configure(text ="Borrowed books:")
+            self.main_page_admin_status_banned_label.configure(text ="Banned:")
+            self.main_page_admin_status_verified_label.configure(text ="Verified:")
+            self.main_page_admin_created_at_label.configure(text ="Created at:")
+            
+            
             self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_user['_id']}")
             self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_user['first_name']}")
             self.main_page_admin_surname_entry.configure(placeholder_text=f"{currently_selected_user['surname']}")
@@ -2444,15 +2507,204 @@ class App(customtkinter.CTk):
     
     def configure_all_books_admin(self):
         self.main_page_admin_label.configure(text="Browse all Books")
-        pass
+        global ALL_BOOKS_ADMIN
+
+        ALL_BOOKS_ADMIN = find_all_books(mongo_client)
+        if ALL_BOOKS_ADMIN != None:
+            currently_selected_book = ALL_BOOKS_ADMIN[SELECTED_ADMIN_INDEX]
+            titles = self.get_titles(ALL_BOOKS_ADMIN)
+            self.main_page_frame_select_box.configure(values=titles)
+            
+            self.main_page_admin_id_entry.configure(state="normal")
+            self.main_page_admin_first_name_entry.configure(state="normal")
+            self.main_page_admin_surname_entry.configure(state="normal")
+            self.main_page_admin_login_name_entry.configure(state="normal")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="normal")
+            self.main_page_admin_status_banned_entry.configure(state="normal")
+            self.main_page_admin_status_verified_entry.configure(state="normal")
+            self.main_page_admin_created_at_entry.configure(state="normal")
+            
+            self.main_page_admin_id_entry.grid()
+            self.main_page_admin_first_name_entry.grid()
+            self.main_page_admin_surname_entry.grid()
+            self.main_page_admin_login_name_entry.grid()
+            self.main_page_admin_count_borrowed_books_entry.grid_forget()
+            self.main_page_admin_status_banned_entry.grid_forget()
+            self.main_page_admin_status_verified_entry.grid_forget()
+            self.main_page_admin_created_at_entry.grid_forget()
+            self.admin_add_book_button_add.grid_forget()
+            
+            self.main_page_admin_id_label.grid()
+            self.main_page_admin_first_name_label.grid()
+            self.main_page_admin_surname_label.grid()
+            self.main_page_admin_login_name_label.grid()
+            self.main_page_admin_count_borrowed_books_label.grid_forget()
+            self.main_page_admin_status_banned_label.grid_forget()
+            self.main_page_admin_status_verified_label.grid_forget()
+            self.main_page_admin_created_at_label.grid_forget()
+            
+            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_first_name_label.configure(text ="Title:")
+            self.main_page_admin_surname_label.configure(text ="Author:")
+            self.main_page_admin_login_name_label.configure(text ="Description:")
+            #self.main_page_admin_count_borrowed_books_label.configure(text ="Borrowed books:")
+            # self.main_page_admin_status_banned_label.configure(text ="PID:")
+            # self.main_page_admin_status_verified_label.configure(text ="Adress:")
+            # self.main_page_admin_created_at_label.configure(text ="Created at:")
+            
+            self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_book['_id']}")
+            self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_book['title']}")
+            self.main_page_admin_surname_entry.configure(placeholder_text=f"{currently_selected_book['author']}")
+            self.main_page_admin_login_name_entry.configure(placeholder_text=f"{currently_selected_book['description']}")
+            #self.main_page_admin_count_borrowed_books_entry.configure(placeholder_text=f"{currently_selected_book['description']}")
+            # self.main_page_admin_status_banned_entry.configure(placeholder_text=f"{currently_selected_book['description']}")
+            # self.main_page_admin_status_verified_entry.configure(placeholder_text=f"{currently_selected_book['address']}")
+            # self.main_page_admin_created_at_entry.configure(placeholder_text=f"{currently_selected_book['created_at']}")
+            
+            
+            self.main_page_admin_id_entry.configure(state="readonly")
+            self.main_page_admin_first_name_entry.configure(state="readonly")
+            self.main_page_admin_surname_entry.configure(state="readonly")
+            self.main_page_admin_login_name_entry.configure(state="readonly")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="readonly")
+            self.main_page_admin_status_banned_entry.configure(state="readonly")
+            self.main_page_admin_status_verified_entry.configure(state="readonly")
+            self.main_page_admin_created_at_entry.configure(state="readonly")
     
     def configure_all_borrowed_books_admin(self):
         self.main_page_admin_label.configure(text="Browse all borrowed Books")
-        pass
+        global ALL_BORROWED_BOOKS_ADMIN
+        ALL_BORROWED_BOOKS_ADMIN = get_all_borrowed_books(mongo_client)
+        
+        if ALL_BORROWED_BOOKS_ADMIN != None:
+            currently_selected_book = ALL_BORROWED_BOOKS_ADMIN[SELECTED_ADMIN_INDEX]
+            ids = self.get_ids(ALL_BORROWED_BOOKS_ADMIN)
+            self.main_page_frame_select_box.configure(values=ids)
+            
+            self.main_page_admin_id_entry.configure(state="normal")
+            self.main_page_admin_first_name_entry.configure(state="normal")
+            self.main_page_admin_surname_entry.configure(state="normal")
+            self.main_page_admin_login_name_entry.configure(state="normal")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="normal")
+            self.main_page_admin_status_banned_entry.configure(state="normal")
+            self.main_page_admin_status_verified_entry.configure(state="normal")
+            self.main_page_admin_created_at_entry.configure(state="normal")
+            
+            self.main_page_admin_id_entry.grid()
+            self.main_page_admin_first_name_entry.grid()
+            self.main_page_admin_surname_entry.grid()
+            self.main_page_admin_login_name_entry.grid()
+            self.main_page_admin_count_borrowed_books_entry.grid()
+            self.main_page_admin_status_banned_entry.grid()
+            self.main_page_admin_status_verified_entry.grid_forget()
+            self.main_page_admin_created_at_entry.grid_forget()
+            self.admin_add_book_button_add.grid_forget()
+            
+            self.main_page_admin_id_label.grid()
+            self.main_page_admin_first_name_label.grid()
+            self.main_page_admin_surname_label.grid()
+            self.main_page_admin_login_name_label.grid()
+            self.main_page_admin_count_borrowed_books_label.grid()
+            self.main_page_admin_status_banned_label.grid()
+            self.main_page_admin_status_verified_label.grid_forget()
+            self.main_page_admin_created_at_label.grid_forget()
+            
+            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_first_name_label.configure(text ="book_id:")
+            self.main_page_admin_surname_label.configure(text ="user_id:")
+            self.main_page_admin_login_name_label.configure(text ="Date borrowed:")
+            self.main_page_admin_count_borrowed_books_label.configure(text ="Date returned:")
+            self.main_page_admin_status_banned_label.configure(text ="Returned:")
+            # self.main_page_admin_status_verified_label.configure(text ="Adress:")
+            # self.main_page_admin_created_at_label.configure(text ="Created at:")
+            
+            self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_book['_id']}")
+            self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_book['book_id']}")
+            self.main_page_admin_surname_entry.configure(placeholder_text=f"{currently_selected_book['user_id']}")
+            self.main_page_admin_login_name_entry.configure(placeholder_text=f"{currently_selected_book['date_borrowed']}")
+            self.main_page_admin_count_borrowed_books_entry.configure(placeholder_text=f"{currently_selected_book['date_returned']}")
+            self.main_page_admin_status_banned_entry.configure(placeholder_text=f"{currently_selected_book['returned']}")
+            # self.main_page_admin_status_verified_entry.configure(placeholder_text=f"{currently_selected_book['address']}")
+            # self.main_page_admin_created_at_entry.configure(placeholder_text=f"{currently_selected_book['created_at']}")
+            
+            
+            self.main_page_admin_id_entry.configure(state="readonly")
+            self.main_page_admin_first_name_entry.configure(state="readonly")
+            self.main_page_admin_surname_entry.configure(state="readonly")
+            self.main_page_admin_login_name_entry.configure(state="readonly")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="readonly")
+            self.main_page_admin_status_banned_entry.configure(state="readonly")
+            # self.main_page_admin_status_verified_entry.configure(state="readonly")
+            # self.main_page_admin_created_at_entry.configure(state="readonly")
+        
+        
     
     def configure_all_authors_admin(self):
+        global ALL_AUTHORS_ADMIN
         self.main_page_admin_label.configure(text="Browse all Authors")
-        pass
+        current_user = Librarian(current)
+        ALL_AUTHORS_ADMIN = current_user.get_all_authors(mongo_client)
+        if ALL_AUTHORS_ADMIN != None:
+            currently_selected_user = ALL_AUTHORS_ADMIN[SELECTED_ADMIN_INDEX]
+            user_names = self.get_names(ALL_AUTHORS_ADMIN)
+            self.main_page_frame_select_box.configure(values=user_names)
+            
+            self.main_page_admin_id_entry.configure(state="normal")
+            self.main_page_admin_first_name_entry.configure(state="normal")
+            self.main_page_admin_surname_entry.configure(state="normal")
+            self.main_page_admin_login_name_entry.configure(state="normal")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="normal")
+            self.main_page_admin_status_banned_entry.configure(state="normal")
+            self.main_page_admin_status_verified_entry.configure(state="normal")
+            self.main_page_admin_created_at_entry.configure(state="normal")
+            
+            self.main_page_admin_id_entry.grid()
+            self.main_page_admin_first_name_entry.grid()
+            self.main_page_admin_surname_entry.grid()
+            self.main_page_admin_login_name_entry.grid_forget()
+            self.main_page_admin_count_borrowed_books_entry.grid_forget()
+            self.main_page_admin_status_banned_entry.grid_forget()
+            self.main_page_admin_status_verified_entry.grid_forget()
+            self.main_page_admin_created_at_entry.grid_forget()
+            self.admin_add_book_button_add.grid_forget()
+            
+            self.main_page_admin_id_label.grid()
+            self.main_page_admin_first_name_label.grid()
+            self.main_page_admin_surname_label.grid()
+            self.main_page_admin_login_name_label.grid_forget()
+            self.main_page_admin_count_borrowed_books_label.grid_forget()
+            self.main_page_admin_status_banned_label.grid_forget()
+            self.main_page_admin_status_verified_label.grid_forget()
+            self.main_page_admin_created_at_label.grid_forget()
+            
+            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_first_name_label.configure(text ="First name:")
+            self.main_page_admin_surname_label.configure(text ="Surname:")
+            # self.main_page_admin_login_name_label.configure(text ="Username:")
+            # #self.main_page_admin_count_borrowed_books_label.configure(text ="Borrowed books:")
+            # self.main_page_admin_status_banned_label.configure(text ="PID:")
+            # self.main_page_admin_status_verified_label.configure(text ="Adress:")
+            # self.main_page_admin_created_at_label.configure(text ="Created at:")
+            
+            self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_user['_id']}")
+            self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_user['first_name']}")
+            self.main_page_admin_surname_entry.configure(placeholder_text=f"{currently_selected_user['surname']}")
+            # self.main_page_admin_login_name_entry.configure(placeholder_text=f"{currently_selected_user['login_name']}")
+            # #self.main_page_admin_count_borrowed_books_entry.configure(placeholder_text=f"{currently_selected_user['count_borrowed_books']}")
+            # self.main_page_admin_status_banned_entry.configure(placeholder_text=f"{currently_selected_user['pid']}")
+            # self.main_page_admin_status_verified_entry.configure(placeholder_text=f"{currently_selected_user['address']}")
+            # self.main_page_admin_created_at_entry.configure(placeholder_text=f"{currently_selected_user['created_at']}")
+            
+            
+            self.main_page_admin_id_entry.configure(state="readonly")
+            self.main_page_admin_first_name_entry.configure(state="readonly")
+            self.main_page_admin_surname_entry.configure(state="readonly")
+            # self.main_page_admin_login_name_entry.configure(state="readonly")
+            # self.main_page_admin_count_borrowed_books_entry.configure(state="readonly")
+            # self.main_page_admin_status_banned_entry.configure(state="readonly")
+            # self.main_page_admin_status_verified_entry.configure(state="readonly")
+            # self.main_page_admin_created_at_entry.configure(state="readonly")
+        
     
     def configure_all_user_changes(self):
         self.main_page_admin_label.configure(text="Browse all users with changes")
@@ -2460,75 +2712,72 @@ class App(customtkinter.CTk):
         
         current_user = Librarian(current)
         ALL_USERS_CHANGED = current_user.get_all_users_with_stashed_changes_all_info(mongo_client)
-        currently_selected_user = ALL_USERS_CHANGED[SELECTED_ADMIN_INDEX]
-        
-        user_names = self.get_user_login_names(ALL_USERS_CHANGED)
-        print(ALL_USERS_CHANGED)
-        self.main_page_frame_select_box.configure(values=user_names)
-        self.main_page_admin_id_entry.configure(state="normal")
-        self.main_page_admin_first_name_entry.configure(state="normal")
-        self.main_page_admin_surname_entry.configure(state="normal")
-        self.main_page_admin_login_name_entry.configure(state="normal")
-        self.main_page_admin_count_borrowed_books_entry.configure(state="normal")
-        self.main_page_admin_status_banned_entry.configure(state="normal")
-        self.main_page_admin_status_verified_entry.configure(state="normal")
-        self.main_page_admin_created_at_entry.configure(state="normal")
-        
-        self.main_page_admin_id_entry.grid()
-        self.main_page_admin_first_name_entry.grid()
-        self.main_page_admin_surname_entry.grid()
-        self.main_page_admin_login_name_entry.grid()
-        self.main_page_admin_count_borrowed_books_entry.grid()
-        self.main_page_admin_status_banned_entry.grid()
-        self.main_page_admin_status_verified_entry.grid()
-        self.main_page_admin_created_at_entry.grid()
-        
-        self.main_page_admin_id_label.grid()
-        self.main_page_admin_first_name_label.grid()
-        self.main_page_admin_surname_label.grid()
-        self.main_page_admin_login_name_label.grid()
-        self.main_page_admin_count_borrowed_books_label.grid()
-        self.main_page_admin_status_banned_label.grid()
-        self.main_page_admin_status_verified_label.grid()
-        self.main_page_admin_created_at_label.grid()
-        
-        
-        
-        self.main_page_admin_id_label.configure(text ="_id:")
-        self.main_page_admin_first_name_label.configure(text ="First name:")
-        self.main_page_admin_surname_label.configure(text ="Surname:")
-        self.main_page_admin_login_name_label.configure(text ="Username:")
-        self.main_page_admin_count_borrowed_books_label.configure(text ="Borrowed books:")
-        self.main_page_admin_status_banned_label.configure(text ="Banned:")
-        self.main_page_admin_status_verified_label.configure(text ="Verified:")
-        self.main_page_admin_created_at_label.configure(text ="Created at:")
-        
-        
-        self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_user['_id']}")
-        self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_user['first_name']}")
-        self.main_page_admin_surname_entry.configure(placeholder_text=f"{currently_selected_user['surname']}")
-        self.main_page_admin_login_name_entry.configure(placeholder_text=f"{currently_selected_user['login_name']}")
-        self.main_page_admin_count_borrowed_books_entry.grid_remove()
-        #self.main_page_admin_count_borrowed_books_entry.configure(placeholder_text=f"{currently_selected_user['count_borrowed_books']}")
-        self.main_page_admin_status_banned_entry.configure(placeholder_text=f"{currently_selected_user['pid']}")
-        self.main_page_admin_status_verified_entry.configure(placeholder_text=f"{currently_selected_user['address']}")
-        self.main_page_admin_created_at_entry.configure(placeholder_text=f"{currently_selected_user['created_at']}")
-        
-        
-        self.main_page_admin_id_entry.configure(state="readonly")
-        self.main_page_admin_first_name_entry.configure(state="readonly")
-        self.main_page_admin_surname_entry.configure(state="readonly")
-        self.main_page_admin_login_name_entry.configure(state="readonly")
-        self.main_page_admin_count_borrowed_books_entry.configure(state="readonly")
-        self.main_page_admin_status_banned_entry.configure(state="readonly")
-        self.main_page_admin_status_verified_entry.configure(state="readonly")
-        self.main_page_admin_created_at_entry.configure(state="readonly")
-        
+        if ALL_USERS_CHANGED != None:
+            currently_selected_user = ALL_USERS_CHANGED[SELECTED_ADMIN_INDEX]
+            user_names = self.get_login_names(ALL_USERS_CHANGED)
+            self.main_page_frame_select_box.configure(values=user_names)
+            
+            self.main_page_admin_id_entry.configure(state="normal")
+            self.main_page_admin_first_name_entry.configure(state="normal")
+            self.main_page_admin_surname_entry.configure(state="normal")
+            self.main_page_admin_login_name_entry.configure(state="normal")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="normal")
+            self.main_page_admin_status_banned_entry.configure(state="normal")
+            self.main_page_admin_status_verified_entry.configure(state="normal")
+            self.main_page_admin_created_at_entry.configure(state="normal")
+            
+            self.main_page_admin_id_entry.grid()
+            self.main_page_admin_first_name_entry.grid()
+            self.main_page_admin_surname_entry.grid()
+            self.main_page_admin_login_name_entry.grid()
+            self.main_page_admin_count_borrowed_books_entry.grid_forget()
+            self.main_page_admin_status_banned_entry.grid()
+            self.main_page_admin_status_verified_entry.grid()
+            self.main_page_admin_created_at_entry.grid()
+            self.admin_add_book_button_add.grid_forget()
+            
+            self.main_page_admin_id_label.grid()
+            self.main_page_admin_first_name_label.grid()
+            self.main_page_admin_surname_label.grid()
+            self.main_page_admin_login_name_label.grid()
+            self.main_page_admin_count_borrowed_books_label.grid_forget()
+            self.main_page_admin_status_banned_label.grid()
+            self.main_page_admin_status_verified_label.grid()
+            self.main_page_admin_created_at_label.grid()
+            
+            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_first_name_label.configure(text ="First name:")
+            self.main_page_admin_surname_label.configure(text ="Surname:")
+            self.main_page_admin_login_name_label.configure(text ="Username:")
+            #self.main_page_admin_count_borrowed_books_label.configure(text ="Borrowed books:")
+            self.main_page_admin_status_banned_label.configure(text ="PID:")
+            self.main_page_admin_status_verified_label.configure(text ="Adress:")
+            self.main_page_admin_created_at_label.configure(text ="Created at:")
+            
+            self.main_page_admin_id_entry.configure(placeholder_text=f"{currently_selected_user['_id']}")
+            self.main_page_admin_first_name_entry.configure(placeholder_text=f"{currently_selected_user['first_name']}")
+            self.main_page_admin_surname_entry.configure(placeholder_text=f"{currently_selected_user['surname']}")
+            self.main_page_admin_login_name_entry.configure(placeholder_text=f"{currently_selected_user['login_name']}")
+            #self.main_page_admin_count_borrowed_books_entry.configure(placeholder_text=f"{currently_selected_user['count_borrowed_books']}")
+            self.main_page_admin_status_banned_entry.configure(placeholder_text=f"{currently_selected_user['pid']}")
+            self.main_page_admin_status_verified_entry.configure(placeholder_text=f"{currently_selected_user['address']}")
+            self.main_page_admin_created_at_entry.configure(placeholder_text=f"{currently_selected_user['created_at']}")
+            
+            
+            self.main_page_admin_id_entry.configure(state="readonly")
+            self.main_page_admin_first_name_entry.configure(state="readonly")
+            self.main_page_admin_surname_entry.configure(state="readonly")
+            self.main_page_admin_login_name_entry.configure(state="readonly")
+            self.main_page_admin_count_borrowed_books_entry.configure(state="readonly")
+            self.main_page_admin_status_banned_entry.configure(state="readonly")
+            self.main_page_admin_status_verified_entry.configure(state="readonly")
+            self.main_page_admin_created_at_entry.configure(state="readonly")
+            
         
         
     
     def details_for_main_page_admin(self):
-        curret_category= self.get_current_category()
+        curret_category= CURRENT_CATEGORY_ADMIN
         
         if curret_category == Categories.All_users:
             self.configure_all_users_admin()
@@ -2555,10 +2804,10 @@ class App(customtkinter.CTk):
         current_user = Librarian(current)
         global ALL_USERS
         global ALL_USERS_CHANGED
+        global ALL_LIBRARY_BOOKS 
         ALL_USERS=current_user.get_all_users(mongo_client)
         ALL_USERS_CHANGED = current_user.get_all_users_with_stashed_changes(mongo_client)
-        user_names = self.get_user_login_names(ALL_USERS)
-        self.main_page_frame_select_box.configure(values=user_names)
+        ALL_LIBRARY_BOOKS = find_all_books(mongo_client)
         self.select_frame_by_name("main_admin")
 
     def show_next_book_my_page(self):
