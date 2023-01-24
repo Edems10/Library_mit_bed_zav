@@ -733,10 +733,18 @@ def get_all_borrowed_books(mongo_client: pymongo.MongoClient):
 
 def find_all_books(mongo_client: pymongo.MongoClient):
         books = get_book_column(mongo_client)
-        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1,"description":1}))
+        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1,"description":1, "copies_available": 1, "year": 1, "genre": 1}))
+
+
+def find_all_book_status(mongo_client: pymongo.MongoClient):
+    book_status = get_book_status_column(mongo_client)
+    return list(book_status.find({}, {"_id": 1, "book_id": 1, "user_id": 1, "date_borrowed": 1, "returned": 1}))
 
 def get_book_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][BOOK]
+
+def get_book_status_column(mongo_client: pymongo.MongoClient):
+    return mongo_client[DATABASE_NAME][BOOK_STATUS]
 
 
 def book_exists(mongo_client: pymongo.MongoClient, book_name):
