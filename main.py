@@ -2046,7 +2046,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         # Admin: login_lib lib_12345
         # User: user password
-        login_result = login(mongo_client, "login_lib", "lib_12345")
+        login_result = login(mongo_client, "user", "password")
         if login_result[0]:
             user = login_result[1]
             global current

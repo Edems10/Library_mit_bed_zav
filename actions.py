@@ -154,7 +154,7 @@ class User:
                                     get_book_status_column(mongo_client).update_one({"$and":
                                                                                     [{"user_id": ObjectId(user_id)},
                                                                  {"book_id": ObjectId(_id)}], "returned": False},
-                                                                 {"$set": {"returned": True, "date_returned": time.time()}})
+                                                                 {"$set": {"returned": True, "date_returned": datetime.utcnow()}})
                                     get_user_column(mongo_client).update_one({"_id": ObjectId(user_id)},
                                                                              {'$inc': {"count_borrowed_books": -1}})
                                     get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
@@ -186,7 +186,7 @@ class User:
                                                                                      "returned": False},
                                                                                     {"$set": {"returned": True,
                                                                                               "date_returned":
-                                                                                                  time.time()}})
+                                                                                                  datetime.utcnow()}})
                                     get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
                                                                              {'$inc': {"count_borrowed_books": -1}})
                                     get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
