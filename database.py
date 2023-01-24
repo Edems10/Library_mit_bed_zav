@@ -21,7 +21,7 @@ def get_mongo_client():
 mongo_client = get_mongo_client()
 #create_account(mongo_client,"librarian","librarian",1213,"home","login_lib","lib_12345")
 # LOGIN LIBRARIAN
-login_result = login(mongo_client,"login_lib","lib_12345")
+#login_result = login(mongo_client,"login_lib","lib_12345")
 # LOGIN FOR USER
 # create_account(mongo_client,"first_name","surname",123456789,"address","login","password")
 # create_account(mongo_client,"ssdafirst_name","surname",123456789,"address","sasddalogin","password")
@@ -32,7 +32,11 @@ login_result = login(mongo_client,"login_lib","lib_12345")
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
+<<<<<<< HEAD
+login_result = login(mongo_client,"test_ttl","test_ttl")
+=======
 #login_result = login(mongo_client,"adam","123456")
+>>>>>>> 0aedccd602325d22f4ad06bacd958d00774e570f
 
 # login login_lib 
 # pw lib_12345
@@ -42,10 +46,9 @@ if login_result[0]:
     user = login_result[1]
     if user.role == Roles.Librarian.name:
         current_user = Librarian(user)
-        
-        print(current_user.add_book(mongo_client, "The Last Wish", "b9e84cbe95def52ebeb48c03", 253, 1993, 4, "Fantasy Fiction", 
-                                    "The Last Wish is the third published short story collection in Polish fantasy writer Andrzej Sapkowski's The Witcher series. Published by SuperNowa in 1993,[1] it was preceded by 1992's Sword of Destiny, but is officially considered the first entry in the series and Sword of Destiny the second. The collection contains seven short stories interspersed with a continuing frame story: Geralt of Rivia, after having been injured in battle, rests in a temple. During that time he has flashbacks to recent events in his life, with each flashback forming a short story..",
-                                    0))
+        #print(current_user.add_book(mongo_client, "The Last Wish", "b9e84cbe95def52ebeb48c03", 253, 1993, 4, "Fantasy Fiction",
+        #                            "The Last Wish is the third published short story collection in Polish fantasy writer Andrzej Sapkowski's The Witcher series. Published by SuperNowa in 1993,[1] it was preceded by 1992's Sword of Destiny, but is officially considered the first entry in the series and Sword of Destiny the second. The collection contains seven short stories interspersed with a continuing frame story: Geralt of Rivia, after having been injured in battle, rests in a temple. During that time he has flashbacks to recent events in his life, with each flashback forming a short story..",
+        #                            0))
         #print(current_user.add_book(mongo_client, "New book", "3bef9919eca266bb9af0248f", 231, 2003, "dragon", 2,
         #                            "fantasy", "description", 0))
         #print(current_user.add_author(mongo_client, "Dominik", "Borec"))
@@ -92,12 +95,13 @@ if login_result[0]:
         current_user = User(user)
         current_user.create_index(mongo_client)
         # user_current_id = current_user.user.id
-        # print(current_user.user_find_book(mongo_client, "aa7d6b0c12fc001b9e01187e"))
+        #print(current_user.user_find_book(mongo_client, "aa7d6b0c12fc001b9e01187e"))
         #print(current_user.edit_user(mongo_client, "not_adam", "Mitrenga", 14410, "Praha ", "adam", "123456")[1])
         #print(current_user.borrow_book(mongo_client, '6143eb482fc2ad9c6a765440')[1])
         # print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
         # #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])
-        #print(autocomplete_book(mongo_client,"Last",Autocomplete_options_book.title))
+        print(find_all_books(mongo_client))
+        print(autocomplete_book(mongo_client,"sss",Autocomplete_options_book.title)[1][1])
         # print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
 
 else:

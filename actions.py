@@ -989,7 +989,7 @@ def find_author(mongo_client: pymongo.MongoClient, _id):
 
 
 def autocomplete_book(mongo_client: pymongo.MongoClient, query: str,
-                      path: Autocomplete_options_book, limit=10) -> Tuple[bool, list[Book]]:
+                      path: Autocomplete_options_book, limit=10):
     """ retuns list of autocompleted query based on what we have in DB
     Args:
         mongo_client (pymongo.MongoClient): mongo client
@@ -1024,9 +1024,9 @@ def autocomplete_book(mongo_client: pymongo.MongoClient, query: str,
                         year=book['year'], image=book['image'],
                         copies_available=book['copies_available'], genre=book['genre'],
                         description=book['description'], count_borrowed=book['count_borrowed'])
-        book_list.append(cur_book)
+        book_list.append(book)
     if not book_list:
-        return False, "No result - try different query"
+        return False, None
     else:
         return True, book_list
 

@@ -140,13 +140,23 @@ class App(customtkinter.CTk):
 
         self.navigation_frame_logged_main_button = customtkinter.CTkButton(self.navigation_frame_logged,
                                                                            corner_radius=0, height=40,
-                                                                           border_spacing=10, text="Your Library",
+                                                                           border_spacing=10, text="Book collection",
                                                                            fg_color="transparent",
                                                                            text_color=("gray10", "gray90"),
                                                                            hover_color=("gray70", "gray30"),
                                                                            image=self.register_image, anchor="w",
-                                                                           command=self.navigation_frame_logged_main_page_event)
+                                                                           command=self.navigation_frame_logged_find_book)
         self.navigation_frame_logged_main_button.grid(row=1, column=0, sticky="ew")
+
+        # self.navigation_frame_logged_find_book_button = customtkinter.CTkButton(self.navigation_frame_logged,
+        #                                                                    corner_radius=0, height=40,
+        #                                                                    border_spacing=10, text="Find book",
+        #                                                                    fg_color="transparent",
+        #                                                                    text_color=("gray10", "gray90"),
+        #                                                                    hover_color=("gray70", "gray30"),
+        #                                                                    image=self.register_image, anchor="w",
+        #                                                                    command=self.navigation_frame_logged_find_book_event)
+        # self.navigation_frame_logged_find_book_button.grid(row=2, column=0, sticky="ew")
 
         self.navigation_frame_logged_my_books_button = customtkinter.CTkButton(self.navigation_frame_logged,
                                                                                corner_radius=0, height=40,
@@ -477,6 +487,83 @@ class App(customtkinter.CTk):
                                                                      activate_scrollbars=False)
         self.textbox_book_genre_main_page.grid(row=7, column=1, padx=(0, 0), pady=(10, 10))
 
+        #Find book in the library for logged in user
+        self.main_page_logged_in_user_find_book_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.main_page_logged_in_user_find_book_frame.grid(row=1, column=2, sticky="nsew")
+        self.find_book_image_main_page_label = customtkinter.CTkLabel(self.main_page_logged_in_user_find_book_frame,
+                                                                 text="Browse book collection", width=60,
+                                                                 height=20,
+                                                                 corner_radius=7, font=('Helvetica', 20))
+        self.find_book_image_main_page_label.grid(row=0, column=1, padx=0, pady=10)
+        self.find_book_image_main_page_findbox = customtkinter.CTkEntry(self.main_page_logged_in_user_find_book_frame,
+                                                                   placeholder_text="Find book",
+                                                                   width=200, height=30, border_width=2,
+                                                                   corner_radius=10)
+        self.find_book_image_main_page_findbox.grid(row=1, column=0, padx=10, columnspan=2, sticky='e')
+
+        self.find_book_image_main_page_find_button = customtkinter.CTkButton(self.main_page_logged_in_user_find_book_frame,
+                                                                     text="Find", width=70, fg_color="#36719F",
+                                                                     hover_color="#3B8ED0", text_color="#FFF",
+                                                                     command=self.navigation_frame_logged_find_book)
+        self.find_book_image_main_page_find_button.grid(row=2, column=1, padx=0, pady=10, sticky='n')
+
+        self.find_book_image_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_find_book_frame, text="",
+                                                           image=self.book_test_image, compound="right")
+        self.find_book_image_main_page.grid(row=3, column=1, padx=(0, 0), pady=10, sticky='nsew')
+
+        self.find_next_boook_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_find_book_frame,
+                                                                   text="Next book", width=100, fg_color="#36719F",
+                                                                   hover_color="#3B8ED0", text_color="#FFF",
+                                                                   command=self.find_show_next_book_main_page)
+        self.find_next_boook_button_main_page.grid(row=3, column=2, padx=5, sticky='e')
+
+        self.find_borrow_book_button_main_page = customtkinter.CTkButton(self.main_page_logged_in_user_find_book_frame,
+                                                                    text="Borrow book", width=200, fg_color="#36719F",
+                                                                    hover_color="#3B8ED0", text_color="#FFF",
+                                                                    command=self.borrow_book_user)
+        self.find_borrow_book_button_main_page.grid(row=8, column=1, padx=0)
+
+        self.find_borrow_book_button_previous_book = customtkinter.CTkButton(self.main_page_logged_in_user_find_book_frame,
+                                                                        text="Previous book", width=100,
+                                                                        fg_color="#36719F",
+                                                                        hover_color="#3B8ED0", text_color="#FFF",
+                                                                        command=self.find_show_previous_book_main_page)
+        self.find_borrow_book_button_previous_book.grid(row=3, column=0, padx=5, sticky='w')
+
+        self.find_book_title_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_find_book_frame, text="Title:",
+                                                           compound="right")
+        self.find_book_title_main_page.grid(row=4, column=0, padx=10, pady=10, sticky='e')
+
+        self.find_textbox_title_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_find_book_frame, width=200,
+                                                                height=20, activate_scrollbars=False)
+        self.find_textbox_title_main_page.grid(row=4, column=1, padx=(0, 0), pady=(10, 0))
+
+        self.find_book_author_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_find_book_frame, text="Author:",
+                                                            compound="right")
+        self.find_book_author_main_page.grid(row=5, column=0, padx=10, pady=10, sticky='e')
+
+        self.find_textbox_author_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_find_book_frame, width=200,
+                                                                 height=20, activate_scrollbars=False)
+        self.find_textbox_author_main_page.grid(row=5, column=1, padx=(0, 0), pady=(10, 0))
+
+        self.find_book_description_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_find_book_frame,
+                                                                 text="Description:", compound="right")
+        self.find_book_description_main_page.grid(row=6, column=0, padx=10, pady=10, sticky='e')
+
+        self.find_textbox_book_description_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_find_book_frame,
+                                                                           width=200, height=100,
+                                                                           activate_scrollbars=False)
+        self.find_textbox_book_description_main_page.grid(row=6, column=1, padx=(0, 0), pady=(10, 0))
+
+        self.find_book_copies_available_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_find_book_frame,
+                                                                      text="Copies Available:", compound="right")
+        self.find_book_copies_available_main_page.grid(row=7, column=0, padx=10, pady=10, sticky='e')
+
+        self.find_textbox_book_copies_available_main_page = customtkinter.CTkTextbox(self.main_page_logged_in_user_find_book_frame,
+                                                                                width=200, height=20,
+                                                                                activate_scrollbars=False)
+        self.find_textbox_book_copies_available_main_page.grid(row=7, column=1, padx=(0, 0), pady=(10, 10))
+
         # MY BOOKS page for logged in user
         self.my_book_loged_user_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.my_book_loged_user_frame.grid(row=1, column=2, sticky="nsew")
@@ -484,7 +571,7 @@ class App(customtkinter.CTk):
                                                                text="Your borrowed books", width=60,
                                                                height=20,
                                                                corner_radius=7, font=('Helvetica', 20))
-        self.book_image_mybooks_label.grid(row=0, column=1, padx=0, pady=0)
+        self.book_image_mybooks_label.grid(row=0, column=1, padx=0, pady=10)
 
         self.book_image_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="",
                                                                image=self.book_test_image, compound="right")
@@ -494,7 +581,7 @@ class App(customtkinter.CTk):
                                                                        text="Next book", width=100, fg_color="#36719F",
                                                                        hover_color="#3B8ED0", text_color="#FFF",
                                                                        command=self.show_next_book_my_page)
-        self.next_boook_button_my_books_page.grid(row=1, column=2, padx=35, sticky='e')
+        self.next_boook_button_my_books_page.grid(row=1, column=2, padx=10, sticky='e')
 
         self.return_book_button_my_books_page = customtkinter.CTkButton(self.my_book_loged_user_frame,
                                                                         text="Return Book", width=200,
@@ -509,7 +596,7 @@ class App(customtkinter.CTk):
                                                                                  hover_color="#3B8ED0",
                                                                                  text_color="#FFF",
                                                                                  command=self.show_previous_book_my_page)
-        self.return_book_button_my_books_previous_book.grid(row=1, column=0, padx=35, sticky='w')
+        self.return_book_button_my_books_previous_book.grid(row=1, column=0, padx=10, sticky='w')
 
         self.book_title_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Title:",
                                                                compound="right")
@@ -536,7 +623,7 @@ class App(customtkinter.CTk):
         self.textbox_book_description_my_books_page.grid(row=4, column=1, padx=(0, 0), pady=(10, 10))
 
         self.book_time_left_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame,
-                                                                   text="Hours left to return:",
+                                                                   text="Time to return:",
                                                                    compound="right")
         self.book_time_left_my_books_page.grid(row=5, column=0, padx=10, pady=10, sticky='e')
 
@@ -1831,9 +1918,8 @@ class App(customtkinter.CTk):
         self.home_button.configure(fg_color=("gray75", "gray25") if name == "home" else "transparent")
         self.login_button.configure(fg_color=("gray75", "gray25") if name == "login" else "transparent")
         self.register_button.configure(fg_color=("gray75", "gray25") if name == "register" else "transparent")
-        self.navigation_frame_logged_main_button.configure(
-            fg_color=("gray75", "gray25") if name == "main_page_logged" else "transparent")
-        self.navigation_frame_logged_main_button.configure(
+
+        self.navigation_frame_logged_my_books_button.configure(
             fg_color=("gray75", "gray25") if name == "my_books" else "transparent")
         self.navigation_frame_logged_main_button.configure(
             fg_color=("gray75", "gray25") if name == "main" else "transparent")
@@ -1869,6 +1955,8 @@ class App(customtkinter.CTk):
             fg_color=("gray75", "gray25") if name == "borrow_admin" else "transparent")
         self.user_edit_user_button_edit.configure(
             fg_color=("gray75", "gray25") if name == "edit_user" else "transparent")
+        self.navigation_frame_logged_main_button.configure(
+            fg_color=("gray75", "gray25") if name == "find_book_logged" else "transparent")
 
         # show selected frame
         if name == "home":
@@ -1923,7 +2011,7 @@ class App(customtkinter.CTk):
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
             self.main_page_frame.grid_forget()
-            self.my_book_loged_user_frame.grid(row=0, column=1, padx=(10, 0), pady=(20, 0), sticky="nsew")
+            self.my_book_loged_user_frame.grid(row=0, column=1, padx=(55, 0), pady=(40, 0), sticky="nsew")
         else:
             self.my_book_loged_user_frame.grid_forget()
 
@@ -2033,6 +2121,14 @@ class App(customtkinter.CTk):
         else:
             self.admin_import_frame.grid_forget()
 
+        if name == "find_book_logged":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
+            self.main_page_frame.grid_forget()
+            self.main_page_logged_in_user_find_book_frame.grid(row=0, column=1, padx=(55, 0), pady=(20, 0), sticky="nsew")
+        else:
+            self.main_page_logged_in_user_find_book_frame.grid_forget()
+
     def home_button_event(self):
         self.select_frame_by_name("home")
 
@@ -2059,10 +2155,13 @@ class App(customtkinter.CTk):
                 self.navigation_frame_logged_admin_label.configure(text=" Admin")
             else:
                 current_user = User(user)
-                self.select_frame_by_name("main")
-                self.navigation_frame_logged_main_page_event()
-                self.main_page_frame_label.configure(text="User: " + current_user.user.login_name + " is logged")
-                self.navigation_frame_logged_label.configure(text=" " + current_user.user.login_name)
+                if current_user.user.banned == False:
+                    self.select_frame_by_name("main")
+                    self.navigation_frame_logged_find_book()
+                    self.main_page_frame_label.configure(text="User: " + current_user.user.login_name + " is logged")
+                    self.navigation_frame_logged_label.configure(text=" " + current_user.user.login_name)
+                else:
+                    print("User: " + current_user.user.login_name + "is banned")
         else:
             print(login_result[1])
             self.login_label_error.configure(text="Incorrect user name or password")
@@ -3054,7 +3153,6 @@ class App(customtkinter.CTk):
         if CURRENT_USER_SELECTED_MY_BOOK >= len(CURRENT_USER_BORROWED_BOOKS):
             CURRENT_USER_SELECTED_MY_BOOK = 0
 
-        time_left = 0
         time_ts = 0
 
         self.textbox_author_my_books_page.configure(state="normal")
@@ -3079,8 +3177,16 @@ class App(customtkinter.CTk):
         dt = datetime.utcnow()
         ts = datetime.timestamp(dt)
         diff_secs = float(ts) - float(time_ts)
-        df2 = diff_secs / 60
-        diff_hours = (8640 - df2) / 60
+        diff_time_left = (518400 - diff_secs)
+        time = float(diff_time_left)
+        day = time // (24 * 3600)
+        time = time % (24 * 3600)
+        hour = time // 3600
+        time %= 3600
+        minutes = time // 60
+        time %= 60
+        seconds = time
+        result_time = "%d d %d hrs %d min %d sec" % (day, hour, minutes, seconds)
 
         path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
         if os.path.isfile(path_to_book_image):
@@ -3093,7 +3199,7 @@ class App(customtkinter.CTk):
         self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
         self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
         self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-        self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+        self.textbox_book_time_left_my_books_page.insert("0.0", f"{result_time}")
 
     def show_previous_book_my_page(self):
         global CURRENT_USER_BORROWED_BOOKS
@@ -3132,8 +3238,16 @@ class App(customtkinter.CTk):
         dt = datetime.utcnow()
         ts = datetime.timestamp(dt)
         diff_secs = float(ts) - float(time_ts)
-        df2 = diff_secs / 60
-        diff_hours = (8640 - df2) / 60
+        diff_time_left = (518400 - diff_secs)
+        time = float(diff_time_left)
+        day = time // (24 * 3600)
+        time = time % (24 * 3600)
+        hour = time // 3600
+        time %= 3600
+        minutes = time // 60
+        time %= 60
+        seconds = time
+        result_time = "%d d %d hrs %d min %d sec" % (day, hour, minutes, seconds)
 
         path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
         if os.path.isfile(path_to_book_image):
@@ -3146,7 +3260,7 @@ class App(customtkinter.CTk):
         self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
         self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
         self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-        self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+        self.textbox_book_time_left_my_books_page.insert("0.0", f"{result_time}")
 
 
     def show_next_book_main_page(self):
@@ -3239,6 +3353,80 @@ class App(customtkinter.CTk):
                                                  f"{ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['genre']}")
         self.textbox_book_genre_main_page.configure(state="disabled")
 
+    def find_show_next_book_main_page(self):
+        global CURRENT_SELECTED_BOOK_MAIN_PAGE
+        global FIND_LIBRARY_BOOKS
+        CURRENT_SELECTED_BOOK_MAIN_PAGE += 1
+        if CURRENT_SELECTED_BOOK_MAIN_PAGE >= len(FIND_LIBRARY_BOOKS):
+            CURRENT_SELECTED_BOOK_MAIN_PAGE = 0
+
+        self.find_textbox_title_main_page.configure(state="normal")
+        self.find_textbox_author_main_page.configure(state="normal")
+        self.find_textbox_book_description_main_page.configure(state="normal")
+        self.find_textbox_book_copies_available_main_page.configure(state="normal")
+
+
+        self.find_textbox_title_main_page.delete(0.0, "end")
+        self.find_textbox_author_main_page.delete(0.0, "end")
+        self.find_textbox_book_description_main_page.delete(0.0, "end")
+        self.find_textbox_book_copies_available_main_page.delete(0.0, "end")
+
+        path_to_image = self.get_path_to_local_image(FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE])
+        if path_to_image == None:
+            path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
+                                         "placeholder_no_book.png", )
+        self.find_book_image_main_page.configure(image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
+        self.find_textbox_title_main_page.insert("0.0", f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['title']}")
+        self.find_textbox_title_main_page.configure(state="disabled")
+        author = find_author(mongo_client=mongo_client,
+                             _id=FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['author'])
+        self.find_textbox_author_main_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
+        self.find_textbox_author_main_page.configure(state="disabled")
+        self.find_textbox_book_description_main_page.insert("0.0",
+                                                       f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['description']}")
+        self.find_textbox_book_description_main_page.configure(state="disabled")
+        self.find_textbox_book_copies_available_main_page.insert("0.0",
+                                                            f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['copies_available']}")
+        self.find_textbox_book_copies_available_main_page.configure(state="disabled")
+
+
+    def find_show_previous_book_main_page(self):
+        global CURRENT_SELECTED_BOOK_MAIN_PAGE
+        global FIND_LIBRARY_BOOKS
+        CURRENT_SELECTED_BOOK_MAIN_PAGE -= 1
+        if CURRENT_SELECTED_BOOK_MAIN_PAGE < 0:
+            CURRENT_SELECTED_BOOK_MAIN_PAGE = len(FIND_LIBRARY_BOOKS) - 1
+
+        self.find_textbox_title_main_page.configure(state="normal")
+        self.find_textbox_author_main_page.configure(state="normal")
+        self.find_textbox_book_description_main_page.configure(state="normal")
+        self.find_textbox_book_copies_available_main_page.configure(state="normal")
+
+
+        self.find_textbox_title_main_page.delete(0.0, "end")
+        self.find_textbox_author_main_page.delete(0.0, "end")
+        self.find_textbox_book_description_main_page.delete(0.0, "end")
+        self.find_textbox_book_copies_available_main_page.delete(0.0, "end")
+
+
+        path_to_image = self.get_path_to_local_image(FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE])
+        if path_to_image == None:
+            path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
+                                         "placeholder_no_book.png", )
+        self.find_book_image_main_page.configure(image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
+        self.find_textbox_title_main_page.insert("0.0", f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['title']}")
+        self.find_textbox_title_main_page.configure(state="disabled")
+        author = find_author(mongo_client=mongo_client,
+                             _id=FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['author'])
+        self.find_textbox_author_main_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
+        self.find_textbox_author_main_page.configure(state="disabled")
+        self.find_textbox_book_description_main_page.insert("0.0",
+                                                       f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['description']}")
+        self.find_textbox_book_description_main_page.configure(state="disabled")
+        self.find_textbox_book_copies_available_main_page.insert("0.0",
+                                                            f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['copies_available']}")
+        self.find_textbox_book_copies_available_main_page.configure(state="disabled")
+
     def return_book_user(self):
         current_user = User(current)
         print(current_user.return_book(mongo_client, CURRENT_USER_BORROWED_BOOKS[CURRENT_USER_SELECTED_MY_BOOK])[1])
@@ -3247,7 +3435,7 @@ class App(customtkinter.CTk):
 
     def borrow_book_user(self):
         current_user = User(current)
-        print(current_user.borrow_book(mongo_client, ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['_id'])[1])
+        print(current_user.borrow_book(mongo_client, FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['_id'])[1])
 
     def register_button_event(self):
         self.select_frame_by_name("register")
@@ -3343,7 +3531,55 @@ class App(customtkinter.CTk):
         self.textbox_book_copies_available_main_page.configure(state="disabled")
         self.textbox_book_year_main_page.configure(state="disabled")
         self.textbox_book_genre_main_page.configure(state="disabled")
-        self.select_frame_by_name("main_page_logged")
+        self.select_frame_by_name("find_book_logged")
+        self.navigation_frame_logged_find_book()
+
+    def navigation_frame_logged_find_book_event(self):
+        self.select_frame_by_name("find_book_logged")
+
+    def navigation_frame_logged_find_book(self):
+        global CURRENT_SELECTED_BOOK_MAIN_PAGE
+        global FIND_LIBRARY_BOOKS
+        find_books = self.find_book_image_main_page_findbox.get()
+        if find_books != "":
+            FIND_LIBRARY_BOOKS = autocomplete_book(mongo_client,find_books,Autocomplete_options_book.title)[1]
+        else:
+            FIND_LIBRARY_BOOKS = find_all_books(mongo_client)
+        if FIND_LIBRARY_BOOKS is None:
+            FIND_LIBRARY_BOOKS = find_all_books(mongo_client)
+        if CURRENT_SELECTED_BOOK_MAIN_PAGE >= len(FIND_LIBRARY_BOOKS):
+            CURRENT_SELECTED_BOOK_MAIN_PAGE = 0
+        self.find_textbox_title_main_page.configure(state="normal")
+        self.find_textbox_author_main_page.configure(state="normal")
+        self.find_textbox_book_description_main_page.configure(state="normal")
+        self.find_textbox_book_copies_available_main_page.configure(state="normal")
+
+        self.find_textbox_title_main_page.delete(0.0, "end")
+        self.find_textbox_author_main_page.delete(0.0, "end")
+        self.find_textbox_book_description_main_page.delete(0.0, "end")
+        self.find_textbox_book_copies_available_main_page.delete(0.0, "end")
+
+
+        self.get_all_books_localy(FIND_LIBRARY_BOOKS)
+        path_to_image = self.get_path_to_local_image(FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE])
+        if path_to_image == None:
+            path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
+                                         "placeholder_no_book.png")
+        self.find_book_image_main_page.configure(image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
+        self.find_textbox_title_main_page.insert("0.0", f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['title']}")
+        author = find_author(mongo_client=mongo_client,
+                             _id=FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['author'])
+        self.find_textbox_author_main_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
+        self.find_textbox_book_description_main_page.insert("0.0",
+                                                       f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['description']}")
+        self.find_textbox_book_copies_available_main_page.insert("0.0",
+                                                            f"{FIND_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['copies_available']}")
+
+        self.find_textbox_title_main_page.configure(state="disabled")
+        self.find_textbox_author_main_page.configure(state="disabled")
+        self.find_textbox_book_description_main_page.configure(state="disabled")
+        self.find_textbox_book_copies_available_main_page.configure(state="disabled")
+        self.select_frame_by_name("find_book_logged")
 
     def show_my_book(self, move_index):
         global CURRENT_USER_BORROWED_BOOKS
@@ -3351,58 +3587,67 @@ class App(customtkinter.CTk):
         global ALL_BOOK_STATUS
         ALL_BOOK_STATUS = find_all_book_status(mongo_client)
         current_user = User(current)
+        if current_user.user.approved_by_librarian == True:
+            CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user(mongo_client, current._id)
+            CURRENT_USER_SELECTED_MY_BOOK += move_index
+            if CURRENT_USER_SELECTED_MY_BOOK >= len(CURRENT_USER_BORROWED_BOOKS):
+                CURRENT_USER_SELECTED_MY_BOOK = 0
 
-        CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user(mongo_client, current._id)
-        CURRENT_USER_SELECTED_MY_BOOK += move_index
-        if CURRENT_USER_SELECTED_MY_BOOK >= len(CURRENT_USER_BORROWED_BOOKS):
-            CURRENT_USER_SELECTED_MY_BOOK = 0
+            self.textbox_author_my_books_page.configure(state="normal")
+            self.textbox_book_description_my_books_page.configure(state="normal")
+            self.textbox_title_my_books_page.configure(state="normal")
+            self.textbox_book_time_left_my_books_page.configure(state="normal")
 
-        self.textbox_author_my_books_page.configure(state="normal")
-        self.textbox_book_description_my_books_page.configure(state="normal")
-        self.textbox_title_my_books_page.configure(state="normal")
-        self.textbox_book_time_left_my_books_page.configure(state="normal")
+            self.textbox_author_my_books_page.delete(0.0, "end")
+            self.textbox_book_description_my_books_page.delete(0.0, "end")
+            self.textbox_title_my_books_page.delete(0.0, "end")
+            self.textbox_book_time_left_my_books_page.delete(0.0, "end")
 
-        self.textbox_author_my_books_page.delete(0.0, "end")
-        self.textbox_book_description_my_books_page.delete(0.0, "end")
-        self.textbox_title_my_books_page.delete(0.0, "end")
-        self.textbox_book_time_left_my_books_page.delete(0.0, "end")
-
-        if len(CURRENT_USER_BORROWED_BOOKS) == 0:
-            self.book_image_my_books_page.configure(image=self.no_book_image)
-            self.textbox_author_my_books_page.insert("0.0", "You have yet to borrow a book")
-            self.textbox_book_description_my_books_page.insert("0.0", "You have yet to borrow a book")
-            self.textbox_title_my_books_page.insert("0.0", "You have yet to borrow a book")
-            self.textbox_book_time_left_my_books_page.insert("0.0", "You have yet to borrow a book")
-        else:
-            book = current_user.user_find_book(mongo_client, CURRENT_USER_BORROWED_BOOKS[CURRENT_USER_SELECTED_MY_BOOK])
-            time_left = 0
-            time_ts = 0
-            for document in ALL_BOOK_STATUS:
-                if document['book_id'] == book["_id"] and document['user_id'] == current._id and document[
-                    'returned'] == False:
-                    time_left = document["date_borrowed"]
-                    time_ts = datetime.timestamp(time_left)
-            dt = datetime.utcnow()
-            ts = datetime.timestamp(dt)
-            diff_secs = float(ts) - float(time_ts)
-            df2 = diff_secs / 60
-            diff_hours = (8640 - df2) / 60
-
-            author = find_author(mongo_client, book['author'])
-            name = book["_id"]
-            path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
-            if os.path.isfile(path_to_book_image):
-                path_to_image = path_to_book_image
+            if len(CURRENT_USER_BORROWED_BOOKS) == 0:
+                self.book_image_my_books_page.configure(image=self.no_book_image)
+                self.textbox_author_my_books_page.insert("0.0", "You have yet to borrow a book")
+                self.textbox_book_description_my_books_page.insert("0.0", "You have yet to borrow a book")
+                self.textbox_title_my_books_page.insert("0.0", "You have yet to borrow a book")
+                self.textbox_book_time_left_my_books_page.insert("0.0", "You have yet to borrow a book")
             else:
-                path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
-                                             "placeholder_no_book.png")
-            self.book_image_my_books_page.configure(
-                image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
-            self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
-            self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
-            self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-            self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-            self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+                book = current_user.user_find_book(mongo_client, CURRENT_USER_BORROWED_BOOKS[CURRENT_USER_SELECTED_MY_BOOK])
+
+                time_ts = 0
+                for document in ALL_BOOK_STATUS:
+                    if document['book_id'] == book["_id"] and document['user_id'] == current._id and document[
+                        'returned'] == False:
+                        time_left = document["date_borrowed"]
+                        time_ts = datetime.timestamp(time_left)
+                dt = datetime.utcnow()
+                ts = datetime.timestamp(dt)
+                diff_secs = float(ts) - float(time_ts)
+                diff_time_left = (518400 - diff_secs)
+                time = float(diff_time_left)
+                day = time // (24 * 3600)
+                time = time % (24 * 3600)
+                hour = time // 3600
+                time %= 3600
+                minutes = time // 60
+                time %= 60
+                seconds = time
+                result_time = "%d d %d hrs %d min %d sec" % (day, hour, minutes, seconds)
+
+                author = find_author(mongo_client, book['author'])
+                name = book["_id"]
+                path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
+                if os.path.isfile(path_to_book_image):
+                    path_to_image = path_to_book_image
+                else:
+                    path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
+                                                 "placeholder_no_book.png")
+                self.book_image_my_books_page.configure(
+                    image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
+                self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
+                self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
+                self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
+                self.textbox_book_time_left_my_books_page.insert("0.0", f"{result_time}")
+        else:
+            self.select_frame_by_name("find_book_logged")
 
     def navigation_frame_logged_admin_logout_button_event(self):
         self.select_frame_by_name("login")
@@ -3410,12 +3655,15 @@ class App(customtkinter.CTk):
         self.login_entry_password.delete(0, "end")
 
     def navigation_frame_logged_my_books_button_event(self):
-
+        current_user = User(current)
         self.show_my_book(0)
-        self.select_frame_by_name("my_books")
+        if current_user.user.approved_by_librarian == True:
+            self.select_frame_by_name("my_books")
 
     def user_button_edit_user_event(self):
-        self.select_frame_by_name("edit_user")
+        current_user = User(current)
+        if current_user.user.approved_by_librarian == True:
+            self.select_frame_by_name("edit_user")
 
     def user_button_edit_user(self):
         if current.role == Roles.User.name:
@@ -3430,7 +3678,7 @@ class App(customtkinter.CTk):
                 edited_user = current_user.edit_user(mongo_client, firstname, surname, int(pid), address, login,
                                                      password)
                 if edited_user[0] == True:
-                    self.select_frame_by_name("main_page_logged")
+                    self.select_frame_by_name("find_book_logged")
                     print(edited_user[0])
                     self.user_edit_user_entry_firstname.delete(0, "end")
                     self.user_edit_user_entry_surname.delete(0, "end")
