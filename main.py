@@ -101,12 +101,12 @@ class App(customtkinter.CTk):
                                                      dark_image=Image.open(os.path.join(image_path, "icons8-book.png")),
                                                      size=(20, 20))
 
-        self.image_author = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-quill-with-ink.png")),
-                                                     dark_image=Image.open(os.path.join(image_path, "icons8-quill-with-ink.png")),
+        self.image_author = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-remove-administrator-100.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-remove-administrator-100.png")),
                                                      size=(20, 20))
         
-        self.image_edit_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-edit-profile.png")),
-                                                     dark_image=Image.open(os.path.join(image_path, "icons8-edit-profile.png")),
+        self.image_edit_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "user-avatar.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "user-avatar.png")),
                                                      size=(20, 20))
         
         self.image_delete_user= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-denied.png")),
@@ -151,19 +151,25 @@ class App(customtkinter.CTk):
                                                      dark_image=Image.open(os.path.join(image_path, "icons8-book-shelf-30.png")),
                                                      size=(20, 20))
         
-        # self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
-        #                                              dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
-        #                                              size=(20, 20))
+        self.image_about_icon= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-info-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-info-30.png")),
+                                                     size=(20, 20))
         
         
-        # self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
-        #                                              dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
-        #                                              size=(20, 20))
+        self.image_edit_author= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-admin-settings-male-100.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-admin-settings-male-100.png")),
+                                                     size=(20, 20))
         
-        # self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
-        #                                              dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
-        #                                              size=(20, 20))
+        self.image_add_author= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-add-administrator-100.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-add-administrator-100.png")),
+                                                     size=(20, 20))
         
+        self.image_left_arrow= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-left-arrow-100.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-left-arrow-100.png")),
+                                                     size=(20, 20))
+        self.image_right_arrow= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-right-arrow-100.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-right-arrow-100.png")),
+                                                     size=(20, 20))
         
         
         
@@ -199,7 +205,7 @@ class App(customtkinter.CTk):
                                                    text="About",
                                                    fg_color="transparent", text_color=("gray10", "gray90"),
                                                    hover_color=("gray70", "gray30"),
-                                                   image=self.login_image, anchor="w", command=self.home_button_event)
+                                                   image=self.image_about_icon, anchor="w", command=self.home_button_event)
         self.home_button.grid(row=3, column=0, sticky="ew")
 
 
@@ -304,7 +310,7 @@ class App(customtkinter.CTk):
                                                                                 fg_color="transparent",
                                                                                 text_color=("gray10", "gray90"),
                                                                                 hover_color=("gray70", "gray30"),
-                                                                                image=self.image_author, anchor="w",
+                                                                                image=self.image_add_author, anchor="w",
                                                                                 command=self.admin_button_add_author_event)
 
         self.navigation_frame_logged_admin_add_author.grid(row=3, column=0, sticky="ew")
@@ -316,7 +322,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="transparent",
                                                                                  text_color=("gray10", "gray90"),
                                                                                  hover_color=("gray70", "gray30"),
-                                                                                 image=self.image_author, anchor="w",
+                                                                                 image=self.image_edit_author, anchor="w",
                                                                                  command=self.admin_button_edit_author_event)
 
         self.navigation_frame_logged_admin_edit_author.grid(row=4, column=0, sticky="ew")
@@ -1848,9 +1854,9 @@ class App(customtkinter.CTk):
         self.main_page_admin_details_button.grid(row=2, column=1, padx=60, pady=10)
 
         # TODO ADD IMAGE sipka
-        self.main_page_admin_move_cattegory_forward_button = customtkinter.CTkButton(self.main_page_frame_admin,
-                                                                                     text="-->", width=70,
-                                                                                     fg_color="#36719F",
+        self.main_page_admin_move_cattegory_forward_button = customtkinter.CTkButton(self.main_page_frame_admin, width=70,
+                                                                                     image=self.image_right_arrow,
+                                                                                     fg_color="#36719F",text="",
                                                                                      hover_color="#3B8ED0",
                                                                                      text_color="#FFF",
                                                                                      command=self.move_category_right)
@@ -1858,7 +1864,8 @@ class App(customtkinter.CTk):
 
         # TODO ADD IMAGE sipka
         self.main_page_admin_move_cattegory_back_button = customtkinter.CTkButton(self.main_page_frame_admin,
-                                                                                  text="<--", width=70,
+                                                                                  text="", width=70,
+                                                                                  image=self.image_left_arrow,
                                                                                   fg_color="#36719F",
                                                                                   hover_color="#3B8ED0",
                                                                                   text_color="#FFF",
