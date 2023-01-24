@@ -2721,8 +2721,8 @@ class App(customtkinter.CTk):
 
             
             self.main_page_admin_id_label.configure(text ="ID:")
-            self.main_page_admin_first_name_label.configure(text ="book_id:")
-            self.main_page_admin_surname_label.configure(text ="user_id:")
+            self.main_page_admin_first_name_label.configure(text ="Book ID:")
+            self.main_page_admin_surname_label.configure(text ="User ID:")
             self.main_page_admin_login_name_label.configure(text ="Date borrowed:")
             self.main_page_admin_count_borrowed_books_label.configure(text ="Date returned:")
             self.main_page_admin_status_banned_label.configure(text ="Returned:")
@@ -2789,7 +2789,7 @@ class App(customtkinter.CTk):
             self.main_page_admin_created_at_label.grid_forget()
 
             
-            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_id_label.configure(text ="ID:")
             self.main_page_admin_first_name_label.configure(text ="First name:")
             self.main_page_admin_surname_label.configure(text ="Surname:")
             # self.main_page_admin_login_name_label.configure(text ="Username:")
