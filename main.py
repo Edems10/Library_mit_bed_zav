@@ -1807,7 +1807,7 @@ class App(customtkinter.CTk):
                                                                  text="Borrowed Books details", width=70,
                                                                  fg_color="#36719F",
                                                                  hover_color="#3B8ED0", text_color="#FFF",
-                                                                 command=self.admin_button_add_book)
+                                                                 command=self.admin_details_about_specific_books)
         self.admin_add_book_button_add.grid(row=8, column=1, padx=30, pady=0, sticky='e')
 
         # create home frame
@@ -2167,6 +2167,10 @@ class App(customtkinter.CTk):
     def admin_button_add_book_event(self):
         self.select_frame_by_name("add_book_admin")
         self.admin_add_book_label_error.configure(text="")
+
+
+    def admin_details_about_specific_books():
+        pass
 
     def admin_button_add_book(self):
         if current.role == Roles.Librarian.name:
