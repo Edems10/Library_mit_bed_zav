@@ -536,7 +536,7 @@ class App(customtkinter.CTk):
         self.textbox_book_description_my_books_page.grid(row=4, column=1, padx=(0, 0), pady=(10, 10))
 
         self.book_time_left_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame,
-                                                                   text="Hours left to return:",
+                                                                   text="Time to return:",
                                                                    compound="right")
         self.book_time_left_my_books_page.grid(row=5, column=0, padx=10, pady=10, sticky='e')
 
@@ -2932,7 +2932,6 @@ class App(customtkinter.CTk):
         if CURRENT_USER_SELECTED_MY_BOOK >= len(CURRENT_USER_BORROWED_BOOKS):
             CURRENT_USER_SELECTED_MY_BOOK = 0
 
-        time_left = 0
         time_ts = 0
 
         self.textbox_author_my_books_page.configure(state="normal")
@@ -2957,8 +2956,16 @@ class App(customtkinter.CTk):
         dt = datetime.utcnow()
         ts = datetime.timestamp(dt)
         diff_secs = float(ts) - float(time_ts)
-        df2 = diff_secs / 60
-        diff_hours = (8640 - df2) / 60
+        diff_time_left = (518400 - diff_secs)
+        time = float(diff_time_left)
+        day = time // (24 * 3600)
+        time = time % (24 * 3600)
+        hour = time // 3600
+        time %= 3600
+        minutes = time // 60
+        time %= 60
+        seconds = time
+        result_time = "%d d %d hrs %d min %d sec" % (day, hour, minutes, seconds)
 
         path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
         if os.path.isfile(path_to_book_image):
@@ -2971,7 +2978,7 @@ class App(customtkinter.CTk):
         self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
         self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
         self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-        self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+        self.textbox_book_time_left_my_books_page.insert("0.0", f"{result_time}")
 
     def show_previous_book_my_page(self):
         global CURRENT_USER_BORROWED_BOOKS
@@ -3010,8 +3017,16 @@ class App(customtkinter.CTk):
         dt = datetime.utcnow()
         ts = datetime.timestamp(dt)
         diff_secs = float(ts) - float(time_ts)
-        df2 = diff_secs / 60
-        diff_hours = (8640 - df2) / 60
+        diff_time_left = (518400 - diff_secs)
+        time = float(diff_time_left)
+        day = time // (24 * 3600)
+        time = time % (24 * 3600)
+        hour = time // 3600
+        time %= 3600
+        minutes = time // 60
+        time %= 60
+        seconds = time
+        result_time = "%d d %d hrs %d min %d sec" % (day, hour, minutes, seconds)
 
         path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
         if os.path.isfile(path_to_book_image):
@@ -3024,7 +3039,7 @@ class App(customtkinter.CTk):
         self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
         self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
         self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-        self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+        self.textbox_book_time_left_my_books_page.insert("0.0", f"{result_time}")
 
 
     def show_next_book_main_page(self):
@@ -3253,7 +3268,7 @@ class App(customtkinter.CTk):
             self.textbox_book_time_left_my_books_page.insert("0.0", "You have yet to borrow a book")
         else:
             book = current_user.user_find_book(mongo_client, CURRENT_USER_BORROWED_BOOKS[CURRENT_USER_SELECTED_MY_BOOK])
-            time_left = 0
+
             time_ts = 0
             for document in ALL_BOOK_STATUS:
                 if document['book_id'] == book["_id"] and document['user_id'] == current._id and document[
@@ -3263,8 +3278,16 @@ class App(customtkinter.CTk):
             dt = datetime.utcnow()
             ts = datetime.timestamp(dt)
             diff_secs = float(ts) - float(time_ts)
-            df2 = diff_secs / 60
-            diff_hours = (8640 - df2) / 60
+            diff_time_left = (518400 - diff_secs)
+            time = float(diff_time_left)
+            day = time // (24 * 3600)
+            time = time % (24 * 3600)
+            hour = time // 3600
+            time %= 3600
+            minutes = time // 60
+            time %= 60
+            seconds = time
+            result_time = "%d d %d hrs %d min %d sec" % (day, hour, minutes, seconds)
 
             author = find_author(mongo_client, book['author'])
             name = book["_id"]
@@ -3280,7 +3303,7 @@ class App(customtkinter.CTk):
             self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
             self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
             self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
-            self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+            self.textbox_book_time_left_my_books_page.insert("0.0", f"{result_time}")
 
     def navigation_frame_logged_admin_logout_button_event(self):
         self.select_frame_by_name("login")
