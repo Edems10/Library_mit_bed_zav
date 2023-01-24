@@ -422,7 +422,7 @@ class App(customtkinter.CTk):
                                                                         text="Previous book", width=100,
                                                                         fg_color="#36719F",
                                                                         hover_color="#3B8ED0", text_color="#FFF",
-                                                                        command=self.borrow_book_user)
+                                                                        command=self.show_previous_book_main_page)
         self.borrow_book_button_previous_book.grid(row=1, column=0, padx=5, sticky='w')
 
         self.book_title_main_page = customtkinter.CTkLabel(self.main_page_logged_in_user_frame, text="Title:",
@@ -508,7 +508,7 @@ class App(customtkinter.CTk):
                                                                                  fg_color="#36719F",
                                                                                  hover_color="#3B8ED0",
                                                                                  text_color="#FFF",
-                                                                                 command=self.show_next_book_my_page)
+                                                                                 command=self.show_previous_book_my_page)
         self.return_book_button_my_books_previous_book.grid(row=1, column=0, padx=35, sticky='w')
 
         self.book_title_my_books_page = customtkinter.CTkLabel(self.my_book_loged_user_frame, text="Title:",
@@ -1675,22 +1675,22 @@ class App(customtkinter.CTk):
         self.main_page_frame_admin = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
         self.main_page_frame_admin.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.main_page_admin_label = customtkinter.CTkLabel(self.main_page_frame_admin,
-                                                            text="Browse all users", width=60, height=20,
+                                                            text="Browse all users", width=280, height=20,
                                                             corner_radius=7, font=('Helvetica', 20))
-        self.main_page_admin_label.grid(row=0, column=1, padx=0, pady=20)
+        self.main_page_admin_label.grid(row=0, column=1, padx=0, pady=10, sticky="nsew")
 
         self.main_page_frame_select_box = customtkinter.CTkOptionMenu(self.main_page_frame_admin,
                                                                       values=[""],
                                                                       command=optionmenu_callback, corner_radius=7,
-                                                                      width=100, height=20, )
-        self.main_page_frame_select_box.grid(row=1, column=0, padx=0, pady=20, sticky='e')
+                                                                      width=20, height=20,)
+        self.main_page_frame_select_box.grid(row=1, column=1, padx=0, pady=10, sticky="nsew")
         self.main_page_frame_select_box.set("Select User")  # set initial value
 
         self.main_page_admin_details_button = customtkinter.CTkButton(self.main_page_frame_admin,
                                                                       text="Details", width=70, fg_color="#36719F",
                                                                       hover_color="#3B8ED0", text_color="#FFF",
                                                                       command=self.details_for_main_page_admin)
-        self.main_page_admin_details_button.grid(row=1, column=1, padx=60, pady=20, sticky='e')
+        self.main_page_admin_details_button.grid(row=2, column=1, padx=60, pady=10)
 
         # TODO ADD IMAGE sipka
         self.main_page_admin_move_cattegory_forward_button = customtkinter.CTkButton(self.main_page_frame_admin,
@@ -1711,104 +1711,104 @@ class App(customtkinter.CTk):
         self.main_page_admin_move_cattegory_back_button.grid(row=0, column=0, padx=0, pady=20, sticky='e')
 
         self.main_page_admin_id_label = customtkinter.CTkLabel(self.main_page_frame_admin,
-                                                               text="ID: ", width=30, height=25,
+                                                               text="ID: ", width=120, height=25,
                                                                corner_radius=7)
-        self.main_page_admin_id_label.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_id_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                placeholder_text="_id",
                                                                width=200, height=30, border_width=2,
                                                                corner_radius=10)
-        self.main_page_admin_id_entry.grid(row=2, column=1, padx=10, columnspan=2)
+        self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
 
         self.main_page_admin_first_name_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="First Name: ",
-                                                                       width=30, height=25,
+                                                                       width=120, height=25,
                                                                        corner_radius=7)
-        self.main_page_admin_first_name_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_first_name_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                        placeholder_text="John", width=200,
                                                                        height=30,
                                                                        border_width=2, corner_radius=10)
-        self.main_page_admin_first_name_entry.grid(row=3, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_surname_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="Surname: ",
-                                                                    width=30, height=25,
+                                                                    width=120, height=25,
                                                                     corner_radius=7)
-        self.main_page_admin_surname_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_surname_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                     placeholder_text="Doe", width=200,
                                                                     height=30,
                                                                     border_width=2, corner_radius=10)
-        self.main_page_admin_surname_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_login_name_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="Nickname: ",
-                                                                       width=30, height=25,
+                                                                       width=120, height=25,
                                                                        corner_radius=7)
-        self.main_page_admin_login_name_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_login_name_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_login_name_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                        placeholder_text="TheBestReader34", width=200,
                                                                        height=30,
                                                                        border_width=2, corner_radius=10)
-        self.main_page_admin_login_name_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_login_name_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_count_borrowed_books_label = customtkinter.CTkLabel(self.main_page_frame_admin,
                                                                                  text="Borrowed books: ",
-                                                                                 width=30, height=25,
+                                                                                 width=120, height=25,
                                                                                  corner_radius=7)
-        self.main_page_admin_count_borrowed_books_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_count_borrowed_books_label.grid(row=7, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_count_borrowed_books_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                                  placeholder_text="3", width=200,
                                                                                  height=30,
                                                                                  border_width=2, corner_radius=10)
-        self.main_page_admin_count_borrowed_books_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_count_borrowed_books_entry.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_status_banned_label = customtkinter.CTkLabel(self.main_page_frame_admin, text="Banned: ",
-                                                                          width=30, height=25,
+                                                                          width=120, height=25,
                                                                           corner_radius=7)
-        self.main_page_admin_status_banned_label.grid(row=8, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_status_banned_label.grid(row=9, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_status_banned_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                           placeholder_text="False", width=200,
                                                                           height=30,
                                                                           border_width=2, corner_radius=10)
-        self.main_page_admin_status_banned_entry.grid(row=8, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_status_banned_entry.grid(row=9, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_status_verified_label = customtkinter.CTkLabel(self.main_page_frame_admin,
                                                                             text="Verified: ",
-                                                                            width=30, height=25,
+                                                                            width=120, height=25,
                                                                             corner_radius=7)
-        self.main_page_admin_status_verified_label.grid(row=9, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_status_verified_label.grid(row=10, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_status_verified_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                             placeholder_text="True",
                                                                             width=200,
                                                                             height=30,
                                                                             border_width=2, corner_radius=10)
-        self.main_page_admin_status_verified_entry.grid(row=9, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_status_verified_entry.grid(row=10, column=1, padx=10, columnspan=2, pady=20)
 
         self.main_page_admin_created_at_label = customtkinter.CTkLabel(self.main_page_frame_admin,
                                                                        text="Created at: ",
-                                                                       width=30, height=25,
+                                                                       width=120, height=25,
                                                                        corner_radius=7)
-        self.main_page_admin_created_at_label.grid(row=10, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_created_at_label.grid(row=11, column=0, padx=10, pady=20, sticky='e')
 
         self.main_page_admin_created_at_entry = customtkinter.CTkEntry(self.main_page_frame_admin,
                                                                        placeholder_text="1674412442.629799",
                                                                        width=200,
                                                                        height=30,
                                                                        border_width=2, corner_radius=10)
-        self.main_page_admin_created_at_entry.grid(row=10, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_created_at_entry.grid(row=11, column=1, padx=10, columnspan=2, pady=20)
 
         self.admin_add_book_button_add = customtkinter.CTkButton(self.main_page_frame_admin,
                                                                  text="Borrowed Books details", width=70,
                                                                  fg_color="#36719F",
                                                                  hover_color="#3B8ED0", text_color="#FFF",
                                                                  command=self.admin_button_add_book)
-        self.admin_add_book_button_add.grid(row=7, column=1, padx=30, pady=0, sticky='e')
+        self.admin_add_book_button_add.grid(row=8, column=1, padx=30, pady=0, sticky='e')
 
         # create home frame
         self.home_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
@@ -1907,7 +1907,7 @@ class App(customtkinter.CTk):
             self.navigation_frame.grid_forget()
             self.navigation_frame_logged.grid_forget()
             self.navigation_frame_logged_admin.grid(row=0, column=0, sticky="nsew")
-            self.main_page_frame_admin.grid(row=0, column=1, padx=(35, 0), pady=(20, 0), sticky="nsew")
+            self.main_page_frame_admin.grid(row=0, column=1, padx=(0, 0), pady=(20, 0), sticky="nsew")
         else:
             self.main_page_frame_admin.grid_forget()
 
@@ -2055,6 +2055,7 @@ class App(customtkinter.CTk):
                 current_user = Librarian(user)
                 self.select_frame_by_name("main_admin")
                 self.navigation_frame_admin_main_page_event()
+                self.configure_all_users_admin()
                 self.navigation_frame_logged_admin_label.configure(text=" Admin")
             else:
                 current_user = User(user)
@@ -2561,30 +2562,27 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_banned_entry.configure(state="normal")
             self.main_page_admin_status_verified_entry.configure(state="normal")
             self.main_page_admin_created_at_entry.configure(state="normal")
-         
-         
-            self.main_page_admin_id_entry.grid()
-            self.main_page_admin_first_name_entry.grid()
-            self.main_page_admin_surname_entry.grid()
-            self.main_page_admin_login_name_entry.grid()
-            self.main_page_admin_count_borrowed_books_entry.grid()
-            self.main_page_admin_status_banned_entry.grid()
-            self.main_page_admin_status_verified_entry.grid()
-            self.main_page_admin_created_at_entry.grid()
-            self.admin_add_book_button_add.grid()
+
+            self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
+            self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_login_name_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_count_borrowed_books_entry.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_status_banned_entry.grid(row=9, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_status_verified_entry.grid(row=10, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_created_at_entry.grid(row=11, column=1, padx=10, columnspan=2, pady=20)
+            self.admin_add_book_button_add.grid(row=8, column=1, padx=30, pady=0, sticky='e')
             
-            self.main_page_admin_id_label.grid()
-            self.main_page_admin_first_name_label.grid()
-            self.main_page_admin_surname_label.grid()
-            self.main_page_admin_login_name_label.grid()
-            self.main_page_admin_count_borrowed_books_label.grid()
-            self.main_page_admin_status_banned_label.grid()
-            self.main_page_admin_status_verified_label.grid()
-            self.main_page_admin_created_at_label.grid()
-            
-            
-            
-            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_login_name_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_count_borrowed_books_label.grid(row=7, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_status_banned_label.grid(row=9, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_status_verified_label.grid(row=10, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_created_at_label.grid(row=11, column=0, padx=10, pady=20, sticky='e')
+
+            self.main_page_admin_id_label.configure(text ="ID:")
             self.main_page_admin_first_name_label.configure(text ="First name:")
             self.main_page_admin_surname_label.configure(text ="Surname:")
             self.main_page_admin_login_name_label.configure(text ="Username:")
@@ -2634,27 +2632,28 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_banned_entry.configure(state="normal")
             self.main_page_admin_status_verified_entry.configure(state="normal")
             self.main_page_admin_created_at_entry.configure(state="normal")
-            
-            self.main_page_admin_id_entry.grid()
-            self.main_page_admin_first_name_entry.grid()
-            self.main_page_admin_surname_entry.grid()
-            self.main_page_admin_login_name_entry.grid()
+
+            self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
+            self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_login_name_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
             self.main_page_admin_count_borrowed_books_entry.grid_forget()
             self.main_page_admin_status_banned_entry.grid_forget()
             self.main_page_admin_status_verified_entry.grid_forget()
             self.main_page_admin_created_at_entry.grid_forget()
             self.admin_add_book_button_add.grid_forget()
-            
-            self.main_page_admin_id_label.grid()
-            self.main_page_admin_first_name_label.grid()
-            self.main_page_admin_surname_label.grid()
-            self.main_page_admin_login_name_label.grid()
+
+            self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_login_name_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
             self.main_page_admin_count_borrowed_books_label.grid_forget()
             self.main_page_admin_status_banned_label.grid_forget()
             self.main_page_admin_status_verified_label.grid_forget()
             self.main_page_admin_created_at_label.grid_forget()
+
             
-            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_id_label.configure(text ="ID:")
             self.main_page_admin_first_name_label.configure(text ="Title:")
             self.main_page_admin_surname_label.configure(text ="Author:")
             self.main_page_admin_login_name_label.configure(text ="Description:")
@@ -2700,27 +2699,28 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_banned_entry.configure(state="normal")
             self.main_page_admin_status_verified_entry.configure(state="normal")
             self.main_page_admin_created_at_entry.configure(state="normal")
-            
-            self.main_page_admin_id_entry.grid()
-            self.main_page_admin_first_name_entry.grid()
-            self.main_page_admin_surname_entry.grid()
-            self.main_page_admin_login_name_entry.grid()
-            self.main_page_admin_count_borrowed_books_entry.grid()
-            self.main_page_admin_status_banned_entry.grid()
+
+            self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
+            self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_login_name_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_count_borrowed_books_entry.grid(row=7, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_status_banned_entry.grid(row=9, column=1, padx=10, columnspan=2, pady=20)
             self.main_page_admin_status_verified_entry.grid_forget()
             self.main_page_admin_created_at_entry.grid_forget()
             self.admin_add_book_button_add.grid_forget()
-            
-            self.main_page_admin_id_label.grid()
-            self.main_page_admin_first_name_label.grid()
-            self.main_page_admin_surname_label.grid()
-            self.main_page_admin_login_name_label.grid()
-            self.main_page_admin_count_borrowed_books_label.grid()
-            self.main_page_admin_status_banned_label.grid()
+
+            self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_login_name_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_count_borrowed_books_label.grid(row=7, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_status_banned_label.grid(row=9, column=0, padx=10, pady=20, sticky='e')
             self.main_page_admin_status_verified_label.grid_forget()
             self.main_page_admin_created_at_label.grid_forget()
+
             
-            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_id_label.configure(text ="ID:")
             self.main_page_admin_first_name_label.configure(text ="book_id:")
             self.main_page_admin_surname_label.configure(text ="user_id:")
             self.main_page_admin_login_name_label.configure(text ="Date borrowed:")
@@ -2768,25 +2768,26 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_banned_entry.configure(state="normal")
             self.main_page_admin_status_verified_entry.configure(state="normal")
             self.main_page_admin_created_at_entry.configure(state="normal")
-            
-            self.main_page_admin_id_entry.grid()
-            self.main_page_admin_first_name_entry.grid()
-            self.main_page_admin_surname_entry.grid()
+
+            self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
+            self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
             self.main_page_admin_login_name_entry.grid_forget()
             self.main_page_admin_count_borrowed_books_entry.grid_forget()
             self.main_page_admin_status_banned_entry.grid_forget()
             self.main_page_admin_status_verified_entry.grid_forget()
             self.main_page_admin_created_at_entry.grid_forget()
             self.admin_add_book_button_add.grid_forget()
-            
-            self.main_page_admin_id_label.grid()
-            self.main_page_admin_first_name_label.grid()
-            self.main_page_admin_surname_label.grid()
+
+            self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
             self.main_page_admin_login_name_label.grid_forget()
             self.main_page_admin_count_borrowed_books_label.grid_forget()
             self.main_page_admin_status_banned_label.grid_forget()
             self.main_page_admin_status_verified_label.grid_forget()
             self.main_page_admin_created_at_label.grid_forget()
+
             
             self.main_page_admin_id_label.configure(text ="_id:")
             self.main_page_admin_first_name_label.configure(text ="First name:")
@@ -2836,27 +2837,28 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_banned_entry.configure(state="normal")
             self.main_page_admin_status_verified_entry.configure(state="normal")
             self.main_page_admin_created_at_entry.configure(state="normal")
-            
-            self.main_page_admin_id_entry.grid()
-            self.main_page_admin_first_name_entry.grid()
-            self.main_page_admin_surname_entry.grid()
-            self.main_page_admin_login_name_entry.grid()
+
+            self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
+            self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_login_name_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
             self.main_page_admin_count_borrowed_books_entry.grid_forget()
-            self.main_page_admin_status_banned_entry.grid()
-            self.main_page_admin_status_verified_entry.grid()
-            self.main_page_admin_created_at_entry.grid()
+            self.main_page_admin_status_banned_entry.grid(row=9, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_status_verified_entry.grid(row=10, column=1, padx=10, columnspan=2, pady=20)
+            self.main_page_admin_created_at_entry.grid(row=11, column=1, padx=10, columnspan=2, pady=20)
             self.admin_add_book_button_add.grid_forget()
-            
-            self.main_page_admin_id_label.grid()
-            self.main_page_admin_first_name_label.grid()
-            self.main_page_admin_surname_label.grid()
-            self.main_page_admin_login_name_label.grid()
+
+            self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_login_name_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
             self.main_page_admin_count_borrowed_books_label.grid_forget()
-            self.main_page_admin_status_banned_label.grid()
-            self.main_page_admin_status_verified_label.grid()
-            self.main_page_admin_created_at_label.grid()
+            self.main_page_admin_status_banned_label.grid(row=9, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_status_verified_label.grid(row=10, column=0, padx=10, pady=20, sticky='e')
+            self.main_page_admin_created_at_label.grid(row=11, column=0, padx=10, pady=20, sticky='e')
+
             
-            self.main_page_admin_id_label.configure(text ="_id:")
+            self.main_page_admin_id_label.configure(text ="ID:")
             self.main_page_admin_first_name_label.configure(text ="First name:")
             self.main_page_admin_surname_label.configure(text ="Surname:")
             self.main_page_admin_login_name_label.configure(text ="Username:")
@@ -2971,12 +2973,111 @@ class App(customtkinter.CTk):
         self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
         self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
 
+    def show_previous_book_my_page(self):
+        global CURRENT_USER_BORROWED_BOOKS
+        global CURRENT_USER_SELECTED_MY_BOOK
+
+        if len(CURRENT_USER_BORROWED_BOOKS) == 0:
+            return
+        current_user = User(current)
+        CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user(mongo_client, current._id)
+
+        CURRENT_USER_SELECTED_MY_BOOK -= 1
+        if CURRENT_USER_SELECTED_MY_BOOK < 0:
+            CURRENT_USER_SELECTED_MY_BOOK = len(CURRENT_USER_BORROWED_BOOKS) - 1
+
+        time_ts = 0
+
+        self.textbox_author_my_books_page.configure(state="normal")
+        self.textbox_book_description_my_books_page.configure(state="normal")
+        self.textbox_title_my_books_page.configure(state="normal")
+        self.textbox_book_time_left_my_books_page.configure(state="normal")
+
+        self.textbox_author_my_books_page.delete(0.0, "end")
+        self.textbox_book_description_my_books_page.delete(0.0, "end")
+        self.textbox_title_my_books_page.delete(0.0, "end")
+        self.textbox_book_time_left_my_books_page.delete(0.0, "end")
+
+        book = current_user.user_find_book(mongo_client, CURRENT_USER_BORROWED_BOOKS[CURRENT_USER_SELECTED_MY_BOOK])
+        author = find_author(mongo_client, book['author'])
+        name = book["_id"]
+
+        for document in ALL_BOOK_STATUS:
+            if document['book_id'] == book["_id"] and document['user_id'] == current._id and document[
+                'returned'] == False:
+                time_left = document["date_borrowed"]
+                time_ts = datetime.timestamp(time_left)
+        dt = datetime.utcnow()
+        ts = datetime.timestamp(dt)
+        diff_secs = float(ts) - float(time_ts)
+        df2 = diff_secs / 60
+        diff_hours = (8640 - df2) / 60
+
+        path_to_book_image = os.path.join(PATH_TO_LOCAL_IMAGES_BOOKS, f"{name}.jpg")
+        if os.path.isfile(path_to_book_image):
+            path_to_image = path_to_book_image
+        else:
+            path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
+                                         "placeholder_no_book.png")
+        self.book_image_my_books_page.configure(
+            image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
+        self.textbox_author_my_books_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
+        self.textbox_book_description_my_books_page.insert("0.0", f"{book['description']}")
+        self.textbox_title_my_books_page.insert("0.0", f"{book['title']}")
+        self.textbox_book_time_left_my_books_page.insert("0.0", f"{diff_hours}")
+
+
     def show_next_book_main_page(self):
         global CURRENT_SELECTED_BOOK_MAIN_PAGE
         global ALL_LIBRARY_BOOKS
         CURRENT_SELECTED_BOOK_MAIN_PAGE += 1
         if CURRENT_SELECTED_BOOK_MAIN_PAGE >= len(ALL_LIBRARY_BOOKS):
             CURRENT_SELECTED_BOOK_MAIN_PAGE = 0
+
+        self.textbox_title_main_page.configure(state="normal")
+        self.textbox_author_main_page.configure(state="normal")
+        self.textbox_book_description_main_page.configure(state="normal")
+        self.textbox_book_copies_available_main_page.configure(state="normal")
+        self.textbox_book_year_main_page.configure(state="normal")
+        self.textbox_book_genre_main_page.configure(state="normal")
+
+        self.textbox_title_main_page.delete(0.0, "end")
+        self.textbox_author_main_page.delete(0.0, "end")
+        self.textbox_book_description_main_page.delete(0.0, "end")
+        self.textbox_book_copies_available_main_page.delete(0.0, "end")
+        self.textbox_book_year_main_page.delete(0.0, "end")
+        self.textbox_book_genre_main_page.delete(0.0, "end")
+
+        path_to_image = self.get_path_to_local_image(ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE])
+        if path_to_image == None:
+            path_to_image = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Icons",
+                                         "placeholder_no_book.png", )
+        self.book_image_main_page.configure(image=customtkinter.CTkImage(Image.open(path_to_image), size=(200, 300)))
+        self.textbox_title_main_page.insert("0.0", f"{ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['title']}")
+        self.textbox_title_main_page.configure(state="disabled")
+        author = find_author(mongo_client=mongo_client,
+                             _id=ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['author'])
+        self.textbox_author_main_page.insert("0.0", f"{author[1]['first_name']} {author[1]['surname']}")
+        self.textbox_author_main_page.configure(state="disabled")
+        self.textbox_book_description_main_page.insert("0.0",
+                                                       f"{ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['description']}")
+        self.textbox_book_description_main_page.configure(state="disabled")
+        self.textbox_book_copies_available_main_page.insert("0.0",
+                                                            f"{ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['copies_available']}")
+        self.textbox_book_copies_available_main_page.configure(state="disabled")
+        self.textbox_book_year_main_page.insert("0.0",
+                                                f"{ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['year']}")
+        self.textbox_book_year_main_page.configure(state="disabled")
+        self.textbox_book_genre_main_page.insert("0.0",
+                                                 f"{ALL_LIBRARY_BOOKS[CURRENT_SELECTED_BOOK_MAIN_PAGE]['genre']}")
+        self.textbox_book_genre_main_page.configure(state="disabled")
+
+    def show_previous_book_main_page(self):
+        global CURRENT_SELECTED_BOOK_MAIN_PAGE
+        global ALL_LIBRARY_BOOKS
+        CURRENT_SELECTED_BOOK_MAIN_PAGE -= 1
+        if CURRENT_SELECTED_BOOK_MAIN_PAGE < 0:
+            CURRENT_SELECTED_BOOK_MAIN_PAGE = len(ALL_LIBRARY_BOOKS) - 1
 
         self.textbox_title_main_page.configure(state="normal")
         self.textbox_author_main_page.configure(state="normal")
