@@ -2046,7 +2046,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         # Admin: login_lib lib_12345
         # User: user password
-        login_result = login(mongo_client, "user", "password")
+        login_result = login(mongo_client, "login_lib", "lib_12345")
         if login_result[0]:
             user = login_result[1]
             global current
@@ -2169,8 +2169,106 @@ class App(customtkinter.CTk):
         self.admin_add_book_label_error.configure(text="")
 
 
-    def admin_details_about_specific_books():
-        pass
+
+    def admin_details_about_specific_books(self,selected_book_details=None):
+        if selected_book_details == None:
+            selected_book_detail = 0
+            current_user = Librarian(current)
+            if ALL_USERS[SELECTED_ADMIN_INDEX]!= None:
+                current_selected_details = get_all_borrowed_books_from_user(mongo_client,ALL_USERS[SELECTED_ADMIN_INDEX]["_id"])
+                if len(current_selected_details) == 0:
+                    return
+                books = {}
+                book_keys = []
+                for book in current_selected_details:
+                    book_keys.append(book)
+                    books[book] = {"date_borrowed":current_selected_details[book],"book_info":current_user.find_book(mongo_client,book)[1]}
+                    current_selected_details[book]
+        else:
+            selected_book_details +=1
+            if selected_book_details >= len(books):
+                selected_book_details = 0
+        
+        
+        self.main_page_admin_move_cattegory_forward_button = customtkinter.CTkButton(self.main_page_frame_admin,text="Next borrowed book",
+                                                                                     width=70,fg_color="#36719F",
+                                                                                     hover_color="#3B8ED0",
+                                                                                     text_color="#FFF",
+                                                                                     command=lambda: self.admin_details_about_specific_books(selected_book_details))
+        self.main_page_admin_move_cattegory_back_button = customtkinter.CTkButton(self.main_page_frame_admin,text="Return", width=70,fg_color="#36719F",hover_color="#3B8ED0",text_color="#FFF",command=self.reuturn_to_category)
+        self.main_page_admin_move_cattegory_back_button.grid(row=0, column=0, padx=0, pady=20, sticky='e')
+        
+        
+        self.main_page_admin_label.configure(text=ALL_USERS[SELECTED_ADMIN_INDEX]["login_name"])
+        self.main_page_admin_id_entry.configure(state="normal")
+        self.main_page_admin_first_name_entry.configure(state="normal")
+        self.main_page_admin_surname_entry.configure(state="normal")
+        self.main_page_admin_login_name_entry.configure(state="normal")
+        self.main_page_admin_count_borrowed_books_entry.configure(state="normal")
+        self.main_page_admin_status_banned_entry.configure(state="normal")
+        self.main_page_admin_status_verified_entry.configure(state="normal")
+        self.main_page_admin_created_at_entry.configure(state="normal")
+
+        self.main_page_admin_id_entry.grid(row=3, column=1, padx=10, columnspan=2)
+        self.main_page_admin_first_name_entry.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_surname_entry.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_login_name_entry.grid(row=6, column=1, padx=10, columnspan=2, pady=20)
+        self.main_page_admin_count_borrowed_books_entry.grid_forget()
+        self.main_page_admin_status_banned_entry.grid_forget()
+        self.main_page_admin_status_verified_entry.grid_forget()
+        self.main_page_admin_created_at_entry.grid_forget()
+        self.admin_add_book_button_add.grid_forget()
+
+        self.main_page_admin_id_label.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_first_name_label.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_surname_label.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_login_name_label.grid(row=6, column=0, padx=10, pady=20, sticky='e')
+        self.main_page_admin_count_borrowed_books_label.grid_forget()
+        self.main_page_admin_status_banned_label.grid_forget()
+        self.main_page_admin_status_verified_label.grid_forget()
+        self.main_page_admin_created_at_label.grid_forget()
+
+        
+        self.main_page_admin_id_label.configure(text ="Book ID:")
+        self.main_page_admin_first_name_label.configure(text ="Title:")
+        self.main_page_admin_surname_label.configure(text ="Author:")
+        self.main_page_admin_login_name_label.configure(text ="Time remaining :")
+        #self.main_page_admin_count_borrowed_books_label.configure(text ="Borrowed books:")
+        # self.main_page_admin_status_banned_label.configure(text ="PID:")
+        # self.main_page_admin_status_verified_label.configure(text ="Adress:")
+        # self.main_page_admin_created_at_label.configure(text ="Created at:")
+        
+        self.main_page_admin_id_entry.configure(placeholder_text=f"{book_keys[selected_book_detail]}")
+        print(books[book_keys[selected_book_detail]]['book_info'][0]['title'])
+        self.main_page_admin_first_name_entry.configure(placeholder_text=f"{books[book_keys[selected_book_detail]]['book_info'][0]['title']}")
+        self.main_page_admin_surname_entry.configure(placeholder_text=f"{books[book_keys[selected_book_detail]]['book_info'][0]['author'][0]['surname']}")
+        print(books[book_keys[selected_book_detail]]['book_info'][0]['author'][0]['surname'])
+        date_borrowed = books[book_keys[selected_book_detail]]['date_borrowed']
+        time_left = date_borrowed
+        time_ts = datetime.timestamp(time_left)
+        dt = datetime.utcnow()
+        ts = datetime.timestamp(dt)
+        diff_secs = float(ts) - float(time_ts)
+        df2 = diff_secs / 60
+        diff_hours = (8640 - df2) / 60
+        self.main_page_admin_login_name_entry.configure(placeholder_text=f"{diff_hours}")
+        #self.main_page_admin_count_borrowed_books_entry.configure(placeholder_text=f"{currently_selected_book['description']}")
+        # self.main_page_admin_status_banned_entry.configure(placeholder_text=f"{currently_selected_book['description']}")
+        # self.main_page_admin_status_verified_entry.configure(placeholder_text=f"{currently_selected_book['address']}")
+        # self.main_page_admin_created_at_entry.configure(placeholder_text=f"{currently_selected_book['created_at']}")
+        
+        
+        self.main_page_admin_id_entry.configure(state="readonly")
+        self.main_page_admin_first_name_entry.configure(state="readonly")
+        self.main_page_admin_surname_entry.configure(state="readonly")
+        self.main_page_admin_login_name_entry.configure(state="readonly")
+        self.main_page_admin_count_borrowed_books_entry.configure(state="readonly")
+        self.main_page_admin_status_banned_entry.configure(state="readonly")
+        self.main_page_admin_status_verified_entry.configure(state="readonly")
+        self.main_page_admin_created_at_entry.configure(state="readonly")   
+            
+        
+             
 
     def admin_button_add_book(self):
         if current.role == Roles.Librarian.name:
@@ -2511,6 +2609,9 @@ class App(customtkinter.CTk):
         else:
             CURRENT_CATEGORY_ADMIN = Categories(value+1)
         print(CURRENT_CATEGORY_ADMIN.name)
+        self.details_for_main_page_admin()
+
+    def reuturn_to_category(self):
         self.details_for_main_page_admin()
 
     def move_category_left(self):
@@ -2895,6 +2996,23 @@ class App(customtkinter.CTk):
     
     def details_for_main_page_admin(self):
         curret_category= CURRENT_CATEGORY_ADMIN
+        
+        self.main_page_admin_move_cattegory_forward_button = customtkinter.CTkButton(self.main_page_frame_admin,
+                                                                                     text="-->", width=70,
+                                                                                     fg_color="#36719F",
+                                                                                     hover_color="#3B8ED0",
+                                                                                     text_color="#FFF",
+                                                                                     command=self.move_category_right)
+        self.main_page_admin_move_cattegory_forward_button.grid(row=0, column=2, padx=0, pady=20, sticky='e')
+
+        # TODO ADD IMAGE sipka
+        self.main_page_admin_move_cattegory_back_button = customtkinter.CTkButton(self.main_page_frame_admin,
+                                                                                  text="<--", width=70,
+                                                                                  fg_color="#36719F",
+                                                                                  hover_color="#3B8ED0",
+                                                                                  text_color="#FFF",
+                                                                                  command=self.move_category_left)
+        self.main_page_admin_move_cattegory_back_button.grid(row=0, column=0, padx=0, pady=20, sticky='e')
         
         if curret_category == Categories.All_users:
             self.configure_all_users_admin()

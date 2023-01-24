@@ -154,7 +154,7 @@ class User:
                                     get_book_status_column(mongo_client).update_one({"$and":
                                                                                     [{"user_id": ObjectId(user_id)},
                                                                  {"book_id": ObjectId(_id)}], "returned": False},
-                                                                 {"$set": {"returned": True, "date_returned": datetime.utcnow()}})
+                                                                 {"$set": {"returned": True, "date_returned": time.time()}})
                                     get_user_column(mongo_client).update_one({"_id": ObjectId(user_id)},
                                                                              {'$inc': {"count_borrowed_books": -1}})
                                     get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
@@ -186,7 +186,7 @@ class User:
                                                                                      "returned": False},
                                                                                     {"$set": {"returned": True,
                                                                                               "date_returned":
-                                                                                                  datetime.utcnow()}})
+                                                                                                  time.time()}})
                                     get_user_column(mongo_client).update_one({"_id": ObjectId(self.user.id)},
                                                                              {'$inc': {"count_borrowed_books": -1}})
                                     get_book_column(mongo_client).update_one({"_id": ObjectId(_id)},
@@ -718,12 +718,12 @@ class Librarian(User):
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
     if ObjectId.is_valid(_id):
-        borrowed_books = []
+        borrowed_books = {}
         db = mongo_client.library
         try:
             cursor = db.book_status.find({"$and": [{"user_id": ObjectId(_id)}, {"returned": False}]})
             for document in cursor:
-                borrowed_books.append(str(document['book_id']))
+                borrowed_books[str(document['book_id'])]=(document["date_borrowed"])
             return borrowed_books
         except KeyError:
             return []
