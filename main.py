@@ -147,6 +147,23 @@ class App(customtkinter.CTk):
                                                      size=(20, 20))
         
         
+        self.image_book_shelf= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-book-shelf-30.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "icons8-book-shelf-30.png")),
+                                                     size=(20, 20))
+        
+        # self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
+        #                                              dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
+        #                                              size=(20, 20))
+        
+        
+        # self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
+        #                                              dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
+        #                                              size=(20, 20))
+        
+        # self.image_edit_book= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "147590-200.png")),
+        #                                              dark_image=Image.open(os.path.join(image_path, "147590-200.png")),
+        #                                              size=(20, 20))
+        
         
         
         
@@ -204,7 +221,7 @@ class App(customtkinter.CTk):
                                                                            fg_color="transparent",
                                                                            text_color=("gray10", "gray90"),
                                                                            hover_color=("gray70", "gray30"),
-                                                                           image=self.register_image, anchor="w",
+                                                                           image=self.image_book_shelf, anchor="w",
                                                                            command=self.navigation_frame_logged_find_book)
         self.navigation_frame_logged_main_button.grid(row=1, column=0, sticky="ew")
 
@@ -2193,7 +2210,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         # Admin: login_lib lib_12345
         # User: user password
-        login_result = login(mongo_client, "login_lib", "lib_12345")
+        login_result = login(mongo_client, "user", "password")
         if login_result[0]:
             user = login_result[1]
             global current
@@ -3198,7 +3215,7 @@ class App(customtkinter.CTk):
         if len(CURRENT_USER_BORROWED_BOOKS) == 0:
             return
         current_user = User(current)
-        CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user(mongo_client, current._id)
+        CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user_id(mongo_client, current._id)
 
         CURRENT_USER_SELECTED_MY_BOOK += 1
         if CURRENT_USER_SELECTED_MY_BOOK >= len(CURRENT_USER_BORROWED_BOOKS):
@@ -3259,7 +3276,7 @@ class App(customtkinter.CTk):
         if len(CURRENT_USER_BORROWED_BOOKS) == 0:
             return
         current_user = User(current)
-        CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user(mongo_client, current._id)
+        CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user_id(mongo_client, current._id)
 
         CURRENT_USER_SELECTED_MY_BOOK -= 1
         if CURRENT_USER_SELECTED_MY_BOOK < 0:
@@ -3639,7 +3656,7 @@ class App(customtkinter.CTk):
         ALL_BOOK_STATUS = find_all_book_status(mongo_client)
         current_user = User(current)
         if current_user.user.approved_by_librarian == True:
-            CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user(mongo_client, current._id)
+            CURRENT_USER_BORROWED_BOOKS = get_all_borrowed_books_from_user_id(mongo_client, current._id)
             CURRENT_USER_SELECTED_MY_BOOK += move_index
             if CURRENT_USER_SELECTED_MY_BOOK >= len(CURRENT_USER_BORROWED_BOOKS):
                 CURRENT_USER_SELECTED_MY_BOOK = 0

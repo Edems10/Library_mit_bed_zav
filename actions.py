@@ -715,6 +715,22 @@ class Librarian(User):
     
 
 
+def get_all_borrowed_books_from_user_id(mongo_client: pymongo.MongoClient, _id):
+    if ObjectId.is_valid(_id):
+        borrowed_books = []
+        db = mongo_client.library
+        try:
+            cursor = db.book_status.find({"$and": [{"user_id": ObjectId(_id)}, {"returned": False}]})
+            for document in cursor:
+                borrowed_books.append(str(document['book_id']))
+            return borrowed_books
+        except KeyError:
+            return []
+    else:
+        return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
+                                     " of 12 bytes or a string of 24 hex characters"
+
+
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
     if ObjectId.is_valid(_id):
