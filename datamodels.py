@@ -6,6 +6,7 @@ import bcrypt
 from bson.objectid import ObjectId
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import validate
+import bson
 
 
 class Roles(Enum):
@@ -87,9 +88,6 @@ class Author:
     _id: ObjectId
     first_name: str = field(metadata={"validate": validate.Length(min=1, max=256)})
     surname: str = field(metadata={"validate": validate.Length(min=1, max=256)})
-    #variables if we fancy but we ain't fancy
-    # about: str
-    # image: str
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -100,8 +98,6 @@ class Book:
     author: Author
     length: int
     year: int
-    #FIXME toto muze byt i sama classa o sobe 
-    #zalezi potom jak budeme ukladat images
     image: bytes
     copies_available: int
     genre: Optional[str]

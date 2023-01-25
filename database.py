@@ -69,8 +69,9 @@ if login_result[0]:
         #print(current_user.find_all_books(mongo_client))
         #print(current_user.get_all_users(mongo_client))
 
-        #user_saved = current_user.find_user(mongo_client, "6361ac3ed731370b853b875a")
-        #id = user_saved['_id']
+
+        # #user_saved = current_user.find_user(mongo_client, "6361ac3ed731370b853b875a")
+        # #id = user_saved['_id']
 
         #print(current_user.ban_user(mongo_client, "abab3d0d7172399f94acbd11")[1])
         #print(current_user.unban_user(mongo_client, "862b3856cd1c7bd15797b58a")[1])

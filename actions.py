@@ -2,6 +2,7 @@ import codecs
 from dataclasses import dataclass
 from typing import Tuple, Union
 from datetime import datetime
+from tkinter.filedialog import askopenfilename
 import pandas as pd
 from bson.objectid import ObjectId
 from datamodels import Autocomplete_options_book, Autocomplete_options_user, Book, Person, Author, Person_changes, \
@@ -14,7 +15,6 @@ import os
 from tkinter.filedialog import askopenfilename
 import gridfs
 import bson
-
 
 # DATABASE NAME
 DATABASE_NAME = 'library'
@@ -542,6 +542,7 @@ class Librarian(User):
                     return True, "Book: " + str(title) + " has been added to library"
                 else:
                     return False, "There is no author the ID: " + str(author_id)
+
             else:
                 return False, "Book with ID: " + str(generated_id) + " already exists in library"
         else:
@@ -712,7 +713,11 @@ class Librarian(User):
         else:
             return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
-    
+
+
+    def find_all_books(self, mongo_client: pymongo.MongoClient):
+        books = get_book_column(mongo_client)
+        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1}))
 
 
 def get_all_borrowed_books_from_user_id(mongo_client: pymongo.MongoClient, _id):
