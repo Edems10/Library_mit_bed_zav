@@ -23,6 +23,7 @@ IMAGES_DIR = os.path.join(os.path.dirname(__file__), 'Book_img')
 CURRENT_SELECTED_BOOK_MAIN_PAGE = 0
 CURRENT_USER_SELECTED_MY_BOOK = 0
 SELECTED_ADMIN_INDEX = 0
+SELECTED_HISTORY_BOOK = 0
 ALL_LIBRARY_BOOKS = None
 CURRENT_USER = None
 CURRENT_USER_BORROWED_BOOKS = None
@@ -254,6 +255,18 @@ class App(customtkinter.CTk):
 
         self.navigation_frame_logged_edit_user.grid(row=3, column=0, sticky="ew")
 
+        self.navigation_frame_logged_edit_history = customtkinter.CTkButton(self.navigation_frame_logged,
+                                                                         corner_radius=0, height=40,
+                                                                         border_spacing=10,
+                                                                         text="Borrow history",
+                                                                         fg_color="transparent",
+                                                                         text_color=("gray10", "gray90"),
+                                                                         hover_color=("gray70", "gray30"),
+                                                                         image=self.image_book, anchor="w",
+                                                                         command=self.user_history_of_all_books)
+
+        self.navigation_frame_logged_edit_history.grid(row=4, column=0, sticky="ew")
+
         self.navigation_frame_logged_admin_logout_button = customtkinter.CTkButton(self.navigation_frame_logged,
                                                                                    corner_radius=0, height=40,
                                                                                    border_spacing=10,
@@ -264,7 +277,7 @@ class App(customtkinter.CTk):
                                                                                    image=self.image_logout,
                                                                                    anchor="w",
                                                                                    command=self.navigation_frame_logged_admin_logout_button_event)
-        self.navigation_frame_logged_admin_logout_button.grid(row=4, column=0, sticky="ew")
+        self.navigation_frame_logged_admin_logout_button.grid(row=5, column=0, sticky="ew")
 
         # navigation frame for admin
         self.navigation_frame_logged_admin = customtkinter.CTkFrame(self, corner_radius=0)
@@ -1986,6 +1999,70 @@ class App(customtkinter.CTk):
                                                            image=self.image_icon_image, compound="right")
         self.home_frame_button_2.grid(row=2, column=0, padx=20, pady=10)
 
+        # user history of all borrowed books
+        self.user_history_books_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
+        self.user_history_books_frame.grid(row=1, column=2, padx=(20, 20), pady=(20, 0), sticky="nsew")
+        self.user_history_books_label_his = customtkinter.CTkLabel(self.user_history_books_frame,
+                                                                   text="History of borrowed books", width=60, height=20,
+                                                                   corner_radius=7)
+        self.user_history_books_label_his.grid(row=0, column=1, padx=20, pady=10, sticky='w')
+
+        self.user_history_books_button_next = customtkinter.CTkButton(self.user_history_books_frame,
+                                                                 text="Next", width=70, fg_color="#36719F",
+                                                                 hover_color="#3B8ED0", text_color="#FFF",
+                                                                 command=self.user_clicked_next_history)
+        self.user_history_books_button_next.grid(row=1, column=1, padx=0, pady=20, sticky='e')
+
+        self.user_history_books_button_previous = customtkinter.CTkButton(self.user_history_books_frame,
+                                                                      text="Previous", width=70, fg_color="#36719F",
+                                                                      hover_color="#3B8ED0", text_color="#FFF",
+                                                                      command=self.user_clicked_previous_history)
+        self.user_history_books_button_previous.grid(row=1, column=1, padx=0, pady=20, sticky='w')
+
+        self.user_history_books_name = customtkinter.CTkLabel(self.user_history_books_frame,
+                                                                 text="Book name: ", width=30, height=25,
+                                                                 corner_radius=7)
+        self.user_history_books_name.grid(row=2, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_history_books_name_entry_name = customtkinter.CTkEntry(self.user_history_books_frame,
+                                                                 placeholder_text="Book name",
+                                                                 width=200, height=30, border_width=2,
+                                                                 corner_radius=10)
+        self.user_history_books_name_entry_name.grid(row=2, column=1, padx=10, columnspan=2)
+
+        self.user_history_books_date_borr = customtkinter.CTkLabel(self.user_history_books_frame,
+                                                                        text="Date borrowed: ", width=30, height=25,
+                                                                        corner_radius=7)
+        self.user_history_books_date_borr.grid(row=3, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_history_books_name_entry_date_borr = customtkinter.CTkEntry(self.user_history_books_frame,
+                                                                        placeholder_text="Enter Date borrowed",
+                                                                        width=200, height=30, border_width=2,
+                                                                        corner_radius=10)
+        self.user_history_books_name_entry_date_borr.grid(row=3, column=1, padx=10, columnspan=2)
+
+        self.user_history_books_date_ret = customtkinter.CTkLabel(self.user_history_books_frame, text="Date returned: ",
+                                                                      width=30, height=25,
+                                                                      corner_radius=7)
+        self.user_history_books_date_ret.grid(row=4, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_history_books_name_entry_date_ret = customtkinter.CTkEntry(self.user_history_books_frame,
+                                                                      placeholder_text="Enter Date returned", width=200,
+                                                                      height=30,
+                                                                      border_width=2, corner_radius=10)
+        self.user_history_books_name_entry_date_ret.grid(row=4, column=1, padx=10, columnspan=2, pady=20)
+
+        self.user_history_books_return = customtkinter.CTkLabel(self.user_history_books_frame, text="Returned: ",
+                                                                      width=30, height=25,
+                                                                      corner_radius=7)
+        self.user_history_books_return.grid(row=5, column=0, padx=10, pady=20, sticky='e')
+
+        self.user_history_books_name_entry_return = customtkinter.CTkEntry(self.user_history_books_frame,
+                                                                      placeholder_text="Enter Returned", width=200,
+                                                                      height=30,
+                                                                      border_width=2, corner_radius=10)
+        self.user_history_books_name_entry_return.grid(row=5, column=1, padx=10, columnspan=2, pady=20)
+
         # select default frame
         self.select_frame_by_name("login")
 
@@ -2032,7 +2109,8 @@ class App(customtkinter.CTk):
             fg_color=("gray75", "gray25") if name == "edit_user" else "transparent")
         self.navigation_frame_logged_main_button.configure(
             fg_color=("gray75", "gray25") if name == "find_book_logged" else "transparent")
-
+        self.navigation_frame_logged_edit_history.configure(
+            fg_color=("gray75", "gray25") if name == "history_logged" else "transparent")
         # show selected frame
         if name == "home":
             self.home_frame.grid(row=0, column=1, sticky="nsew")
@@ -2097,6 +2175,14 @@ class App(customtkinter.CTk):
             self.user_edit_user_frame.grid(row=0, column=1, padx=(80, 0), pady=(20, 0), sticky="nsew")
         else:
             self.user_edit_user_frame.grid_forget()
+
+        if name == "history_logged":
+            self.navigation_frame.grid_forget()
+            self.navigation_frame_logged_admin.grid_forget()
+            self.main_page_frame.grid_forget()
+            self.user_history_books_frame.grid(row=0, column=1, padx=(80, 0), pady=(20, 0), sticky="nsew")
+        else:
+            self.user_history_books_frame.grid_forget()
 
         if name == "borrow_admin":
             self.navigation_frame.grid_forget()
@@ -2345,6 +2431,8 @@ class App(customtkinter.CTk):
 
 
     def admin_details_about_specific_books(self,selected_book_details=None):
+        books = {}
+        book_keys = []
         if selected_book_details == None:
             selected_book_detail = 0
             current_user = Librarian(current)
@@ -2352,8 +2440,7 @@ class App(customtkinter.CTk):
                 current_selected_details = get_all_borrowed_books_from_user(mongo_client,ALL_USERS[SELECTED_ADMIN_INDEX]["_id"])
                 if len(current_selected_details) == 0:
                     return
-                books = {}
-                book_keys = []
+
                 for book in current_selected_details:
                     book_keys.append(book)
                     books[book] = {"date_borrowed":current_selected_details[book],"book_info":current_user.find_book(mongo_client,book)[1]}
@@ -3164,9 +3251,44 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_banned_entry.configure(state="readonly")
             self.main_page_admin_status_verified_entry.configure(state="readonly")
             self.main_page_admin_created_at_entry.configure(state="readonly")
-            
-        
-        
+
+    def user_clicked_next_history(self):
+        global SELECTED_HISTORY_BOOK
+        SELECTED_HISTORY_BOOK += 1
+        self.user_history_of_all_books()
+
+    def user_clicked_previous_history(self):
+        global SELECTED_HISTORY_BOOK
+        SELECTED_HISTORY_BOOK -= 1
+        self.user_history_of_all_books()
+
+    def user_history_of_all_books(self):
+        self.select_frame_by_name("history_logged")
+        current_user = User(current)
+        global SELECTED_HISTORY_BOOK
+        global HISTORY_ALL_BOOKS_USER
+        HISTORY_ALL_BOOKS_USER = get_history_of_borrowed_books_from_user_id(mongo_client, current_user.user.id)
+        if SELECTED_HISTORY_BOOK >= len(HISTORY_ALL_BOOKS_USER):
+            SELECTED_HISTORY_BOOK = 0
+        if HISTORY_ALL_BOOKS_USER != None:
+            currently_selected_book = HISTORY_ALL_BOOKS_USER[SELECTED_HISTORY_BOOK]
+
+            self.user_history_books_name_entry_name.configure(state="normal")
+            self.user_history_books_name_entry_date_borr.configure(state="normal")
+            self.user_history_books_name_entry_date_ret.configure(state="normal")
+            self.user_history_books_name_entry_return.configure(state="normal")
+
+            name = current_user.user_find_book(mongo_client, currently_selected_book['book_id'])
+            self.user_history_books_name_entry_name.configure(placeholder_text=f"{name['title']}")
+            self.user_history_books_name_entry_date_borr.configure(placeholder_text=f"{currently_selected_book['date_borrowed']}")
+            self.user_history_books_name_entry_date_ret.configure(placeholder_text=f"{currently_selected_book['date_returned']}")
+            self.user_history_books_name_entry_return.configure(placeholder_text=f"{currently_selected_book['returned']}")
+
+
+            self.user_history_books_name_entry_name.configure(state="readonly")
+            self.user_history_books_name_entry_date_borr.configure(state="readonly")
+            self.user_history_books_name_entry_date_ret.configure(state="readonly")
+            self.user_history_books_name_entry_return.configure(state="readonly")
     
     def details_for_main_page_admin(self):
         curret_category= CURRENT_CATEGORY_ADMIN

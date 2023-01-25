@@ -731,6 +731,10 @@ def get_all_borrowed_books_from_user_id(mongo_client: pymongo.MongoClient, _id):
                                      " of 12 bytes or a string of 24 hex characters"
 
 
+def get_history_of_borrowed_books_from_user_id(mongo_client: pymongo.MongoClient, _id):
+    db = mongo_client.library
+    return list(db.book_status.find({"user_id": ObjectId(_id)}))
+
 
 def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
     if ObjectId.is_valid(_id):

@@ -32,7 +32,7 @@ mongo_client = get_mongo_client()
 
 #login_result = login(mongo_client, "sasddalogin", "password")
 #login_result = login(mongo_client,"Dom","password")
-login_result = login(mongo_client,"test_ttl","test_ttl")
+login_result = login(mongo_client,"user","password")
 
 
 # login login_lib 
@@ -52,6 +52,7 @@ if login_result[0]:
         #print(current_user.admin_create_account(mongo_client, "aa", "surname", 123456723132, "addresss", "Dom3", "password"))
         #print(current_user.find_user(mongo_client, "f2106a1013a07981ba48bfea"))
         #print(current_user.find_whole_user(mongo_client, "f2106a1013a07981ba48bfea"))
+        print(current_user.get_all_users_with_stashed_changes_all_info(mongo_client))
         print(current_user.find_book(mongo_client, "6143eb482fc2ad9c6a765440"))
         print(find_all_book_status(mongo_client))
         nn = find_all_book_status(mongo_client)
@@ -92,14 +93,16 @@ if login_result[0]:
         current_user = User(user)
         current_user.create_index(mongo_client)
         # user_current_id = current_user.user.id
-        #print(current_user.user_find_book(mongo_client, "aa7d6b0c12fc001b9e01187e"))
+        print(current_user.user_find_book(mongo_client, "6143eb482fc2ad9c6a765440"))
         #print(current_user.edit_user(mongo_client, "not_adam", "Mitrenga", 14410, "Praha ", "adam", "123456")[1])
         #print(current_user.borrow_book(mongo_client, '6143eb482fc2ad9c6a765440')[1])
         # print(get_all_borrowed_books_from_user(mongo_client, user_current_id))
         # #print(current_user.return_book(mongo_client, "6362f102af7f10a4c3ab85f4")[1])
         print(find_all_books(mongo_client))
-        print(autocomplete_book(mongo_client,"sss",Autocomplete_options_book.title)[1][1])
+        print(autocomplete_book(mongo_client,"Karel",Autocomplete_options_book.author)[1])
         # print(autocomplete_user(mongo_client,"firs",Autocomplete_options_user.first_name, 3))
+        print(get_history_of_borrowed_books_from_user_id(mongo_client, current_user.user.id))
+
 
 else:
     print(login_result[1])
