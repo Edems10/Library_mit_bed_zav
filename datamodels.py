@@ -98,7 +98,7 @@ class Book:
     author: Author
     length: int
     year: int
-    image: bson.Binary
+    image: bytes
     copies_available: int
     genre: Optional[str]
     description: Optional[str]

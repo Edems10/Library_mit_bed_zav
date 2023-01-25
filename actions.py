@@ -12,6 +12,7 @@ import bcrypt
 import re
 import time
 import os
+from tkinter.filedialog import askopenfilename
 import gridfs
 import bson
 
@@ -41,6 +42,10 @@ class User:
         # if person.verified == False:
         #    self.user = None
 
+    
+    def create_index(self, mongo_client: pymongo.MongoClient):
+        mongo_client[DATABASE_NAME][BOOK_STATUS].create_index("date_borrowed", expireAfterSeconds=518400)  
+    
     # check limit=6 and time=6 days
     def borrow_book(self, mongo_client: pymongo.MongoClient, _id, user_id=None) -> Tuple[bool, str]:
         if ObjectId.is_valid(_id):
@@ -54,11 +59,11 @@ class User:
                                 result = books.find_one(query)
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
                                 if result is not None:
-                                    if _id not in actual_borrowed_books:
+                                    if str(_id) not in actual_borrowed_books:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(user_id),
-                                                                   date_borrowed=time.time(),
+                                                                   date_borrowed=datetime.utcnow(),
                                                                    date_returned=None,
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
@@ -96,11 +101,11 @@ class User:
                                 result = books.find_one(query)
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
                                 if result is not None:
-                                    if _id not in actual_borrowed_books:
+                                    if str(_id) not in actual_borrowed_books:
                                         if len(actual_borrowed_books) < 6:
                                             new_book = Book_status(book_id=ObjectId(result["_id"]),
                                                                    user_id=ObjectId(self.user.id),
-                                                                   date_borrowed=time.time(),
+                                                                   date_borrowed=datetime.utcnow(),
                                                                    date_returned=None,
                                                                    returned=False)
                                             get_book_status_column(mongo_client).insert_one(new_book.to_dict())
@@ -145,7 +150,7 @@ class User:
                         if ObjectId.is_valid(user_id):
                             if user_exists_id(mongo_client, user_id):
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, user_id)
-                                if _id in actual_borrowed_books:
+                                if str(_id) in actual_borrowed_books:
                                     get_book_status_column(mongo_client).update_one({"$and":
                                                                                     [{"user_id": ObjectId(user_id)},
                                                                  {"book_id": ObjectId(_id)}], "returned": False},
@@ -173,7 +178,7 @@ class User:
                         if user_is_approved_by_librarian(mongo_client, self.user.id):
                             if book_exists_id(mongo_client, _id):
                                 actual_borrowed_books = get_all_borrowed_books_from_user(mongo_client, self.user.id)
-                                if _id in actual_borrowed_books:
+                                if str(_id) in actual_borrowed_books:
                                     get_book_status_column(mongo_client).update_one({"$and":
                                                                                          [{"user_id": ObjectId(
                                                                                              self.user.id)},
@@ -213,7 +218,7 @@ class User:
                     if book_exists_id(mongo_client, _id):
                         books = get_book_column(mongo_client)
                         query = {"_id": ObjectId(_id)}
-                        return books.find_one(query, {"_id": 0, "count_borrowed": 0})
+                        return books.find_one(query, {"_id": 1, "count_borrowed": 0})
                     else:
                         return False, "There is no book with ID: " + str(_id)
                 else:
@@ -421,7 +426,7 @@ class Librarian(User):
     def get_all_users(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
         return list(users.find({}, {"_id": 1, "login_name": 1, "first_name": 1, "surname": 1, "borrowed_books": 1,
-                                    "count_borrowed_books": 1, "created_at": 1}))
+                                    "count_borrowed_books": 1, "created_at": 1,"banned":1,"verified":1,}))
 
     def find_user(self, mongo_client: pymongo.MongoClient, _id):
         if ObjectId.is_valid(_id):
@@ -503,30 +508,46 @@ class Librarian(User):
     def get_all_users_with_stashed_changes(self, mongo_client: pymongo.MongoClient):
         users = get_user_column(mongo_client)
         return list(users.find({"approved_by_librarian": False}, {"_id": 1}))
+    
+    def get_all_users_with_stashed_changes_for_specific_user(self, mongo_client: pymongo.MongoClient):
+        users = get_user_column(mongo_client)
+        return list(users.find({"approved_by_librarian": False}, {"_id": 1}))
+    
+    def get_all_users_with_stashed_changes_all_info(self, mongo_client: pymongo.MongoClient):
+        users = get_user_column(mongo_client)
+        return list(users.find({"approved_by_librarian": False}, {"_id": 1,"person_id":1,"first_name":1,"surname":1,"pid":1,"address":1,"login_name":1,"created_at":1}))
+
+    def get_all_authors(self,mongo_client: pymongo.MongoClient):
+        return list(mongo_client[DATABASE_NAME]['author'].find({},{"_id": 1,"first_name":1,"surname":1}))
 
     def add_book(self, mongo_client: pymongo.MongoClient, title: str, author_id, length: int, year: int ,
                  copies_available: int, genre: str, description: str, count_borrowed: int, image = None) -> Tuple[bool, str]:
         generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
-        if not book_exists_id(mongo_client, generated_id):
-            if author_exists_id(mongo_client, author_id):
-                if image is None:
-                    filename = askopenfilename(filetypes=[('JPG files', '*.jpg'),
+        if ObjectId.is_valid(author_id):
+            if not book_exists_id(mongo_client, generated_id):
+                if author_exists_id(mongo_client, author_id):
+                    if image is None:
+                        filename = askopenfilename(filetypes=[('JPG files', '*.jpg'),
                                                           ('PNG files', '*.png'),
                                                           ('all files', '.*')])
-                    if filename != '':
-                        with open(filename, 'rb') as f:
-                            contents = f.read()
-                    else:
-                        contents = None
-                new_book = Book(_id=generated_id, title=title, author=ObjectId(author_id), length=length, year=year,
-                                image=contents,copies_available=copies_available, genre=genre,
-                                description=description, count_borrowed=count_borrowed)
-                get_book_column(mongo_client).insert_one(new_book.to_dict())
-                return True, "Book: " + str(title) + " has been added to library"
+                        if filename != '':
+                            with open(filename, 'rb') as f:
+                                contents = f.read()
+                        else:
+                            contents = None
+                    new_book = Book(_id=generated_id, title=title, author=ObjectId(author_id), length=length, year=year,
+                                    image=contents,copies_available=copies_available, genre=genre,
+                                    description=description, count_borrowed=count_borrowed)
+                    get_book_column(mongo_client).insert_one(new_book.to_dict())
+                    return True, "Book: " + str(title) + " has been added to library"
+                else:
+                    return False, "There is no author the ID: " + str(author_id)
+
             else:
-                return False, "There is no author the ID: " + str(author_id)
+                return False, "Book with ID: " + str(generated_id) + " already exists in library"
         else:
-            return False, "Book with ID: " + str(generated_id) + " already exists in library"
+            return False, "ID: " + author_id + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
 
     # can only be done if no books borrowed
     def edit_book(self, mongo_client: pymongo.MongoClient, _id, title: str, author_id, length: int, year: int,
@@ -615,9 +636,12 @@ class Librarian(User):
     def add_author(self, mongo_client: pymongo.MongoClient, first_name: str, surname: str) -> Tuple[bool, str]:
         generated_id = ObjectId(str(codecs.encode(os.urandom(12), 'hex').decode()))
         if not author_exists_id(mongo_client, generated_id):
-            new_author = Author(_id=generated_id, first_name=first_name, surname=surname)
-            get_author_column(mongo_client).insert_one(new_author.to_dict())
-            return True, "Author: " + first_name + " " + surname + " has been added to library"
+            if len(first_name) != 0 and len(surname) != 0:
+                new_author = Author(_id=generated_id, first_name=first_name, surname=surname)
+                get_author_column(mongo_client).insert_one(new_author.to_dict())
+                return True, "Author: " + first_name + " " + surname + " has been added to library"
+            else:
+                return False, "First name or surname is null"
         else:
             return False, "Author with ID: " + str(generated_id) + " already exists in library"
 
@@ -690,12 +714,13 @@ class Librarian(User):
             return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
                                          " of 12 bytes or a string of 24 hex characters"
 
+
     def find_all_books(self, mongo_client: pymongo.MongoClient):
         books = get_book_column(mongo_client)
         return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1}))
 
 
-def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
+def get_all_borrowed_books_from_user_id(mongo_client: pymongo.MongoClient, _id):
     if ObjectId.is_valid(_id):
         borrowed_books = []
         db = mongo_client.library
@@ -711,8 +736,44 @@ def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
                                      " of 12 bytes or a string of 24 hex characters"
 
 
+def get_history_of_borrowed_books_from_user_id(mongo_client: pymongo.MongoClient, _id):
+    db = mongo_client.library
+    return list(db.book_status.find({"user_id": ObjectId(_id)}))
+
+
+def get_all_borrowed_books_from_user(mongo_client: pymongo.MongoClient, _id):
+    if ObjectId.is_valid(_id):
+        borrowed_books = {}
+        db = mongo_client.library
+        try:
+            cursor = db.book_status.find({"$and": [{"user_id": ObjectId(_id)}, {"returned": False}]})
+            for document in cursor:
+                borrowed_books[str(document['book_id'])]=(document["date_borrowed"])
+            return borrowed_books
+        except KeyError:
+            return []
+    else:
+        return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
+                                     " of 12 bytes or a string of 24 hex characters"
+
+def get_all_borrowed_books(mongo_client: pymongo.MongoClient):
+        return list(mongo_client[DATABASE_NAME]["book_status"].find({"returned": False}, {"_id": 1, "book_id": 1, "user_id": 1, "date_borrowed": 1, "date_returned": 1,
+                                    "returned": 1}))
+
+def find_all_books(mongo_client: pymongo.MongoClient):
+        books = get_book_column(mongo_client)
+        return list(books.find({}, {"_id": 1, "title": 1, "author": 1,"image":1,"description":1, "copies_available": 1, "year": 1, "genre": 1}))
+
+
+def find_all_book_status(mongo_client: pymongo.MongoClient):
+    book_status = get_book_status_column(mongo_client)
+    return list(book_status.find({}, {"_id": 1, "book_id": 1, "user_id": 1, "date_borrowed": 1, "returned": 1}))
+
 def get_book_column(mongo_client: pymongo.MongoClient):
     return mongo_client[DATABASE_NAME][BOOK]
+
+def get_book_status_column(mongo_client: pymongo.MongoClient):
+    return mongo_client[DATABASE_NAME][BOOK_STATUS]
 
 
 def book_exists(mongo_client: pymongo.MongoClient, book_name):
@@ -938,9 +999,22 @@ def login(mongo_client: pymongo.MongoClient, login: str, password: str) -> Union
     else:
         return False, "Incorrect username or password"
 
+def find_author(mongo_client: pymongo.MongoClient, _id):
+        if ObjectId.is_valid(_id):
+            authors = get_author_column(mongo_client)
+            query = {"_id": ObjectId(_id)}
+            result = authors.find_one(query)
+            if result is not None:
+                return True, result
+            else:
+                return False, "There is no author with ID: " + str(_id)
+        else:
+            return False, "ID: " + str(_id) + " is not valid. ID Must be a single string" \
+                                         " of 12 bytes or a string of 24 hex characters"
+
 
 def autocomplete_book(mongo_client: pymongo.MongoClient, query: str,
-                      path: Autocomplete_options_book, limit=10) -> Tuple[bool, list[Book]]:
+                      path: Autocomplete_options_book, limit=10):
     """ retuns list of autocompleted query based on what we have in DB
     Args:
         mongo_client (pymongo.MongoClient): mongo client
@@ -975,9 +1049,9 @@ def autocomplete_book(mongo_client: pymongo.MongoClient, query: str,
                         year=book['year'], image=book['image'],
                         copies_available=book['copies_available'], genre=book['genre'],
                         description=book['description'], count_borrowed=book['count_borrowed'])
-        book_list.append(cur_book)
+        book_list.append(book)
     if not book_list:
-        return False, "No result - try different query"
+        return False, None
     else:
         return True, book_list
 
