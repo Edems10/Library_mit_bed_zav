@@ -12,6 +12,7 @@ from torch import true_divide
 from actions import *
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+import webbrowser
 
 from datamodels import Autocomplete_options_book, Autocomplete_options_user, Person, Roles
 
@@ -171,6 +172,12 @@ class App(customtkinter.CTk):
         self.image_right_arrow= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "icons8-right-arrow-100.png")),
                                                      dark_image=Image.open(os.path.join(image_path, "icons8-right-arrow-100.png")),
                                                      size=(20, 20))
+        
+        self.image_git= customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "b51b78ecc9e5711274931774e433b5e6.png")),
+                                                     dark_image=Image.open(os.path.join(image_path, "b51b78ecc9e5711274931774e433b5e6.png")),
+                                                     size=(50, 50))
+        
+        
         
         
         
@@ -1993,11 +2000,21 @@ class App(customtkinter.CTk):
                                                                    image=self.large_test_image)
         self.home_frame_large_image_label.grid(row=0, column=0, padx=20, pady=10)
 
-        self.home_frame_button_1 = customtkinter.CTkButton(self.home_frame, text="", image=self.image_icon_image)
-        self.home_frame_button_1.grid(row=1, column=0, padx=20, pady=10)
-        self.home_frame_button_2 = customtkinter.CTkButton(self.home_frame, text="CTkButton",
-                                                           image=self.image_icon_image, compound="right")
-        self.home_frame_button_2.grid(row=2, column=0, padx=20, pady=10)
+
+        self.label_about = customtkinter.CTkLabel(self.home_frame,
+                                                text="Authors\n\n\n Dominik Zavada\n\n Adam Mitrenga\n\n Eva Bedanova",
+                                                width=120, height=120,
+                                                corner_radius=7)
+        self.label_about.grid(row=3, column=0, padx=20, pady=10)
+
+        self.link1 = customtkinter.CTkButton(self.home_frame,text="Github", width=70,
+                                                                 fg_color="#36719F",image = self.image_git,
+                                                                 hover_color="#3B8ED0", text_color="#FFF",command=self.website
+                                                                 )
+        self.link1.grid(row=7, column=0, padx=20, pady=10)
+
+
+
 
         # user history of all borrowed books
         self.user_history_books_frame = customtkinter.CTkFrame(self, corner_radius=10, fg_color="transparent")
@@ -2303,7 +2320,7 @@ class App(customtkinter.CTk):
         password = self.login_entry_password.get()
         # Admin: login_lib lib_12345
         # User: user password
-        login_result = login(mongo_client, "user", "password")
+        login_result = login(mongo_client, username, password)
         if login_result[0]:
             user = login_result[1]
             global current
@@ -3252,6 +3269,10 @@ class App(customtkinter.CTk):
             self.main_page_admin_status_verified_entry.configure(state="readonly")
             self.main_page_admin_created_at_entry.configure(state="readonly")
 
+    
+    def website(self):
+        webbrowser.open_new("https://github.com/Edems10/Library_mit_bed_zav")
+        
     def user_clicked_next_history(self):
         global SELECTED_HISTORY_BOOK
         SELECTED_HISTORY_BOOK += 1
