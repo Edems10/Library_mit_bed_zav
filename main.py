@@ -1996,10 +1996,6 @@ class App(customtkinter.CTk):
         self.home_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.home_frame.grid_columnconfigure(0, weight=1)
 
-        self.home_frame_large_image_label = customtkinter.CTkLabel(self.home_frame, text="",
-                                                                   image=self.large_test_image)
-        self.home_frame_large_image_label.grid(row=0, column=0, padx=20, pady=10)
-
 
         self.label_about = customtkinter.CTkLabel(self.home_frame,
                                                 text="Authors\n\n\n Dominik Zavada\n\n Adam Mitrenga\n\n Eva Bedanova",
@@ -2130,7 +2126,7 @@ class App(customtkinter.CTk):
             fg_color=("gray75", "gray25") if name == "history_logged" else "transparent")
         # show selected frame
         if name == "home":
-            self.home_frame.grid(row=0, column=1, sticky="nsew")
+            self.home_frame.grid(row=0, column=1, padx=(30, 20), pady=(60, 0), sticky="nsew")
             self.navigation_frame.grid(row=0, column=0, sticky="nsew")
             self.navigation_frame_logged.grid_forget()
             self.navigation_frame_logged_admin.grid_forget()
